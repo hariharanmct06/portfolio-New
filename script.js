@@ -1,4 +1,51 @@
 /* ==========================================================================
+   CUSTOMIZABLE CHATBOT KNOWLEDGE BASE (RAG DATABASE)
+   ==========================================================================
+   To update what your AI Assistant answers, edit the categories, keywords,
+   and responses in the array below. Keywords are used to search and match
+   the user's questions. HTML markup is supported in responses.
+   ========================================================================== */
+const BOT_KNOWLEDGE_BASE = [
+    {
+        category: "education",
+        keywords: ["education", "study", "studied", "school", "college", "institutions", "suguna", "sns", "degree", "grade", "10th", "12th", "mechatronics"],
+        response: "Hariharan completed his 10th (SSLC) in 2024 and 12th (HSC) in 2026 at <strong>Suguna RIP V School</strong>. He is starting his <strong>B.E. Mechatronics Engineering</strong> at <strong>SNS Institutions</strong> in September 2026."
+    },
+    {
+        category: "skills",
+        keywords: ["skills", "coding", "programming", "python", "c++", "n8n", "workflows", "automation", "github", "git", "communication", "ai", "artificial"],
+        response: "Hariharan has a solid foundation in coding with <strong>Python</strong> and <strong>C++</strong>. He creates workflow automations using <strong>n8n</strong>, manages version control with <strong>GitHub</strong>, and is a beginner-level <strong>AI learner</strong>. He also has excellent <strong>communication skills</strong>."
+    },
+    {
+        category: "interests",
+        keywords: ["interests", "passions", "cybersecurity", "cyber", "security", "uiux", "ui/ux", "design", "industry 4.0", "smart", "robotics", "automation"],
+        response: "Hariharan's core interest lies in <strong>Industry 4.0</strong> automation and robotics. He is a passionate <strong>Cybersecurity enthusiast</strong> and a <strong>UI/UX design learner</strong>."
+    },
+    {
+        category: "contact",
+        keywords: ["contact", "email", "gmail", "whatsapp", "phone", "number", "linkedin", "reach", "connect", "social"],
+        response: "Here is how you can connect with Hariharan:<br>" +
+                  "• <strong>Gmail</strong>: <a href='mailto:hariharanmct06@gmail.com'>hariharanmct06@gmail.com</a><br>" +
+                  "• <strong>WhatsApp</strong>: <a href='https://wa.me/918667808803' target='_blank'>+91 8667808803</a><br>" +
+                  "• <strong>LinkedIn</strong>: <a href='https://www.linkedin.com/in/hariharan-m-4a8533407' target='_blank'>LinkedIn Profile</a>"
+    },
+    {
+        category: "languages",
+        keywords: ["languages", "speak", "know", "tamil", "english", "malayalam", "french"],
+        response: "Hariharan knows these languages:<br>" +
+                  "• <strong>Tamil</strong>: Native / Mother tongue (100%)<br>" +
+                  "• <strong>English</strong>: Fluent / Professional (100%)<br>" +
+                  "• <strong>Malayalam</strong>: Conversational (80%)<br>" +
+                  "• <strong>French</strong>: Basic Learning level (30%)"
+    },
+    {
+        category: "about",
+        keywords: ["who", "whois", "hariharan", "profile", "bio", "about", "introduce", "intro"],
+        response: "Hariharan M is a B.E. Mechatronics candidate at SNS Institutions. He is an automation designer (n8n), coder (Python & C++), GitHub practitioner, beginner AI student, and cybersecurity learner."
+    }
+];
+
+/* ==========================================================================
    INITIALIZATION & GLOBALS
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,13 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Typewriter element
     const typewriterElement = document.querySelector('.typewriter-text');
     
-    // Project filter elements
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('.project-card');
-    
     // Contact Form
     const contactForm = document.getElementById('contactForm');
     const formStatus = document.getElementById('formStatus');
+
+    // Chatbot Elements
+    const chatbotWidget = document.getElementById('chatbotWidget');
+    const chatbotFab = document.getElementById('chatbotFab');
+    const chatbotWindow = document.getElementById('chatbotWindow');
+    const botCloseBtn = document.getElementById('botCloseBtn');
+    const chatbotForm = document.getElementById('chatbotForm');
+    const chatbotInput = document.getElementById('chatbotInput');
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    const suggestionChips = document.querySelectorAll('.suggest-chip');
 
     /* ==========================================================================
        MOBILE MENU TOGGLE
@@ -180,40 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.skills-category').forEach(el => el.classList.add('reveal'));
     document.querySelectorAll('.about-card-item').forEach(el => el.classList.add('reveal'));
     document.querySelectorAll('.lang-card').forEach(el => el.classList.add('reveal'));
-    document.querySelectorAll('.project-card').forEach(el => el.classList.add('reveal'));
     document.querySelectorAll('.timeline-item').forEach(el => el.classList.add('reveal'));
-
-    /* ==========================================================================
-       PROJECTS FILTER CONTROLS
-       ========================================================================== */
-    if (filterButtons.length > 0 && projectCards.length > 0) {
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Update active tab button
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                const selectedFilter = button.getAttribute('data-filter');
-                
-                projectCards.forEach(card => {
-                    const cardCategory = card.getAttribute('data-category');
-                    if (selectedFilter === 'all' || cardCategory === selectedFilter) {
-                        card.style.display = 'flex';
-                        // Small animation pop when displaying
-                        card.style.transform = 'scale(0.95)';
-                        card.style.opacity = '0';
-                        setTimeout(() => {
-                            card.style.transform = 'scale(1)';
-                            card.style.opacity = '1';
-                            card.classList.add('active');
-                        }, 50);
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-    }
 
     /* ==========================================================================
        CONTACT FORM SUBMIT (SIMULATED PROMPT)
@@ -256,6 +276,122 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 1500);
 
             }, 1200);
+        });
+    }
+
+    /* ==========================================================================
+       RAG CHATBOT ENGINE & WINDOW CONTROLLER
+       ========================================================================== */
+    // Open/Close Widget
+    if (chatbotFab && chatbotWindow && botCloseBtn) {
+        chatbotFab.addEventListener('click', () => {
+            chatbotWindow.classList.toggle('open');
+            chatbotFab.querySelector('.fab-pulse').style.display = 'none'; // Hide attention pulse once opened
+        });
+
+        botCloseBtn.addEventListener('click', () => {
+            chatbotWindow.classList.remove('open');
+        });
+    }
+
+    // Tokenizer & scoring search RAG logic
+    const queryRAG = (userQuery) => {
+        const query = userQuery.toLowerCase().replace(/[?,.!\/]/g, ' ').trim();
+        const tokens = query.split(/\s+/).filter(token => token.length > 2);
+
+        if (tokens.length === 0) {
+            return "Please ask a specific question. I know about Hariharan's education, skills, automation, n8n, AI, and cybersecurity!";
+        }
+
+        let bestMatch = null;
+        let highestScore = 0;
+
+        BOT_KNOWLEDGE_BASE.forEach(doc => {
+            let score = 0;
+            tokens.forEach(token => {
+                if (doc.keywords.includes(token)) {
+                    score += 2; // Keyword match
+                } else {
+                    // Part of speech / substring checking
+                    doc.keywords.forEach(keyword => {
+                        if (keyword.includes(token) || token.includes(keyword)) {
+                            score += 0.8;
+                        }
+                    });
+                }
+            });
+
+            if (score > highestScore) {
+                highestScore = score;
+                bestMatch = doc;
+            }
+        });
+
+        // Threshold matching check
+        if (highestScore >= 1.5 && bestMatch) {
+            return bestMatch.response;
+        } else {
+            return "I'm not sure I understand that question completely. I'm trained on Hariharan's specific details. Try asking about:<br>" +
+                   "• His **education** path (Suguna school, SNS institutions)<br>" +
+                   "• Technical **skills** (Python, C++, n8n automation workflows, GitHub)<br>" +
+                   "• Core **interests** (Industry 4.0, Cybersecurity, UI/UX designing)<br>" +
+                   "• **Languages** he speaks, or his **contact details**.";
+        }
+    };
+
+    // Render chatbot logs
+    const appendChatMessage = (sender, content) => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender}-message`;
+        msgDiv.innerHTML = content;
+        chatbotMessages.appendChild(msgDiv);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        return msgDiv;
+    };
+
+    // Handle user inputs
+    const handleBotTransaction = (queryText) => {
+        // Render User Query
+        appendChatMessage('user', queryText);
+        
+        // Show Typing Dots
+        const typingDiv = appendChatMessage('bot', `<div class="typing-dots"><span></span><span></span><span></span></div>`);
+        
+        // Retrieve RAG response and resolve typing animation
+        setTimeout(() => {
+            const responseText = queryRAG(queryText);
+            typingDiv.innerHTML = responseText;
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }, 800);
+    };
+
+    // Submitting chat questions
+    if (chatbotForm) {
+        chatbotForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = chatbotInput.value.trim();
+            if (!text) return;
+            handleBotTransaction(text);
+            chatbotInput.value = '';
+        });
+    }
+
+    // Suggestion chips triggers
+    if (suggestionChips.length > 0) {
+        suggestionChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const queryType = chip.getAttribute('data-query');
+                let promptQuery = "";
+                
+                if (queryType === 'education') promptQuery = "Tell me about your education history";
+                else if (queryType === 'skills') promptQuery = "What programming skills and automation tools do you know?";
+                else if (queryType === 'interests') promptQuery = "What are your interests in Industry 4.0?";
+                else if (queryType === 'contact') promptQuery = "How can I contact Hariharan?";
+                
+                if (promptQuery) {
+                    handleBotTransaction(promptQuery);
+                }
+            });
         });
     }
 });
