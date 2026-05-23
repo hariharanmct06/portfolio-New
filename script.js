@@ -23,11 +23,13 @@ const BOT_KNOWLEDGE_BASE = [
     },
     {
         category: "contact",
-        keywords: ["contact", "email", "gmail", "whatsapp", "phone", "number", "linkedin", "reach", "connect", "social"],
+        keywords: ["contact", "email", "gmail", "whatsapp", "phone", "number", "linkedin", "reach", "connect", "social", "github", "leetcode"],
         response: "Here is how you can connect with Hariharan:<br>" +
                   "• <strong>Gmail</strong>: <a href='mailto:hariharanmct06@gmail.com'>hariharanmct06@gmail.com</a><br>" +
                   "• <strong>WhatsApp</strong>: <a href='https://wa.me/918667808803' target='_blank'>+91 8667808803</a><br>" +
-                  "• <strong>LinkedIn</strong>: <a href='https://www.linkedin.com/in/hariharan-m-4a8533407' target='_blank'>LinkedIn Profile</a>"
+                  "• <strong>LinkedIn</strong>: <a href='https://www.linkedin.com/in/hariharan-m-4a8533407' target='_blank'>LinkedIn Profile</a><br>" +
+                  "• <strong>GitHub</strong>: <a href='https://github.com/hariharanmct06' target='_blank'>GitHub Profile</a><br>" +
+                  "• <strong>LeetCode</strong>: <a href='https://leetcode.com/u/gwbXy6iSHY/' target='_blank'>LeetCode Profile</a>"
     },
     {
         category: "languages",
