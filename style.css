@@ -1251,3 +1251,159 @@ ul {
     
 
 }
+
+/* ==========================================================================
+   LOADING SCREEN (PRELOADER) STYLING
+   ========================================================================== */
+.preloader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-primary);
+    z-index: 99999; /* Ensure it stays on top of everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.preloader-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.preloader-content {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    aspect-ratio: 8/5;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preloader-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Animations for Preloader Details */
+.preloader-bar-fill {
+    width: 0;
+    animation: preloader-bar-anim 2.5s cubic-bezier(0.1, 0.85, 0.25, 1) forwards;
+}
+
+.preloader-circuit path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: preloader-circuit-draw 3s ease-out forwards;
+}
+
+.preloader-circuit circle {
+    opacity: 0;
+    animation: preloader-node-fade 1.5s ease-out forwards 2.5s, preloader-node-glow 2s ease-in-out infinite alternate 4s;
+}
+
+.preloader-loading-text {
+    animation: preloader-text-flicker 2s infinite alternate;
+}
+
+.preloader-wait-text {
+    animation: preloader-pulse-opacity 1.5s infinite ease-in-out;
+}
+
+.preloader-power-led {
+    animation: preloader-led-blink 1s infinite alternate;
+}
+
+.preloader-watch-glow {
+    animation: preloader-watch-glow-anim 1.5s infinite alternate;
+}
+
+/* Keyframes */
+@keyframes preloader-bar-anim {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 260px;
+    }
+}
+
+@keyframes preloader-circuit-draw {
+    0% {
+        stroke-dashoffset: 1000;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes preloader-node-fade {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes preloader-node-glow {
+    0% {
+        filter: drop-shadow(0 0 1px var(--accent-primary));
+        r: 3;
+    }
+    100% {
+        filter: drop-shadow(0 0 6px var(--accent-primary));
+        r: 4;
+    }
+}
+
+@keyframes preloader-text-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+        fill: var(--accent-primary);
+        text-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+    }
+    20%, 24%, 55% {
+        opacity: 0.7;
+        fill: var(--text-primary);
+        text-shadow: none;
+    }
+}
+
+@keyframes preloader-pulse-opacity {
+    0%, 100% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes preloader-led-blink {
+    0% {
+        fill: #10b981;
+        filter: drop-shadow(0 0 0px #10b981);
+    }
+    100% {
+        fill: #34d399;
+        filter: drop-shadow(0 0 4px #10b981);
+    }
+}
+
+@keyframes preloader-watch-glow-anim {
+    0% {
+        fill: var(--accent-primary);
+        filter: drop-shadow(0 0 0px var(--accent-primary));
+        r: 2.5;
+    }
+    100% {
+        fill: var(--accent-secondary);
+        filter: drop-shadow(0 0 5px var(--accent-secondary));
+        r: 3.5;
+    }
+}

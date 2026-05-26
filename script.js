@@ -242,3 +242,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==========================================================================
+// PRELOADER LOADING SCREEN HANDLER
+// ==========================================================================
+window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        // Keep preloader visible for a brief moment so the progress animation is fully visible
+        setTimeout(() => {
+            preloader.classList.add('fade-out');
+            
+            // Set display to none after opacity transition completes (0.8s)
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 800);
+        }, 1200);
+    }
+});
