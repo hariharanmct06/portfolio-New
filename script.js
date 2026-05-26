@@ -260,3 +260,44 @@ window.addEventListener('load', () => {
         }, 1200);
     }
 });
+
+// ==========================================================================
+// SCREENSHOT & RIGHT-CLICK PROTECTION HANDLERS
+// ==========================================================================
+// 1. Prevent Right-Click menu
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// 2. Prevent hotkeys for inspection, printing, and saving
+document.addEventListener('keydown', e => {
+    // Disable Print Screen key itself (clears clipboard)
+    if (e.key === 'PrintScreen') {
+        navigator.clipboard.writeText('');
+        alert("Screenshots and screen prints are restricted on this portfolio.");
+        e.preventDefault();
+    }
+    
+    // Ctrl + P (Print), Ctrl + S (Save page), Ctrl + U (View source)
+    if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || e.key === 'P' || e.key === 'S' || e.key === 'U')) {
+        e.preventDefault();
+    }
+    
+    // F12 (DevTools)
+    if (e.key === 'F12') {
+        e.preventDefault();
+    }
+    
+    // Ctrl + Shift + I / C / J (DevTools / Inspect Element)
+    if (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'c' || e.key === 'j' || e.key === 'I' || e.key === 'C' || e.key === 'J')) {
+        e.preventDefault();
+    }
+});
+
+// 3. Blur page content when window loses focus (Snipping tool / window switching)
+window.addEventListener('blur', () => {
+    document.body.style.filter = 'blur(10px)';
+    document.body.style.transition = 'filter 0.1s ease';
+});
+
+window.addEventListener('focus', () => {
+    document.body.style.filter = 'none';
+});

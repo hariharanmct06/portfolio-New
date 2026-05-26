@@ -1407,3 +1407,29 @@ ul {
         r: 3.5;
     }
 }
+
+/* ==========================================================================
+   SCREENSHOT & PRINT PROTECTION
+   ========================================================================== */
+@media print {
+    body {
+        display: none !important;
+    }
+    html::after {
+        content: "Screenshots, printing, and saving are restricted on this portfolio.";
+        font-family: 'Outfit', sans-serif;
+        font-size: 24px;
+        color: #ff3f1a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: #070a13;
+        text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999999;
+    }
+}
