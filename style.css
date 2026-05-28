@@ -2,18 +2,18 @@
    DESIGN SYSTEM & VARIABLES
    ========================================================================== */
 :root {
-    --bg-primary: #070a13;
-    --bg-secondary: #0f172a;
-    --bg-tertiary: #1e293b;
+    --bg-primary: #000000;
+    --bg-secondary: #08080a;
+    --bg-tertiary: #121216;
     
     --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --text-secondary: #a0a0b0;
+    --text-muted: #646470;
     
-    --accent-primary: #f97316; /* Glowing Coral Orange */
-    --accent-secondary: #ff3f1a; /* Neon Red */
-    --accent-glow: rgba(249, 115, 22, 0.15);
-    --border-color: rgba(255, 255, 255, 0.08);
+    --accent-primary: #dfb76c; /* Rich Gold / Bronze */
+    --accent-secondary: #c5a880; /* Soft Gold */
+    --accent-glow: rgba(223, 183, 108, 0.15);
+    --border-color: rgba(255, 255, 255, 0.06);
     
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
@@ -388,7 +388,7 @@ ul {
     gap: 16px;
 }
 
-/* Photo Wrapper & Interactive Rings */
+/* Photo Wrapper & Gold Triangle Frame */
 .hero-image-container {
     display: flex;
     justify-content: center;
@@ -400,19 +400,27 @@ ul {
     position: relative;
     width: 320px;
     height: 320px;
-    border-radius: var(--radius-circle);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+.triangle-border {
+    position: absolute;
+    width: 110%;
+    height: 110%;
+    z-index: 4;
+    pointer-events: none;
+    animation: triangle-float 6s ease-in-out infinite alternate;
+}
+
 .hero-img {
-    width: 82%;
-    height: 82%;
+    width: 76%;
+    height: 76%;
     object-fit: cover;
     border-radius: var(--radius-circle);
     z-index: 5;
-    border: 3px solid var(--bg-primary);
+    border: 3px solid var(--accent-primary);
     box-shadow: var(--shadow-md);
 }
 
@@ -421,59 +429,55 @@ ul {
     width: 82%;
     height: 82%;
     border-radius: var(--radius-circle);
-    background: radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, transparent 70%);
-    filter: blur(10px);
+    background: radial-gradient(circle, rgba(223, 183, 108, 0.4) 0%, transparent 70%);
+    filter: blur(15px);
     z-index: 1;
 }
 
-/* Concentric Neon Rings */
-.ring {
+/* Rotating Stamp Badge style */
+.hire-stamp-badge {
     position: absolute;
-    border-radius: var(--radius-circle);
-    border: 1.5px solid transparent;
+    bottom: -10px;
+    right: -10px;
+    width: 100px;
+    height: 100px;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.ring-outer {
+.hire-stamp-badge svg {
     width: 100%;
     height: 100%;
-    border-top-color: var(--accent-primary);
-    border-bottom-color: var(--accent-primary);
     animation: spin-clockwise 20s linear infinite;
-    z-index: 2;
 }
 
-.ring-inner {
-    width: 90%;
-    height: 90%;
-    border-left-color: var(--accent-secondary);
-    border-right-color: var(--accent-secondary);
-    animation: spin-counter 12s linear infinite;
-    z-index: 3;
-}
-
-/* Decorative brackets */
-.bracket {
+.stamp-inner-arrow {
     position: absolute;
-    font-family: var(--font-heading);
-    font-size: 2.2rem;
-    font-weight: 300;
-    color: rgba(249, 115, 22, 0.4);
-    pointer-events: none;
-    z-index: 6;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-circle);
+    background-color: var(--accent-primary);
+    color: var(--bg-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow-sm);
+    z-index: 11;
+    border: 2px solid var(--bg-primary);
 }
 
-.bracket-left {
-    left: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    animation: bounce-left 4s ease-in-out infinite;
-}
-
-.bracket-right {
-    right: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    animation: bounce-right 4s ease-in-out infinite;
+@keyframes triangle-float {
+    0% {
+        transform: translateY(-5px) rotate(0deg);
+        filter: drop-shadow(0 0 5px rgba(223, 183, 108, 0.2));
+    }
+    100% {
+        transform: translateY(5px) rotate(-2deg);
+        filter: drop-shadow(0 0 15px rgba(223, 183, 108, 0.4));
+    }
 }
 
 /* ==========================================================================
