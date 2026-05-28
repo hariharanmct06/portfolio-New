@@ -56,6 +56,82 @@
             margin-bottom: 12px;
             letter-spacing: 1px;
         }
+        .founder-section {
+            padding: 80px 0;
+            background-color: var(--bg-primary);
+        }
+        .founder-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .founder-image-wrapper {
+            position: relative;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+        .founder-image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: var(--radius-md);
+            z-index: 1;
+            pointer-events: none;
+            transition: all var(--transition-normal);
+        }
+        .founder-image-wrapper:hover::before {
+            top: -8px;
+            left: -8px;
+            border-color: var(--accent-primary);
+        }
+        .founder-img-card {
+            position: relative;
+            z-index: 2;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            background-color: var(--bg-secondary);
+            transition: all var(--transition-normal);
+        }
+        .founder-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(10%) contrast(105%);
+            transition: all var(--transition-normal);
+        }
+        .founder-image-wrapper:hover .founder-img {
+            filter: grayscale(0%) contrast(100%);
+            transform: scale(1.02);
+        }
+        .founder-title-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background-color: rgba(223, 183, 108, 0.08);
+            padding: 3px 12px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        @media (max-width: 768px) {
+            .founder-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+            .founder-image-wrapper {
+                max-width: 280px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -107,8 +183,8 @@
                     A forward-thinking automation agency designing intelligent workflows, custom conversational AI chatbot frameworks, and high-converting AI digital marketing campaigns. We help startups and enterprises eliminate repetitive overhead and scale efficiently.
                 </p>
                 <div class="hero-actions">
-                    <a href="index.html#contact" class="btn btn-primary">Partner With Us</a>
-                    <a href="index.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Main Portfolio</a>
+                    <a href="https://hari-bot-business-solutions.vercel.app/" target="_blank" rel="noopener" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Visit Website</a>
+                    <a href="index.html#contact" class="btn btn-secondary">Partner With Us</a>
                 </div>
             </div>
             <div class="company-logo-container">
@@ -178,6 +254,38 @@
                             Designing elegant, user-centered Figma dashboards and workflow layouts that bridge complex hardware structures and end-user screens.
                         </p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet the Founder Section -->
+    <section class="founder-section scroll-section">
+        <div class="container founder-container">
+            <div class="founder-image-wrapper">
+                <div class="founder-img-card">
+                    <img src="assets/images/hari-founder.jpg" alt="Hariharan M - Founder of Hari Bot & Business Solutions" class="founder-img">
+                </div>
+            </div>
+            <div class="founder-info-content">
+                <div class="founder-title-badge">Leadership</div>
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 8px;">Meet the Founder</h2>
+                <h3 style="font-family: var(--font-body); font-size: 1.2rem; font-weight: 500; color: #3b82f6; margin-bottom: 20px;">
+                    Hariharan M <span style="color: var(--text-muted); font-size: 0.95rem; font-weight: 400; margin-left: 8px;">| Founder & Creative Director</span>
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 1.05rem;">
+                    As the founder and creative director of Hari Bot & Business Solutions, I bridge the gap between advanced Mechatronics engineering principles and modern business automation. My focus is on creating high-performance workflows that help organizations operate intelligence-first.
+                </p>
+                <p style="color: var(--text-secondary); margin-bottom: 28px; font-size: 1.05rem;">
+                    From developing complex Retrieval-Augmented Generation (RAG) conversational agents to designing automation pathways with n8n, our venture is dedicated to streamlining repetitive logic and maximizing visual and marketing impact using cutting-edge AI.
+                </p>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <a href="https://hari-bot-business-solutions.vercel.app/" target="_blank" rel="noopener" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt"></i> Visit Official Site
+                    </a>
+                    <a href="index.html#contact" class="btn btn-secondary">
+                        <i class="fas fa-paper-plane"></i> Contact Founder
+                    </a>
                 </div>
             </div>
         </div>
