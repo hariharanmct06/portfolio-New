@@ -1208,6 +1208,15 @@ ul {
         display: flex;
     }
     
+    .logo {
+        font-size: 1.25rem;
+    }
+    
+    .header-logo-img {
+        width: 26px !important;
+        height: 26px !important;
+    }
+    
     .form-row {
         grid-template-columns: 1fr;
     }
@@ -1229,6 +1238,19 @@ ul {
     
     .hero-intro {
         font-size: 1.8rem;
+    }
+    
+    .hire-stamp-badge {
+        width: 75px;
+        height: 75px;
+        bottom: -5px;
+        right: -5px;
+    }
+    
+    .stamp-inner-arrow {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
     }
     
     .image-wrapper {
