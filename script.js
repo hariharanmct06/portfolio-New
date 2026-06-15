@@ -293,7 +293,7 @@ window.addEventListener('load', () => {
         heroVideo.muted = true; // Start muted to satisfy browser checks
         
         const configureVideoPlayback = () => {
-            heroVideo.playbackRate = 0.85; // Slow down voice for clarity
+            heroVideo.playbackRate = 0.95; // Slightly faster for natural feel
             heroVideo.preservesPitch = true;
             heroVideo.webkitPreservesPitch = true;
             heroVideo.mozPreservesPitch = true;
