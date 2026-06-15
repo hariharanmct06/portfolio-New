@@ -1327,12 +1327,18 @@ ul {
         padding-left: 24px;
     }
 
-    /* Background Video Mobile Centering and Portrait containment */
+    /* Background Video - Dedicated Top Card on Mobile */
     .hero-bg-video {
+        position: relative !important;
+        width: calc(100% - 40px) !important;
+        height: 340px !important;
+        margin: 0 auto 24px auto !important;
+        border-radius: var(--radius-md) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
         object-fit: cover !important;
         object-position: center top !important;
-        width: 100% !important;
-        height: 100% !important;
+        z-index: 5 !important;
     }
     
     .hero-bg-video.video-portrait {
@@ -1340,51 +1346,34 @@ ul {
         background: #000 !important;
     }
 
-    /* Mobile Hero Overlay & Blur */
+    /* Mobile Hero Overlay - Hidden on Mobile */
     .hero-overlay {
-        background: rgba(0, 0, 0, 0.55) !important;
-        backdrop-filter: blur(1px) !important;
-        -webkit-backdrop-filter: blur(1px) !important;
+        display: none !important;
     }
 
-    /* Mobile Hero Layout & Elements */
+    /* Mobile Hero Layout & Elements - Stacks Below Video Card */
     .mobile-hero-avatar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 68px !important; /* Reduced size by 20% */
-        height: 68px !important;
-        margin-top: -10px !important; /* Positioned slightly higher */
-        margin-bottom: 16px !important;
-        border-radius: 50%;
-        border: 2px solid var(--accent-primary) !important;
-        box-shadow: 0 0 15px rgba(249, 115, 22, 0.5), 0 0 30px rgba(59, 130, 246, 0.3) !important; /* Brand orange-blue dual glow */
-        overflow: hidden;
-        background-color: var(--bg-primary);
-        position: relative;
-        z-index: 3;
-    }
-    .mobile-hero-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        display: none !important; /* Hidden because main video is visible at the top */
     }
     
     .hero-section {
-        min-height: 88vh !important; /* Reduced hero height */
-        height: 88vh !important;
-        padding-top: 90px;
-        padding-bottom: 30px;
+        min-height: auto !important;
+        height: auto !important;
+        padding-top: 100px !important;
+        padding-bottom: 40px !important;
         display: flex;
+        flex-direction: column !important;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
+        background-color: var(--bg-primary) !important;
     }
     
     .hero-content {
-        margin-top: 40px !important; /* Move content slightly lower */
+        margin-top: 0 !important;
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
     
     .hero-intro {
@@ -1763,10 +1752,12 @@ ul {
 
 @media (max-width: 768px) {
     .video-replay-btn {
-        bottom: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        font-size: 0.8rem;
+        position: absolute !important;
+        top: 290px !important;
+        bottom: auto !important;
+        right: 35px !important;
+        padding: 8px 16px !important;
+        font-size: 0.8rem !important;
     }
 }
 
