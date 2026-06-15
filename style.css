@@ -1517,49 +1517,14 @@ ul {
 }
 
 /* ==========================================================================
-   FLOATING AUDIO TOGGLE BUTTON
+   PRELOADER ENTER PORTFOLIO BUTTON
    ========================================================================== */
-.audio-toggle-btn {
-    position: absolute;
-    bottom: 40px;
-    right: 40px;
-    z-index: 10;
-    background-color: rgba(0, 0, 0, 0.65);
-    border: 2px solid var(--accent-primary);
-    color: var(--accent-primary);
-    padding: 10px 18px;
-    border-radius: 50px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-heading);
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    transition: all var(--transition-normal);
-}
-
-.audio-toggle-btn:hover {
-    background-color: var(--accent-primary);
-    color: #000;
-    transform: scale(1.05);
-    box-shadow: 0 4px 20px rgba(223, 183, 108, 0.3);
-}
-
-.audio-toggle-btn i {
-    font-size: 1rem;
-}
-
-@media (max-width: 768px) {
-    .audio-toggle-btn {
-        bottom: 30px;
-        right: 30px;
-        padding: 8px 14px;
-        font-size: 0.75rem;
-    }
+#preloaderEnterBtn:hover {
+    background-color: var(--accent-secondary) !important;
+    border-color: var(--accent-secondary) !important;
+    color: #000 !important;
+    transform: translateY(-50%) scale(1.05) !important;
+    box-shadow: 0 0 45px rgba(223, 183, 108, 0.85) !important;
 }
 
 /* ==========================================================================

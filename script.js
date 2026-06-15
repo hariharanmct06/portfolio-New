@@ -266,40 +266,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Audio Toggle Logic for Hero Video
-    const heroVideo = document.getElementById('heroVideo');
-    const audioToggleBtn = document.getElementById('audioToggleBtn');
-    
-    if (heroVideo && audioToggleBtn) {
-        audioToggleBtn.addEventListener('click', () => {
-            if (heroVideo.muted) {
-                heroVideo.muted = false;
-                audioToggleBtn.innerHTML = '<i class="fas fa-volume-up"></i> <span>Mute Voice</span>';
-                audioToggleBtn.classList.add('unmuted');
-            } else {
-                heroVideo.muted = true;
-                audioToggleBtn.innerHTML = '<i class="fas fa-volume-mute"></i> <span>Tap to Unmute</span>';
-                audioToggleBtn.classList.remove('unmuted');
-            }
-        });
-    }
 });
 
 // ==========================================================================
-// PRELOADER LOADING SCREEN HANDLER
+// PRELOADER LOADING SCREEN HANDLER & ENTER BUTTON AUDIO CONTROLLER
 // ==========================================================================
 window.addEventListener('load', () => {
     const preloader = document.getElementById('preloader');
+    const preloaderEnterBtn = document.getElementById('preloaderEnterBtn');
+    const heroVideo = document.getElementById('heroVideo');
+    
+    // Slow down the video sound & verify pitch preservation for clarity
+    if (heroVideo) {
+        heroVideo.muted = true; // Start muted to satisfy browser checks
+        heroVideo.playbackRate = 0.85; // Slow down voice for clarity
+        heroVideo.preservesPitch = true;
+        heroVideo.webkitPreservesPitch = true;
+        heroVideo.mozPreservesPitch = true;
+    }
+
     if (preloader) {
-        // Keep preloader visible for a brief moment so the progress animation is fully visible
+        // Wait 1.2 seconds for progress bar to visual finish
         setTimeout(() => {
-            preloader.classList.add('fade-out');
+            const waitText = document.querySelector('.preloader-wait-text');
+            const loadingText = document.querySelector('.preloader-loading-text');
             
-            // Set display to none after opacity transition completes (0.8s)
-            setTimeout(() => {
-                preloader.style.display = 'none';
-            }, 800);
+            if (waitText) waitText.style.display = 'none';
+            if (loadingText) loadingText.innerHTML = 'READY';
+            
+            // Show the premium Enter button
+            if (preloaderEnterBtn) {
+                preloaderEnterBtn.style.display = 'inline-flex';
+                preloaderEnterBtn.style.alignItems = 'center';
+            }
         }, 1200);
+
+        // Clicking the Enter button unmutes the voice and starts the portfolio
+        if (preloaderEnterBtn) {
+            preloaderEnterBtn.addEventListener('click', () => {
+                if (heroVideo) {
+                    heroVideo.muted = false; // Unmute voice
+                    heroVideo.play().catch(err => {
+                        console.log("Audio play failed on click: ", err);
+                    });
+                }
+                
+                // Fade out and remove loading screen overlay
+                preloader.classList.add('fade-out');
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 800);
+            });
+        }
     }
 });
 
