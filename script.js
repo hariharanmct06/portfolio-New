@@ -337,6 +337,7 @@ window.addEventListener('load', () => {
         if (preloaderEnterBtn) {
             preloaderEnterBtn.addEventListener('click', () => {
                 if (heroVideo) {
+                    heroVideo.currentTime = 0; // Play from the start
                     heroVideo.muted = false; // Unmute voice
                     heroVideo.play().catch(err => {
                         console.log("Audio play failed on click: ", err);
