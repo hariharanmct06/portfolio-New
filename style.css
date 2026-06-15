@@ -1327,17 +1327,38 @@ ul {
         padding-left: 24px;
     }
 
+    /* Background Video Mobile Centering and Portrait containment */
+    .hero-bg-video {
+        object-fit: cover !important;
+        object-position: center top !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    .hero-bg-video.video-portrait {
+        object-fit: contain !important;
+        background: #000 !important;
+    }
+
+    /* Mobile Hero Overlay & Blur */
+    .hero-overlay {
+        background: rgba(0, 0, 0, 0.55) !important;
+        backdrop-filter: blur(1px) !important;
+        -webkit-backdrop-filter: blur(1px) !important;
+    }
+
     /* Mobile Hero Layout & Elements */
     .mobile-hero-avatar {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 84px;
-        height: 84px;
-        margin-bottom: 24px;
+        width: 68px !important; /* Reduced size by 20% */
+        height: 68px !important;
+        margin-top: -10px !important; /* Positioned slightly higher */
+        margin-bottom: 16px !important;
         border-radius: 50%;
-        border: 2.5px solid var(--accent-primary);
-        box-shadow: 0 0 20px rgba(249, 115, 22, 0.35);
+        border: 2px solid var(--accent-primary) !important;
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.5), 0 0 30px rgba(59, 130, 246, 0.3) !important; /* Brand orange-blue dual glow */
         overflow: hidden;
         background-color: var(--bg-primary);
         position: relative;
@@ -1350,23 +1371,39 @@ ul {
     }
     
     .hero-section {
-        padding-top: 110px;
-        padding-bottom: 50px;
+        min-height: 88vh !important; /* Reduced hero height */
+        height: 88vh !important;
+        padding-top: 90px;
+        padding-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .hero-content {
+        margin-top: 40px !important; /* Move content slightly lower */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
     .hero-intro {
-        font-size: 1.7rem !important;
+        font-size: 36px !important; /* Name: 36px */
         letter-spacing: -0.5px;
     }
     
     .hero-title {
-        font-size: 2.3rem !important;
-        min-height: 80px !important;
+        font-size: clamp(24px, 8vw, 42px) !important; /* Clamped up to Role: 42px */
+        min-height: 50px !important; /* Reduced footprint */
         margin-bottom: 16px;
     }
     
+    .typewriter-text {
+        white-space: nowrap !important; /* Prevent line breaks */
+    }
+    
     .hero-desc {
-        font-size: 0.95rem;
+        font-size: 18px !important; /* Description: 18px */
         line-height: 1.6;
         margin-bottom: 28px;
         padding: 0 8px;
@@ -1375,13 +1412,15 @@ ul {
     .hero-actions {
         flex-direction: column;
         width: 100%;
-        gap: 12px;
+        gap: 16px !important; /* 16px gap spacing */
     }
     
     .hero-actions .btn {
         width: 100%;
         box-sizing: border-box;
         min-height: 48px; /* Touch target sizing */
+        padding: 10px 20px !important; /* Reduced footprint padding */
+        font-size: 0.95rem !important;
     }
 
     /* About Section & Cards Optimization */
@@ -1427,12 +1466,12 @@ ul {
 
 @media (max-width: 480px) {
     .hero-title {
-        font-size: 2.0rem !important;
-        min-height: 80px !important;
+        font-size: clamp(20px, 8vw, 36px) !important; /* Smaller clamping for narrow viewports */
+        min-height: 45px !important;
     }
     
     .hero-intro {
-        font-size: 1.5rem !important;
+        font-size: 30px !important;
     }
     
     .hire-stamp-badge {

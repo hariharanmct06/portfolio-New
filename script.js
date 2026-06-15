@@ -297,6 +297,11 @@ window.addEventListener('load', () => {
             heroVideo.preservesPitch = true;
             heroVideo.webkitPreservesPitch = true;
             heroVideo.mozPreservesPitch = true;
+            
+            // Detect if video is portrait (width < height)
+            if (heroVideo.videoWidth < heroVideo.videoHeight) {
+                heroVideo.classList.add('video-portrait');
+            }
         };
 
         // If metadata is already loaded, apply speed settings, else wait for it
