@@ -102,7 +102,7 @@
                 </g>
             </svg>
             <!-- Enter Button (shown when fully loaded) -->
-            <button id="preloaderEnterBtn" class="btn btn-primary" style="display: none; background-color: var(--accent-primary); border-color: var(--accent-primary); color: #000; padding: 15px 45px; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border-radius: 50px; box-shadow: 0 0 30px rgba(223, 183, 108, 0.5); cursor: pointer; transition: all 0.3s ease; position: absolute; z-index: 10000; top: 60%; transform: translateY(-50%);">
+            <button id="preloaderEnterBtn" class="btn btn-primary" style="display: none; background-color: var(--accent-primary); border-color: var(--accent-primary); color: #000; padding: 15px 45px; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border-radius: 50px; box-shadow: 0 0 30px rgba(249, 115, 22, 0.5); cursor: pointer; transition: all 0.3s ease; position: absolute; z-index: 10000; top: 60%; transform: translateY(-50%);">
                 Enter Portfolio <i class="fas fa-chevron-right" style="margin-left: 8px;"></i>
             </button>
         </div>
@@ -155,11 +155,17 @@
     <!-- Hero Section -->
     <section id="home" class="hero-section">
         <!-- Background Video -->
-        <video autoplay loop muted playsinline webkit-playsinline class="hero-bg-video" id="heroVideo">
+        <video autoplay muted playsinline webkit-playsinline class="hero-bg-video" id="heroVideo">
             <source src="assets/videos/3D_character_speaking_portfolio_202606151901.mp4" type="video/mp4">
         </video>
         <!-- Overlay -->
         <div class="hero-overlay"></div>
+
+        <!-- Floating Replay Button (appears when video ends) -->
+        <button id="videoReplayBtn" class="video-replay-btn" aria-label="Replay Intro Video" style="display: none;">
+            <i class="fas fa-undo-alt"></i>
+            <span>Replay Intro</span>
+        </button>
 
         <div class="container hero-container">
             <div class="hero-content">
@@ -231,14 +237,14 @@
                             <a href="haribot.html" style="color: #3b82f6; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">View Company Page <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
-                    <div class="about-card-item" style="border-color: rgba(16, 185, 129, 0.25);">
-                        <div class="card-icon" style="background-color: rgba(16, 185, 129, 0.08); color: #10b981;">
+                    <div class="about-card-item" style="border-color: rgba(249, 115, 22, 0.25);">
+                        <div class="card-icon" style="background-color: rgba(249, 115, 22, 0.08); color: #f97316;">
                             <i class="fas fa-hand-holding-heart"></i>
                         </div>
                         <div class="card-info">
                             <h3>Founder & CEO of Sujok AI Bot</h3>
                             <p>Integrating ancient acupressure healing wisdom with smart wellness AI bot systems.</p>
-                            <a href="sujokai.html" style="color: #10b981; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">View Company Page <i class="fas fa-arrow-right"></i></a>
+                            <a href="sujokai.html" style="color: #f97316; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">View Company Page <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                     <div class="about-card-item">

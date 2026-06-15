@@ -333,6 +333,31 @@ window.addEventListener('load', () => {
                 }, 800);
             });
         }
+
+        // Show replay button when video ends
+        if (heroVideo) {
+            heroVideo.addEventListener('ended', () => {
+                const videoReplayBtn = document.getElementById('videoReplayBtn');
+                if (videoReplayBtn) {
+                    videoReplayBtn.style.display = 'inline-flex';
+                    videoReplayBtn.style.alignItems = 'center';
+                }
+            });
+        }
+
+        // Replay button click handler
+        const videoReplayBtn = document.getElementById('videoReplayBtn');
+        if (videoReplayBtn && heroVideo) {
+            videoReplayBtn.addEventListener('click', () => {
+                heroVideo.currentTime = 0;
+                heroVideo.muted = false; // Keep voice unmuted
+                heroVideo.play().then(() => {
+                    videoReplayBtn.style.display = 'none';
+                }).catch(err => {
+                    console.log("Replay failed: ", err);
+                });
+            });
+        }
     }
 });
 
