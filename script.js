@@ -209,28 +209,52 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Sending... <i class="fas fa-spinner fa-spin"></i>';
 
-            // Simulate Network Request Delay
-            setTimeout(() => {
-                // Use mailto link backup if they want to physically send
-                const mailtoLink = `mailto:hariharanmct06@gmail.com?subject=${encodeURIComponent(subjectVal)}&body=${encodeURIComponent("Name: " + nameVal + "\nEmail: " + emailVal + "\n\n" + messageVal)}`;
-                
+            // Send real email via FormSubmit API
+            fetch("https://formsubmit.co/ajax/hariharanmct06@gmail.com", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    name: nameVal,
+                    email: emailVal,
+                    _subject: `Portfolio Enquiry: ${subjectVal}`,
+                    message: messageVal,
+                    _captcha: "false"
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Form submission failed");
+                }
+            })
+            .then(data => {
                 // Show Success Notification
                 formStatus.className = 'form-status success';
-                formStatus.innerHTML = '<i class="fas fa-circle-check"></i> Thank you! Opening your default email client to send your enquiry to Hariharan...';
+                formStatus.innerHTML = '<i class="fas fa-circle-check"></i> Thank you! Your enquiry has been sent directly to Hariharan M. (Note: If this is the first submission, please verify your email when prompted by FormSubmit)';
+                formStatus.style.display = 'block';
                 
                 // Reset form values
                 contactForm.reset();
+            })
+            .catch(error => {
+                // Show Error Notification / fallback visual
+                formStatus.className = 'form-status success';
+                formStatus.innerHTML = '<i class="fas fa-circle-check"></i> opening your default email app to send...';
+                formStatus.style.display = 'block';
                 
+                // Fallback to mailto link
+                const mailtoLink = `mailto:hariharanmct06@gmail.com?subject=${encodeURIComponent(subjectVal)}&body=${encodeURIComponent("Name: " + nameVal + "\nEmail: " + emailVal + "\n\n" + messageVal)}`;
+                window.location.href = mailtoLink;
+            })
+            .finally(() => {
                 // Restore button state
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnHtml;
-
-                // Open default email client after success banner appears
-                setTimeout(() => {
-                    window.location.href = mailtoLink;
-                }, 1500);
-
-            }, 1200);
+            });
         });
     }
 
