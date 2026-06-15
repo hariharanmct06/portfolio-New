@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Show Success Notification
                 formStatus.className = 'form-status success';
-                formStatus.innerHTML = '<i class="fas fa-circle-check"></i> Thank you! Your message mockup is ready. Opening your default mail client to complete sending...';
+                formStatus.innerHTML = '<i class="fas fa-circle-check"></i> Thank you! Opening your default email client to send your enquiry to Hariharan...';
                 
                 // Reset form values
                 contactForm.reset();
