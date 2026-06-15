@@ -151,11 +151,17 @@
     <!-- Hero Section -->
     <section id="home" class="hero-section">
         <!-- Background Video -->
-        <video autoplay loop muted playsinline class="hero-bg-video">
+        <video autoplay loop muted playsinline class="hero-bg-video" id="heroVideo">
             <source src="assets/videos/3D_character_speaking_portfolio_202606151901.mp4" type="video/mp4">
         </video>
         <!-- Overlay -->
         <div class="hero-overlay"></div>
+
+        <!-- Floating Audio Toggle Button -->
+        <button id="audioToggleBtn" class="audio-toggle-btn" aria-label="Toggle Audio">
+            <i class="fas fa-volume-mute"></i>
+            <span>Tap to Unmute</span>
+        </button>
 
         <div class="container hero-container">
             <div class="hero-content">

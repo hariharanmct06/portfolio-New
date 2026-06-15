@@ -265,6 +265,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pulse) pulse.style.display = 'none';
         });
     }
+
+    // Audio Toggle Logic for Hero Video
+    const heroVideo = document.getElementById('heroVideo');
+    const audioToggleBtn = document.getElementById('audioToggleBtn');
+    
+    if (heroVideo && audioToggleBtn) {
+        audioToggleBtn.addEventListener('click', () => {
+            if (heroVideo.muted) {
+                heroVideo.muted = false;
+                audioToggleBtn.innerHTML = '<i class="fas fa-volume-up"></i> <span>Mute Voice</span>';
+                audioToggleBtn.classList.add('unmuted');
+            } else {
+                heroVideo.muted = true;
+                audioToggleBtn.innerHTML = '<i class="fas fa-volume-mute"></i> <span>Tap to Unmute</span>';
+                audioToggleBtn.classList.remove('unmuted');
+            }
+        });
+    }
 });
 
 // ==========================================================================
