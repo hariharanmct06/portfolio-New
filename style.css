@@ -1070,38 +1070,156 @@ ul {
     font-family: var(--font-body);
 }
 
-/* Floating Action Button */
+/* Floating Action Button (Redesigned Custom Pill/Circle Layout) */
 .chatbot-fab {
-    width: 56px;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    background: linear-gradient(90deg, #ff4e00 0%, #ff6a00 32%, #ffffff 45%, #ffffff 100%);
+    border-radius: 50px;
+    padding: 4px 18px 4px 4px;
     height: 56px;
-    border-radius: var(--radius-circle);
-    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-    border: none;
-    color: var(--text-primary);
-    font-size: 1.5rem;
+    border: 2px solid rgba(59, 130, 246, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.4);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    overflow: visible; /* to allow the glow pulse to expand */
+}
+
+.chatbot-fab-avatar-container {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
-    transition: all var(--transition-normal);
-    position: relative;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
 }
 
-.chatbot-fab:hover {
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 25px rgba(249, 115, 22, 0.6);
-}
-
-.fab-pulse {
-    position: absolute;
+.chatbot-fab-avatar {
     width: 100%;
     height: 100%;
-    border-radius: var(--radius-circle);
-    border: 2px solid var(--accent-primary);
-    animation: fab-pulsing 2s infinite;
+    object-fit: cover;
+}
+
+.chatbot-fab-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 8px;
     pointer-events: none;
-    opacity: 0.8;
+}
+
+.chatbot-fab-title {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 850;
+    color: #0b0f19;
+    letter-spacing: 0.2px;
+    line-height: 1.1;
+}
+
+.chatbot-fab-title .highlight-ai {
+    color: #f97316;
+}
+
+.chatbot-fab-subtitle {
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.chatbot-fab-subtitle i {
+    font-size: 0.72rem;
+    color: #0b0f19;
+}
+
+/* Hover and Pulsing Animation styles */
+.chatbot-fab:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.7);
+    border-color: #3b82f6;
+}
+
+.chatbot-fab:hover .chatbot-fab-avatar-container {
+    transform: scale(1.05);
+}
+
+.chatbot-fab::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50px;
+    border: 2px solid #3b82f6;
+    animation: fab-glow-pulse 2s infinite;
+    pointer-events: none;
+    opacity: 0;
+    z-index: -1;
+}
+
+@keyframes fab-glow-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(1.04, 1.12);
+        opacity: 0;
+    }
+}
+
+/* Mobile Collapsed State */
+@media (max-width: 480px) {
+    .chatbot-fab {
+        width: 56px;
+        height: 56px;
+        padding: 4px;
+        background: linear-gradient(135deg, #ff4e00 0%, #ff6a00 100%);
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    .chatbot-fab-avatar-container {
+        margin-right: 0;
+    }
+    
+    .chatbot-fab-text {
+        display: none;
+    }
+    
+    .chatbot-fab::after {
+        border-radius: 50%;
+        animation: fab-glow-pulse-mobile 2s infinite;
+    }
+}
+
+@keyframes fab-glow-pulse-mobile {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
 }
 
 
