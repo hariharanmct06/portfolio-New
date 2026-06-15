@@ -266,6 +266,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Interactive Spotlight Effect for Cards (Mouse Follow Glow)
+    const spotlightCards = document.querySelectorAll('.about-card-item, .skills-category, .stat-box, .lang-card, .timeline-panel');
+    spotlightCards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+
 });
 
 // ==========================================================================
