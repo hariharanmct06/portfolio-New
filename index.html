@@ -150,6 +150,13 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero-section">
+        <!-- Background Video -->
+        <video autoplay loop muted playsinline class="hero-bg-video">
+            <source src="assets/videos/3D_character_speaking_portfolio_202606151901.mp4" type="video/mp4">
+        </video>
+        <!-- Overlay -->
+        <div class="hero-overlay"></div>
+
         <div class="container hero-container">
             <div class="hero-content">
                 <div class="greeting-badge">
@@ -170,33 +177,6 @@
                     <a href="https://hari-char-bot.vercel.app/" target="_blank" rel="noopener" class="btn btn-secondary">
                         <i class="fas fa-robot"></i> Chat with AI
                     </a>
-                </div>
-            </div>
-            <div class="hero-image-container">
-                <div class="image-wrapper triangle-frame">
-                    <!-- Gold Triangle SVG behind the image -->
-                    <svg class="triangle-border" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M 35,100 L 170,25 L 170,175 Z" fill="none" stroke="var(--accent-primary)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" />
-                    </svg>
-                    <div class="image-bg-glow"></div>
-                    <img src="assets/images/hariharan-suit.jpg" alt="Hariharan M - Professional Portrait" class="hero-img" style="object-position: center 10%;">
-                    
-                    <!-- Rotating Stamp Badge -->
-                    <div class="hire-stamp-badge">
-                        <svg viewBox="0 0 100 100">
-                            <defs>
-                                <path id="stampCirclePath" d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" />
-                            </defs>
-                            <text font-family="var(--font-heading)" font-size="7.5" font-weight="800" fill="var(--text-secondary)" letter-spacing="1">
-                                <textPath href="#stampCirclePath">
-                                    • HIRE ME FOR YOUR DREAM PROJECTS • 
-                                </textPath>
-                            </text>
-                        </svg>
-                        <div class="stamp-inner-arrow">
-                            <i class="fas fa-arrow-up-right"></i>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -338,56 +318,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Video Showcase Section -->
-    <section id="video-showcase" class="scroll-section" style="background-color: var(--bg-secondary); border-top: 1px solid rgba(223, 183, 108, 0.1); border-bottom: 1px solid rgba(223, 183, 108, 0.1);">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Featured Work Showcase</h2>
-                <div class="title-underline"></div>
-            </div>
-
-            <div class="video-grid">
-                <!-- Left: Video Player Card -->
-                <div class="video-card">
-                    <video id="portfolioVideo" style="width: 100%; height: 100%; display: block; object-fit: cover;" controls loop muted playsinline poster="assets/images/hariharan-suit.jpg">
-                        <source src="assets/videos/3D_character_speaking_portfolio_202606151901.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-
-                <!-- Right: Video Details & Description -->
-                <div class="video-details">
-                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-primary); background-color: rgba(223, 183, 108, 0.08); padding: 3px 12px; border-radius: 50px; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; display: inline-block;">
-                        Interactive Demo
-                    </div>
-                    <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; color: var(--text-primary); font-family: 'Outfit', sans-serif;">
-                        See My AI Automation & Design Work in Action
-                    </h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6;">
-                        This video demonstrates my practical experience with high-level automation systems and human-centered design. Watch to see live walkthroughs of custom n8n automation pipelines, RAG-based AI chatbots, and responsive UI prototype interactions in Figma.
-                    </p>
-                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-                        <div style="display: flex; align-items: center; gap: 12px; color: var(--text-secondary);">
-                            <i class="fas fa-check-circle" style="color: var(--accent-primary);"></i>
-                            <span>n8n Enterprise Automation Pipelines</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 12px; color: var(--text-secondary);">
-                            <i class="fas fa-check-circle" style="color: var(--accent-primary);"></i>
-                            <span>Figma UI/UX Micro-Interactions</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 12px; color: var(--text-secondary);">
-                            <i class="fas fa-check-circle" style="color: var(--accent-primary);"></i>
-                            <span>Smart AI Chatbot Integrations (Hari Bot & Sujok AI)</span>
-                        </div>
-                    </div>
-                    <a href="#contact" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-paper-plane"></i> Discuss Your Project
-                    </a>
                 </div>
             </div>
         </div>

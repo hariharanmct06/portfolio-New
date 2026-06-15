@@ -312,17 +312,43 @@ ul {
    HERO SECTION
    ========================================================================== */
 .hero-section {
-    padding-top: 180px;
-    padding-bottom: 100px;
+    min-height: 100vh;
+    padding-top: 120px;
+    padding-bottom: 60px;
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.hero-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
+    z-index: 2;
 }
 
 .hero-container {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 1fr;
     align-items: center;
     gap: 48px;
+    position: relative;
+    z-index: 3;
+    width: 100%;
 }
 
 .greeting-badge {
@@ -390,10 +416,7 @@ ul {
 
 /* Photo Wrapper & Gold Triangle Frame */
 .hero-image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+    display: none !important;
 }
 
 .image-wrapper {
