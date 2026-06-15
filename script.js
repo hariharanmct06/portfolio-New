@@ -279,10 +279,25 @@ window.addEventListener('load', () => {
     // Slow down the video sound & verify pitch preservation for clarity
     if (heroVideo) {
         heroVideo.muted = true; // Start muted to satisfy browser checks
-        heroVideo.playbackRate = 0.85; // Slow down voice for clarity
-        heroVideo.preservesPitch = true;
-        heroVideo.webkitPreservesPitch = true;
-        heroVideo.mozPreservesPitch = true;
+        
+        const configureVideoPlayback = () => {
+            heroVideo.playbackRate = 0.85; // Slow down voice for clarity
+            heroVideo.preservesPitch = true;
+            heroVideo.webkitPreservesPitch = true;
+            heroVideo.mozPreservesPitch = true;
+        };
+
+        // If metadata is already loaded, apply speed settings, else wait for it
+        if (heroVideo.readyState >= 1) {
+            configureVideoPlayback();
+        } else {
+            heroVideo.addEventListener('loadedmetadata', configureVideoPlayback);
+        }
+
+        // Force browser to play muted in the background to start buffer loading
+        heroVideo.play().catch(err => {
+            console.log("Background muted play prevented: ", err);
+        });
     }
 
     if (preloader) {
