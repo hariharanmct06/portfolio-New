@@ -2436,13 +2436,42 @@ ul {
     }
 }
 
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.colorful-theme-btn {
+    background: linear-gradient(135deg, #f97316 0%, #3b82f6 33%, #ffffff 66%, #10b981 100%) !important;
+    background-size: 300% 300% !important;
+    animation: gradient-shift 6s ease infinite, glowing-pulse 2s infinite ease-in-out !important;
+    border: none !important;
+    color: #070a13 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), 0 0 35px rgba(249, 115, 22, 0.3) !important;
+}
+
+.colorful-theme-btn i {
+    color: #070a13 !important;
+}
+
 .glowing-pulse-btn {
-    animation: glowing-pulse 2s infinite ease-in-out;
     transition: all var(--transition-normal);
 }
 
-.glowing-pulse-btn:hover {
-    animation: none; /* Pause pulse on hover so standard hover transitions take over */
+.colorful-theme-btn:hover {
+    animation: gradient-shift 2.5s ease infinite !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.6), 0 0 40px rgba(249, 115, 22, 0.5), 0 0 40px rgba(16, 185, 129, 0.5) !important;
+}
+
+.glowing-pulse-btn:not(.colorful-theme-btn) {
+    animation: glowing-pulse 2s infinite ease-in-out;
+}
+
+.glowing-pulse-btn:not(.colorful-theme-btn):hover {
+    animation: none;
     transform: translateY(-3px) scale(1.05) !important;
     box-shadow: var(--shadow-glow) !important;
 }
