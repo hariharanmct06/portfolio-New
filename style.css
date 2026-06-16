@@ -224,13 +224,22 @@ ul {
     color: var(--text-primary);
 }
 
-.logo span {
+.logo-dot {
     color: var(--accent-primary);
     transition: color var(--transition-fast);
 }
 
-.logo:hover span {
+.logo-m {
     color: var(--accent-secondary);
+    transition: color var(--transition-fast);
+}
+
+.logo:hover .logo-dot {
+    color: var(--accent-secondary);
+}
+
+.logo:hover .logo-m {
+    color: var(--accent-primary);
 }
 
 .nav-menu {
