@@ -766,90 +766,23 @@ ul {
 #shape-card-mechatronics:hover { border-color: rgba(249, 115, 22, 0.5); }
 #shape-card-ai:hover { border-color: rgba(255, 255, 255, 0.5); }
 
-.shape-viewport-wrapper {
-    width: 80px;
-    height: 80px;
-    flex-shrink: 0;
-    transform: translateZ(30px);
-}
-
-.shape-viewport {
-    width: 100%;
-    height: 100%;
-    perspective: 400px;
+.card-icon-2d {
+    width: 54px;
+    height: 54px;
+    border-radius: var(--radius-sm);
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    transform: translateZ(30px);
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.shape-3d {
-    width: 40px;
-    height: 40px;
-    position: relative;
-    transform-style: preserve-3d;
-    animation: rotateShape 12s linear infinite;
-    transition: transform 0.5s ease;
+.shape-card-3d:hover .card-icon-2d {
+    box-shadow: 0 0 15px currentColor;
 }
-
-@keyframes rotateShape {
-    0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-    100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
-}
-
-.shape-card-3d:hover .shape-3d {
-    animation-duration: 5s; /* Speed up rotation on hover */
-}
-
-.shape-face {
-    position: absolute;
-    border: 1px solid transparent;
-    background: rgba(255, 255, 255, 0.02);
-    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.05);
-    box-sizing: border-box;
-}
-
-/* Shape 1: Cube (Founder) */
-.shape-cube .shape-face {
-    width: 36px;
-    height: 36px;
-    border-width: 1.5px;
-}
-.shape-cube .cube-front  { transform: rotateY(0deg) translateZ(18px); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-.shape-cube .cube-back   { transform: rotateY(180deg) translateZ(18px); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-.shape-cube .cube-right  { transform: rotateY(90deg) translateZ(18px); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
-.shape-cube .cube-left   { transform: rotateY(-90deg) translateZ(18px); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
-.shape-cube .cube-top    { transform: rotateX(90deg) translateZ(18px); border-color: #ffffff; box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); }
-.shape-cube .cube-bottom { transform: rotateX(-90deg) translateZ(18px); border-color: #ffffff; box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); }
-
-/* Shape 2: Prism (Mechatronics Rotor) */
-.shape-prism .shape-face {
-    width: 18px;
-    height: 36px;
-    border-width: 1px;
-    left: 11px; /* Center it */
-}
-.shape-prism .prism-face-1 { transform: rotateY(0deg) translateZ(15.6px); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
-.shape-prism .prism-face-2 { transform: rotateY(60deg) translateZ(15.6px); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-.shape-prism .prism-face-3 { transform: rotateY(120deg) translateZ(15.6px); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
-.shape-prism .prism-face-4 { transform: rotateY(180deg) translateZ(15.6px); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-.shape-prism .prism-face-5 { transform: rotateY(240deg) translateZ(15.6px); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
-.shape-prism .prism-face-6 { transform: rotateY(300deg) translateZ(15.6px); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-
-/* Shape 3: Octahedron (AI Crystal) */
-.shape-crystal .shape-face {
-    width: 36px;
-    height: 36px;
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    border-width: 1.5px;
-}
-.shape-crystal .crystal-face-1 { transform: rotateY(0deg) rotateX(35.26deg) translateZ(10px); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
-.shape-crystal .crystal-face-2 { transform: rotateY(90deg) rotateX(35.26deg) translateZ(10px); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-.shape-crystal .crystal-face-3 { transform: rotateY(180deg) rotateX(35.26deg) translateZ(10px); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
-.shape-crystal .crystal-face-4 { transform: rotateY(270deg) rotateX(35.26deg) translateZ(10px); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-.shape-crystal .crystal-face-5 { transform: rotateY(0deg) rotateX(-35.26deg) translateZ(10px) rotateZ(180deg); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-.shape-crystal .crystal-face-6 { transform: rotateY(90deg) rotateX(-35.26deg) translateZ(10px) rotateZ(180deg); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
-.shape-crystal .crystal-face-7 { transform: rotateY(180deg) rotateX(-35.26deg) translateZ(10px) rotateZ(180deg); border-color: var(--accent-secondary); box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
-.shape-crystal .crystal-face-8 { transform: rotateY(270deg) rotateX(-35.26deg) translateZ(10px) rotateZ(180deg); border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(249, 115, 22, 0.3); }
 
 .shape-card-content {
     transform-style: preserve-3d;
