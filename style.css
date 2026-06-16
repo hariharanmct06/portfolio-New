@@ -814,7 +814,7 @@ ul {
 
 .stats-counter-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
@@ -849,98 +849,6 @@ ul {
     margin-top: 4px;
     transform: translateZ(20px);
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-/* Cube Viewport and 3D space */
-.cube-viewport {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 8px auto;
-    perspective: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: translateZ(20px);
-    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.cube-3d {
-    width: 36px;
-    height: 36px;
-    position: relative;
-    transform-style: preserve-3d;
-    transform: rotateX(-22deg) rotateY(-38deg);
-    animation: rotateCube 10s linear infinite;
-    transition: transform 0.5s ease;
-}
-
-/* Continuously spin the cube */
-@keyframes rotateCube {
-    0% {
-        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-    }
-    100% {
-        transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
-    }
-}
-
-/* Increase spin speed on hover */
-.cube-stat-box:hover .cube-3d {
-    animation-duration: 4s;
-}
-
-.cube-face {
-    position: absolute;
-    width: 36px;
-    height: 36px;
-    border: 1.5px solid transparent;
-    background: rgba(59, 130, 246, 0.03);
-    box-shadow: inset 0 0 8px rgba(59, 130, 246, 0.1);
-    transition: all 0.3s ease;
-}
-
-/* Set up the 6 faces using translates and rotations */
-.cube-front {
-    transform: rotateY(0deg) translateZ(18px);
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 6px rgba(249, 115, 22, 0.3), inset 0 0 6px rgba(249, 115, 22, 0.1);
-}
-
-.cube-back {
-    transform: rotateY(180deg) translateZ(18px);
-    border-color: var(--accent-secondary);
-    box-shadow: 0 0 6px rgba(59, 130, 246, 0.3), inset 0 0 6px rgba(59, 130, 246, 0.1);
-}
-
-.cube-right {
-    transform: rotateY(90deg) translateZ(18px);
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 6px rgba(249, 115, 22, 0.3), inset 0 0 6px rgba(249, 115, 22, 0.1);
-}
-
-.cube-left {
-    transform: rotateY(-90deg) translateZ(18px);
-    border-color: var(--accent-secondary);
-    box-shadow: 0 0 6px rgba(59, 130, 246, 0.3), inset 0 0 6px rgba(59, 130, 246, 0.1);
-}
-
-.cube-top {
-    transform: rotateX(90deg) translateZ(18px);
-    border-color: #ffffff;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3), inset 0 0 6px rgba(255, 255, 255, 0.1);
-}
-
-.cube-bottom {
-    transform: rotateX(-90deg) translateZ(18px);
-    border-color: #ffffff;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3), inset 0 0 6px rgba(255, 255, 255, 0.1);
-}
-
-/* Face glow intensification on parent hover */
-.cube-stat-box:hover .cube-face {
-    background: rgba(249, 115, 22, 0.08);
-    box-shadow: 0 0 12px var(--accent-primary), inset 0 0 8px var(--accent-primary);
-    border-color: var(--accent-primary);
 }
 
 /* Timeline component */
@@ -1726,10 +1634,6 @@ ul {
     
     .about-cards {
         order: 1;
-    }
-    
-    .stats-counter-grid {
-        grid-template-columns: repeat(2, 1fr);
     }
 }
 
