@@ -516,12 +516,36 @@ ul {
    TICKER BANNER
    ========================================================================== */
 .ticker-section {
-    background-color: var(--bg-secondary);
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    padding: 20px 0;
+    background-color: var(--bg-primary);
+    border-top: 2px solid;
+    border-bottom: 2px solid;
+    border-image: linear-gradient(90deg, transparent, var(--accent-primary) 20%, var(--accent-secondary) 80%, transparent) 1;
+    padding: 24px 0;
     overflow: hidden;
     white-space: nowrap;
+    position: relative;
+}
+
+/* Edge fading gradient overlays */
+.ticker-section::before,
+.ticker-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 150px;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.ticker-section::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--bg-primary) 0%, transparent 100%);
+}
+
+.ticker-section::after {
+    right: 0;
+    background: linear-gradient(-90deg, var(--bg-primary) 0%, transparent 100%);
 }
 
 .ticker-wrapper {
@@ -531,23 +555,70 @@ ul {
 
 .ticker-content {
     display: inline-block;
-    animation: ticker 35s linear infinite;
+    animation: ticker 28s linear infinite;
 }
 
 .ticker-content span {
     font-family: var(--font-heading);
     font-weight: 800;
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.25);
-    margin-right: 48px;
+    font-size: 1.35rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-right: 64px;
     letter-spacing: 2px;
-    transition: var(--transition-fast);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: default;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.ticker-content span:hover {
+/* Outlined text styling */
+.ticker-content span.outline-text {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.35);
+}
+
+.skill-icon {
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+    opacity: 0.65;
+}
+
+.icon-orange {
     color: var(--accent-primary);
-    text-shadow: var(--shadow-glow);
+}
+
+.icon-blue {
+    color: var(--accent-secondary);
+}
+
+.icon-white {
+    color: #ffffff;
+}
+
+/* Interactive Hover Transitions */
+.ticker-content span:hover {
+    color: #ffffff !important;
+    -webkit-text-stroke-color: transparent !important;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    transform: scale(1.08) translateY(-2px);
+}
+
+.ticker-content span:hover .skill-icon {
+    opacity: 1;
+    transform: rotate(15deg) scale(1.25);
+}
+
+.ticker-content span:hover .icon-orange {
+    filter: drop-shadow(0 0 8px var(--accent-primary));
+}
+
+.ticker-content span:hover .icon-blue {
+    filter: drop-shadow(0 0 8px var(--accent-secondary));
+}
+
+.ticker-content span:hover .icon-white {
+    filter: drop-shadow(0 0 8px #ffffff);
 }
 
 /* ==========================================================================
