@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Spotlight + 3D Tilt Cards (Only for non-touch devices to keep it smooth)
-    const tiltCards = document.querySelectorAll('.about-card-item, .stat-box, .timeline-panel');
+    const tiltCards = document.querySelectorAll('.shape-card-3d, .stat-box');
     const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
 
     tiltCards.forEach(card => {
@@ -315,6 +315,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Smooth transition reset when leaving the card
                 card.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s ease, border-color 0.5s ease';
                 card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+            }
+        });
+    });
+
+    // Interactive 3D Education Timeline Card Flip
+    const timelineCards = document.querySelectorAll('.timeline-card-3d');
+    timelineCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const inner = card.querySelector('.card-3d-inner');
+            if (inner) {
+                inner.classList.toggle('flipped');
             }
         });
     });
