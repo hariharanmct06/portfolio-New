@@ -125,6 +125,160 @@
                 padding-bottom: 60px;
             }
         }
+
+        /* Custom Video controls and overlay */
+        .video-container {
+            position: relative;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .video-overlay-play {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .video-overlay-play.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .play-pulse-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0 40px rgba(249, 115, 22, 0.6);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .play-pulse-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--accent-primary);
+            animation: pulse-ring 1.8s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        .play-overlay-text {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Custom Control Bar */
+        .custom-video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(10, 10, 15, 0.95) 0%, rgba(10, 10, 15, 0) 100%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 15px 12px 15px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 9;
+        }
+
+        .video-container:hover .custom-video-controls {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .control-btn:hover {
+            color: var(--accent-primary);
+            transform: scale(1.1);
+        }
+
+        .timeline-container {
+            flex-grow: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .progress-bar-custom {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-filled {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border-radius: 3px;
+        }
+
+        .time-display {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            min-width: 90px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -179,11 +333,29 @@
                 
                 <!-- Left: Professional Video Player -->
                 <div class="video-player-wrapper animate-spotlight">
-                    <div class="video-container">
-                        <video class="resume-video" controls autoplay loop muted>
+                    <div class="video-container" id="videoContainer">
+                        <video class="resume-video" id="resumeVideo" loop playsinline>
                             <source src="assets/videos/video_20260616_124849.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
+                        <!-- Custom Futuristic Play Overlay for Autoplay Bypass -->
+                        <div class="video-overlay-play" id="videoOverlayPlay">
+                            <div class="play-pulse-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <span class="play-overlay-text">Click to Start Video with Sound</span>
+                        </div>
+                        <!-- Custom Futuristic Control Bar (No mute/volume) -->
+                        <div class="custom-video-controls" id="videoControls">
+                            <button class="control-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
+                            <div class="timeline-container">
+                                <div class="progress-bar-custom">
+                                    <div class="progress-filled" id="progressFilled"></div>
+                                </div>
+                            </div>
+                            <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                            <button class="control-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
+                        </div>
                     </div>
                 </div>
 
@@ -243,6 +415,105 @@
 
     <!-- Custom JS -->
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('resumeVideo');
+            const overlay = document.getElementById('videoOverlayPlay');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const progressFilled = document.getElementById('progressFilled');
+            const timeline = document.querySelector('.timeline-container');
+            const timeDisplay = document.getElementById('timeDisplay');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const videoContainer = document.getElementById('videoContainer');
+
+            // Force volume to max and ensure it's not muted
+            video.muted = false;
+            video.volume = 1.0;
+
+            const handlePlaySuccess = () => {
+                overlay.classList.add('fade-out');
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            };
+
+            // Attempt to autoplay unmuted
+            video.play()
+                .then(handlePlaySuccess)
+                .catch(err => {
+                    console.log("Autoplay unmuted blocked by browser policy, waiting for user click.");
+                });
+
+            // Click overlay to play unmuted
+            overlay.addEventListener('click', (e) => {
+                e.stopPropagation();
+                video.muted = false;
+                video.volume = 1.0;
+                video.play()
+                    .then(handlePlaySuccess)
+                    .catch(err => console.error("Error playing video:", err));
+            });
+
+            // Container click (play/pause toggle once overlay is gone)
+            videoContainer.addEventListener('click', () => {
+                if (overlay.classList.contains('fade-out')) {
+                    if (video.paused) {
+                        video.play();
+                        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    } else {
+                        video.pause();
+                        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                }
+            });
+
+            // Play/pause button click
+            playPauseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (video.paused) {
+                    video.play();
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                } else {
+                    video.pause();
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            });
+
+            // Update progress bar & time display
+            video.addEventListener('timeupdate', () => {
+                if (video.duration) {
+                    const percentage = (video.currentTime / video.duration) * 100;
+                    progressFilled.style.width = `${percentage}%`;
+                    
+                    const formatTime = (time) => {
+                        const mins = Math.floor(time / 60);
+                        const secs = Math.floor(time % 60);
+                        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    };
+                    
+                    timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+                }
+            });
+
+            // Seek in video
+            timeline.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const rect = timeline.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                video.currentTime = pos * video.duration;
+            });
+
+            // Fullscreen toggle
+            fullscreenBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!document.fullscreenElement) {
+                    videoContainer.requestFullscreen().catch(err => {
+                        console.error("Error entering fullscreen:", err);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
