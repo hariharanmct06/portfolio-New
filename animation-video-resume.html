@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation Video Resume | Hariharan M</title>
+    <meta name="description" content="Watch the professional Animation Video Resume of Hariharan M - Founder of Hari Bot, CEO of Sujok AI Bot, and Mechatronics Engineer.">
+    <!-- Google Fonts: Outfit and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .resume-hero {
+            padding-top: 150px;
+            padding-bottom: 80px;
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.05) 0%, rgba(249, 115, 22, 0.05) 50%, var(--bg-primary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .resume-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .video-player-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: var(--radius-md);
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background-color: var(--bg-secondary);
+            box-shadow: var(--shadow-md), 0 0 35px rgba(59, 130, 246, 0.15);
+            transition: all var(--transition-normal);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .video-player-wrapper:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: var(--shadow-md), 0 0 45px rgba(59, 130, 246, 0.25);
+            transform: translateY(-5px);
+        }
+
+        .video-container {
+            width: 100%;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            position: relative;
+            background-color: #000;
+            aspect-ratio: 16/9;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .resume-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .video-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background-color: rgba(249, 115, 22, 0.08);
+            padding: 3px 12px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.1);
+        }
+
+        .resume-features-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .resume-features-card:hover {
+            border-color: rgba(249, 115, 22, 0.3);
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 24px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .features-list li i {
+            font-size: 1.1rem;
+            margin-top: 3px;
+        }
+
+        @media (max-width: 991px) {
+            .resume-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .resume-hero {
+                padding-top: 120px;
+                padding-bottom: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header sticky">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" style="display: inline-flex; align-items: center; gap: 10px;">
+                <img src="assets/images/hariharan-logo.jpg" alt="Hariharan M Logo" class="header-logo-img" style="width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--accent-primary); object-fit: cover;">
+                <span>Hariharan<span class="logo-dot">.</span><span class="logo-m">M</span></span>
+            </a>
+            <nav class="nav-menu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="haribot.html" class="nav-link">Hari Bot Solutions</a>
+                <a href="sujokai.html" class="nav-link">Sujok AI Bot</a>
+                <a href="animation-video-resume.html" class="nav-link active">Video Resume</a>
+                <a href="index.html#skills" class="nav-link">Skills</a>
+                <a href="index.html#contact" class="nav-link">Contact</a>
+                <a href="index.html" class="btn btn-secondary nav-btn" style="padding: 6px 16px; font-size: 0.85rem; margin-left: 10px;">
+                    <i class="fas fa-arrow-left"></i> Back to Portfolio
+                </a>
+            </nav>
+            <div class="menu-toggle" id="mobileMenuBtn">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Side Menu -->
+    <div class="mobile-nav" id="mobileNavMenu">
+        <a href="index.html#home" class="mobile-link">Home</a>
+        <a href="index.html#about" class="mobile-link">About</a>
+        <a href="haribot.html" class="mobile-link">Hari Bot Solutions</a>
+        <a href="sujokai.html" class="mobile-link">Sujok AI Bot</a>
+        <a href="animation-video-resume.html" class="mobile-link active">Video Resume</a>
+        <a href="index.html#skills" class="mobile-link">Skills & Languages</a>
+        <a href="index.html#contact" class="mobile-link">Contact</a>
+    </div>
+
+    <!-- Hero / Video Showcase Section -->
+    <section class="resume-hero scroll-section">
+        <!-- High-tech background grid blueprint -->
+        <div class="about-bg-grid"></div>
+        <div class="about-glow-orb orb-orange" style="opacity: 0.08;"></div>
+        <div class="about-glow-orb orb-blue" style="opacity: 0.08;"></div>
+
+        <div class="container">
+            <div class="resume-grid">
+                
+                <!-- Left: Professional Video Player -->
+                <div class="video-player-wrapper animate-spotlight">
+                    <div class="video-container">
+                        <video class="resume-video" controls autoplay loop muted>
+                            <source src="assets/videos/WhatsApp_Video_20260616_124924.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+
+                <!-- Right: Description and Action -->
+                <div class="resume-features-card">
+                    <div class="video-badge">Showcase</div>
+                    <h1 style="font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 8px;">ANIMATION VIDEO RESUME</h1>
+                    <h2 style="font-family: var(--font-body); font-size: 1.15rem; font-weight: 500; color: var(--accent-secondary); margin-bottom: 16px;">
+                        Visualizing Innovation in Mechatronics & Robotics
+                    </h2>
+                    <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6;">
+                        Step into my creative and engineering journey. This animated video resume showcases my foundation in mechatronic systems, algorithmic flows, and AI automation.
+                    </p>
+                    
+                    <ul class="features-list">
+                        <li>
+                            <i class="fas fa-microchip" style="color: var(--accent-primary);"></i>
+                            <div>
+                                <strong>Mechatronics Core:</strong> Mechanical systems integrated with electronics and intelligence.
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-robot" style="color: var(--accent-secondary);"></i>
+                            <div>
+                                <strong>AI Automation:</strong> Developing conversational chatbots and custom RAG agents.
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-network-wired" style="color: #ffffff;"></i>
+                            <div>
+                                <strong>Workflows & pipelines:</strong> Automating enterprise workflows via n8n.
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div style="margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap;">
+                        <a href="index.html#contact" class="btn btn-primary" style="flex: 1; min-width: 150px; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-paper-plane"></i> Contact Me
+                        </a>
+                        <a href="index.html" class="btn btn-secondary" style="flex: 1; min-width: 150px; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-arrow-left"></i> Home Page
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2026 Hariharan M. All Rights Reserved.</p>
+            <p>Mechatronics Engineer | AI Automator</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+
+</body>
+</html>
