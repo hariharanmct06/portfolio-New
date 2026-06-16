@@ -2419,6 +2419,67 @@ ul {
 }
 
 /* ==========================================================================
+   VIDEO PORTFOLIO BUTTON GLOW & ATTENTION ARROW
+   ========================================================================== */
+@keyframes glowing-pulse {
+    0% {
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(249, 115, 22, 0.85);
+        transform: scale(1.03);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+        transform: scale(1);
+    }
+}
+
+.glowing-pulse-btn {
+    animation: glowing-pulse 2s infinite ease-in-out;
+    transition: all var(--transition-normal);
+}
+
+.glowing-pulse-btn:hover {
+    animation: none; /* Pause pulse on hover so standard hover transitions take over */
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: var(--shadow-glow) !important;
+}
+
+@keyframes arrow-bounce-right {
+    0%, 100% {
+        transform: translateX(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateX(8px);
+        opacity: 1;
+    }
+}
+
+.attention-arrow {
+    color: var(--accent-primary);
+    font-size: 1.3rem;
+    animation: arrow-bounce-right 1.5s infinite ease-in-out;
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.6);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure arrow stays inline or stacks gracefully on mobile */
+@media (max-width: 768px) {
+    .video-portfolio-btn-wrapper {
+        justify-content: center;
+    }
+    /* Restricts scale changes on touch devices to avoid layout shift glitches */
+    .glowing-pulse-btn {
+        animation: glowing-pulse 2.5s infinite ease-in-out;
+    }
+}
+
+/* ==========================================================================
    SCREENSHOT & PRINT PROTECTION
    ========================================================================== */
 @media print {
