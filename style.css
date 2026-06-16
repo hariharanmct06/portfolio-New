@@ -1789,7 +1789,7 @@ ul {
         background-color: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
         transition: all var(--transition-fast);
-        z-index: 100;
+        z-index: 1000;
     }
     .menu-toggle:hover {
         border-color: var(--accent-primary);
@@ -1816,7 +1816,7 @@ ul {
         background: rgba(11, 15, 25, 0.85);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        z-index: 98;
+        z-index: 999;
         padding: 110px 24px;
         display: flex;
         flex-direction: column;
@@ -1829,6 +1829,26 @@ ul {
     
     .mobile-nav.open {
         right: 0;
+    }
+
+    /* Mobile Navigation Backdrop Overlay */
+    .mobile-nav-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(5, 5, 8, 0.6);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        z-index: 998;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-normal), visibility var(--transition-normal);
+    }
+    .mobile-nav-backdrop.open {
+        opacity: 1;
+        visibility: visible;
     }
     
     .mobile-link {
@@ -1975,6 +1995,81 @@ ul {
         flex-direction: column;
         gap: 16px;
         text-align: center;
+    }
+
+    /* Mobile hover resets to prevent sticky hover states on touch screens */
+    .shape-card-3d:hover,
+    .skills-photo-card:hover,
+    .lang-card:hover,
+    .social-circles a:hover,
+    .chatbot-fab:hover,
+    .about-card-item:hover,
+    .stat-box:hover,
+    .video-card:hover,
+    .video-replay-btn:hover,
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .scroll-to-top:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Disable spotlight glow effects on mobile for performance and tap layout cleanliness */
+    .about-card-item::before, 
+    .skills-category::before, 
+    .stat-box::before, 
+    .lang-card::before, 
+    .timeline-panel::before {
+        display: none !important;
+    }
+    
+    /* Ensure buttons keep their default/active styles on tap */
+    .btn-primary:hover {
+        background-color: var(--accent-primary) !important;
+        color: var(--bg-primary) !important;
+        border-color: var(--accent-primary) !important;
+    }
+    .btn-secondary:hover {
+        background-color: transparent !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-color) !important;
+    }
+    .social-circles a:hover {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-secondary) !important;
+        border-color: var(--border-color) !important;
+    }
+
+    /* Optimize touch target sizes for mobile screens */
+    .social-circles a {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.15rem !important;
+    }
+    .chatbot-fab {
+        width: 56px !important;
+        height: 56px !important;
+    }
+    .scroll-to-top {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    /* Spacing adjustments on mobile cards to maximize readability */
+    .about-card-item,
+    .skills-category,
+    .stat-box,
+    .lang-card,
+    .timeline-card-3d,
+    .contact-info-panel,
+    .contact-form-panel {
+        padding: 20px !important;
+    }
+    .education-timeline-wrapper {
+        padding: 10px 0 !important;
+    }
+    .timeline-card-3d {
+        margin-bottom: 24px !important;
     }
 }
 

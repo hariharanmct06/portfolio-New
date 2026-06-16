@@ -31,31 +31,102 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatbotFab = document.getElementById('chatbotFab');
 
     /* ==========================================================================
-       MOBILE MENU TOGGLE
+       MOBILE MENU TOGGLE, BACKDROP, AND TOUCH GESTURES
        ========================================================================== */
     if (mobileMenuBtn && mobileNavMenu) {
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenuBtn.classList.toggle('active');
-            mobileNavMenu.classList.toggle('open');
-            // Toggle hamburger icon animation
+        // Create and inject mobile nav backdrop dynamically
+        let backdrop = document.getElementById('mobileNavBackdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.id = 'mobileNavBackdrop';
+            backdrop.className = 'mobile-nav-backdrop';
+            document.body.appendChild(backdrop);
+        }
+
+        const openMobileMenu = () => {
+            mobileMenuBtn.classList.add('active');
+            mobileNavMenu.classList.add('open');
+            backdrop.classList.add('open');
+            document.body.style.overflow = 'hidden'; // Lock background scrolling
+            
             const bars = mobileMenuBtn.querySelectorAll('.bar');
-            bars[0].style.transform = mobileMenuBtn.classList.contains('active') ? 'rotate(45deg) translate(6px, 6px)' : 'none';
-            bars[1].style.opacity = mobileMenuBtn.classList.contains('active') ? '0' : '1';
-            bars[2].style.transform = mobileMenuBtn.classList.contains('active') ? 'rotate(-45deg) translate(6px, -6px)' : 'none';
+            if (bars.length >= 3) {
+                bars[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
+                bars[1].style.opacity = '0';
+                bars[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+            }
+        };
+
+        const closeMobileMenu = () => {
+            mobileMenuBtn.classList.remove('active');
+            mobileNavMenu.classList.remove('open');
+            backdrop.classList.remove('open');
+            document.body.style.overflow = ''; // Unlock background scrolling
+            
+            const bars = mobileMenuBtn.querySelectorAll('.bar');
+            if (bars.length >= 3) {
+                bars[0].style.transform = 'none';
+                bars[1].style.opacity = '1';
+                bars[2].style.transform = 'none';
+            }
+        };
+
+        // Toggle mobile menu on button click
+        mobileMenuBtn.addEventListener('click', () => {
+            if (mobileNavMenu.classList.contains('open')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        });
+
+        // Close mobile menu on backdrop click
+        backdrop.addEventListener('click', () => {
+            closeMobileMenu();
         });
 
         // Close menu on click of mobile nav link
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                mobileNavMenu.classList.remove('open');
-                
-                const bars = mobileMenuBtn.querySelectorAll('.bar');
-                bars[0].style.transform = 'none';
-                bars[1].style.opacity = '1';
-                bars[2].style.transform = 'none';
+                closeMobileMenu();
             });
         });
+
+        // Touch swipe gesture detection for mobile navigation drawer
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipeGesture();
+        }, { passive: true });
+
+        const handleSwipeGesture = () => {
+            const swipeDistanceX = touchEndX - touchStartX;
+            const swipeDistanceY = touchEndY - touchStartY;
+            
+            // Verify swipe is horizontal and prominent
+            if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY) * 1.5) {
+                const isMenuOpen = mobileNavMenu.classList.contains('open');
+                
+                // Swipe right to close
+                if (isMenuOpen && swipeDistanceX > 70) {
+                    closeMobileMenu();
+                }
+                // Swipe left from right edge (within 50px of edge) to open
+                else if (!isMenuOpen && swipeDistanceX < -70 && touchStartX > window.innerWidth - 50) {
+                    openMobileMenu();
+                }
+            }
+        };
     }
 
     /* ==========================================================================
