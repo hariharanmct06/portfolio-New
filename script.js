@@ -266,15 +266,56 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Interactive Spotlight Effect for Cards (Mouse Follow Glow)
-    const spotlightCards = document.querySelectorAll('.about-card-item, .skills-category, .stat-box, .lang-card, .timeline-panel');
-    spotlightCards.forEach(card => {
+    // Interactive Spotlight Effect for Cards (Mouse Follow Glow) - Spotlight Only
+    const spotlightOnlyCards = document.querySelectorAll('.skills-category, .lang-card');
+    spotlightOnlyCards.forEach(card => {
         card.addEventListener('mousemove', e => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             card.style.setProperty('--mouse-x', `${x}px`);
             card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+
+    // Spotlight + 3D Tilt Cards (Only for non-touch devices to keep it smooth)
+    const tiltCards = document.querySelectorAll('.about-card-item, .stat-box, .timeline-panel');
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+
+    tiltCards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Set mouse variables for spotlight
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+
+            // Apply 3D tilt if not on mobile/touch
+            if (!isTouchDevice) {
+                const width = rect.width;
+                const height = rect.height;
+                const relativeX = (x / width) - 0.5;
+                const relativeY = (y / height) - 0.5;
+                
+                // Tilt rotation range (max 12 degrees)
+                const maxRotation = 12;
+                const rotateX = (-relativeY * maxRotation).toFixed(2);
+                const rotateY = (relativeX * maxRotation).toFixed(2);
+                
+                // Quick transition during mousemove for responsiveness, dynamic scale
+                card.style.transition = 'transform 0.1s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s ease, border-color 0.5s ease';
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            }
+        });
+
+        card.addEventListener('mouseleave', () => {
+            if (!isTouchDevice) {
+                // Smooth transition reset when leaving the card
+                card.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.5s ease, border-color 0.5s ease';
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+            }
         });
     });
 
