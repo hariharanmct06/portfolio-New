@@ -1407,72 +1407,153 @@ ul {
 }
 
 /* Skill Circle Dials for Languages (Right side) */
+/* Futuristic Languages Grid */
 .languages-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 28px;
+    gap: 24px;
 }
 
+/* Glassmorphic Language Card */
 .lang-card {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    padding: 24px;
+    background: rgba(15, 23, 42, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--radius-md);
-    text-align: center;
-    transition: all var(--transition-normal);
-}
-
-.lang-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(249, 115, 22, 0.2);
-}
-
-.lang-circle-wrap {
+    padding: 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 16px auto;
+    overflow: hidden;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+/* Specific theme color variables for neon shadows & glows */
+.lang-card[data-lang-theme="orange"] { 
+    --theme-color: #f97316; 
+    --theme-rgb: 249, 115, 22; 
+    --target-width: 100%;
+}
+.lang-card[data-lang-theme="blue"] { 
+    --theme-color: #3b82f6; 
+    --theme-rgb: 59, 130, 246; 
+    --target-width: 100%;
+}
+.lang-card[data-lang-theme="green"] { 
+    --theme-color: #10b981; 
+    --theme-rgb: 16, 185, 129; 
+    --target-width: 80%;
+}
+.lang-card[data-lang-theme="purple"] { 
+    --theme-color: #a855f7; 
+    --theme-rgb: 168, 85, 247; 
+    --target-width: 30%;
+}
+
+/* Hover state with glow and lift */
+.lang-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(var(--theme-rgb), 0.3);
+    box-shadow: 0 10px 30px -10px rgba(var(--theme-rgb), 0.2), 
+                inset 0 0 15px rgba(var(--theme-rgb), 0.05);
+}
+
+/* Header Elements */
+.lang-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: 12px;
 }
 
-.lang-circle {
-    width: 100%;
-    height: 100%;
+.lang-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.circle-bg {
-    fill: none;
-    stroke: var(--bg-tertiary);
-    stroke-width: 2.8;
-}
-
-.circle-fill {
-    fill: none;
-    stroke: var(--accent-primary);
-    stroke-width: 2.8;
-    stroke-linecap: round;
-    transform: rotate(-90deg);
-    transform-origin: 50% 50%;
-    transition: stroke-dasharray 1.5s ease-in-out;
-}
-
-.lang-percentage {
-    position: absolute;
-    font-size: 0.95rem;
+.lang-code-badge {
+    font-family: monospace;
+    font-size: 0.75rem;
     font-weight: 700;
-    font-family: var(--font-heading);
+    color: var(--theme-color);
+    background: rgba(var(--theme-rgb), 0.08);
+    border: 1px solid rgba(var(--theme-rgb), 0.25);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(var(--theme-rgb), 0.1);
 }
 
 .lang-card h4 {
-    font-size: 1.1rem;
-    margin-bottom: 4px;
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: 0.2px;
 }
 
-.lang-card p {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.lang-level-badge {
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--theme-color);
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(var(--theme-rgb), 0.2);
+    background: rgba(var(--theme-rgb), 0.04);
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+/* Sleek Minimalist Progress Bar styling */
+.lang-progress-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lang-progress-bar {
+    flex-grow: 1;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.lang-progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--theme-color) 0%, rgba(var(--theme-rgb), 0.5) 100%);
+    box-shadow: 0 0 10px rgba(var(--theme-rgb), 0.4);
+    width: 0;
+    transition: width 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Animate progress bars when card transitions to active state via scroll reveal */
+.lang-card.active .lang-progress-fill {
+    width: var(--target-width);
+}
+
+.lang-progress-val {
+    font-family: monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--theme-color);
+    text-shadow: 0 0 8px rgba(var(--theme-rgb), 0.25);
+    min-width: 40px;
+    text-align: right;
+}
+
+.lang-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
 }
 
 /* ==========================================================================
