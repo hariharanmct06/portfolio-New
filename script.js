@@ -132,6 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================================================
        STICKY HEADER & BACK-TO-TOP BUTTON
        ========================================================================== */
+    let skillsSectionAccessed = false;
+
     const handleScroll = () => {
         const scrollPos = window.scrollY;
         
@@ -158,6 +160,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentSectionId = section.getAttribute('id');
             }
         });
+
+        // Trigger video play/stop on section access
+        if (currentSectionId === 'skills') {
+            if (!skillsSectionAccessed) {
+                skillsSectionAccessed = true;
+                
+                // Stop Home page intro video immediately
+                const heroVideo = document.getElementById('heroVideo');
+                if (heroVideo) {
+                    heroVideo.pause();
+                }
+                
+                // Autoplay skills video unmuted exactly once
+                const skillsVideo = document.getElementById('skillsVideo');
+                if (skillsVideo) {
+                    skillsVideo.currentTime = 0;
+                    skillsVideo.muted = false;
+                    skillsVideo.play().catch(err => {
+                        console.log("Skills video autoplay failed: ", err);
+                    });
+                }
+            }
+        } else {
+            skillsSectionAccessed = false;
+            
+            // Optionally pause skillsVideo if they scroll away
+            if (currentSectionId === 'home') {
+                const skillsVideo = document.getElementById('skillsVideo');
+                if (skillsVideo) {
+                    skillsVideo.pause();
+                }
+            }
+        }
 
         if (currentSectionId) {
             // Update desktop link
@@ -507,22 +542,15 @@ window.addEventListener('load', () => {
         }
     }
 
-    // Skills Section Video Autoplay and Replay Handler
+    // Skills Section Video Replay Handler
     const skillsVideo = document.getElementById('skillsVideo');
     const photoReplayBtn = document.getElementById('photoReplayBtn');
-    
-    if (skillsVideo) {
-        // Ensure the video plays muted initially (required for autoplay)
-        skillsVideo.muted = true;
-        skillsVideo.play().catch(err => {
-            console.log("Skills video autoplay prevented: ", err);
-        });
-    }
     
     if (photoReplayBtn && skillsVideo) {
         photoReplayBtn.addEventListener('click', () => {
             skillsVideo.currentTime = 0;
             skillsVideo.muted = false; // Unmute on explicit user replay click
+            skillsVideo.loop = false; // Ensure it does not loop
             skillsVideo.play().catch(err => {
                 console.log("Skills video replay failed: ", err);
             });
