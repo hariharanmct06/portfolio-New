@@ -800,49 +800,67 @@
 
             <div class="contact-grid">
                 <!-- Left: Contact Details and Social Buttons -->
-                <div class="contact-info-panel">
+                <div class="contact-info-panel reveal">
                     <h3>Contact Information</h3>
-                    <p class="contact-subtext">Have an exciting idea, internship opportunity, or project to discuss? Drop a message!</p>
+                    <p class="contact-subtext">Have an exciting idea, automation pipeline, internship opportunity, or project to discuss? Let's connect!</p>
                     
                     <div class="contact-details">
-                        <a href="mailto:hariharanmct06@gmail.com" class="detail-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
+                        <!-- Email -->
+                        <a href="mailto:hariharanmct06@gmail.com" class="detail-item" data-contact-theme="purple">
+                            <div class="detail-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="detail-info">
                                 <span>Email Me</span>
                                 <strong>hariharanmct06@gmail.com</strong>
                             </div>
                         </a>
-                        <a href="https://wa.me/918667808803" target="_blank" rel="noopener" class="detail-item">
-                            <i class="fab fa-whatsapp"></i>
-                            <div>
+                        <!-- WhatsApp -->
+                        <a href="https://wa.me/918667808803" target="_blank" rel="noopener" class="detail-item" data-contact-theme="green">
+                            <div class="detail-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="detail-info">
                                 <span>WhatsApp / Call</span>
                                 <strong>+91 8667808803</strong>
                             </div>
                         </a>
-                        <a href="https://www.linkedin.com/in/hariharan-m-4a8533407" target="_blank" rel="noopener" class="detail-item">
-                            <i class="fab fa-linkedin-in"></i>
-                            <div>
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/in/hariharan-m-4a8533407" target="_blank" rel="noopener" class="detail-item" data-contact-theme="blue">
+                            <div class="detail-icon">
+                                <i class="fab fa-linkedin-in"></i>
+                            </div>
+                            <div class="detail-info">
                                 <span>LinkedIn Connection</span>
                                 <strong>hariharan-m-4a8533407</strong>
                             </div>
                         </a>
-                        <a href="https://github.com/hariharanmct06" target="_blank" rel="noopener" class="detail-item">
-                            <i class="fab fa-github"></i>
-                            <div>
+                        <!-- GitHub -->
+                        <a href="https://github.com/hariharanmct06" target="_blank" rel="noopener" class="detail-item" data-contact-theme="white">
+                            <div class="detail-icon">
+                                <i class="fab fa-github"></i>
+                            </div>
+                            <div class="detail-info">
                                 <span>GitHub Profile</span>
                                 <strong>hariharanmct06</strong>
                             </div>
                         </a>
-                        <a href="https://leetcode.com/u/gwbXy6iSHY/" target="_blank" rel="noopener" class="detail-item">
-                            <i class="fas fa-code"></i>
-                            <div>
+                        <!-- LeetCode -->
+                        <a href="https://leetcode.com/u/gwbXy6iSHY/" target="_blank" rel="noopener" class="detail-item" data-contact-theme="yellow">
+                            <div class="detail-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="detail-info">
                                 <span>LeetCode Profile</span>
                                 <strong>gwbXy6iSHY</strong>
                             </div>
                         </a>
-                        <a href="https://hari-char-bot.vercel.app/" target="_blank" rel="noopener" class="detail-item">
-                            <i class="fas fa-robot"></i>
-                            <div>
+                        <!-- Chatbot -->
+                        <a href="https://hari-char-bot.vercel.app/" target="_blank" rel="noopener" class="detail-item" data-contact-theme="orange">
+                            <div class="detail-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="detail-info">
                                 <span>AI Chatbot</span>
                                 <strong>hari-char-bot.vercel.app</strong>
                             </div>
@@ -859,7 +877,7 @@
                 </div>
 
                 <!-- Right: Contact Form -->
-                <div class="contact-form-panel">
+                <div class="contact-form-panel reveal">
                     <form id="contactForm" action="https://formsubmit.co/hariharanmct06@gmail.com" method="POST">
                         <div class="form-row">
                             <div class="form-group">
@@ -879,7 +897,7 @@
                             <label for="message">Message</label>
                             <textarea id="message" name="message" rows="5" required placeholder="Tell me about your project, query, or invitation..."></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary form-btn">Enquire Now <i class="fas fa-paper-plane"></i></button>
+                        <button type="submit" class="btn btn-primary form-btn colorful-contact-btn">Send Message <i class="fas fa-paper-plane"></i></button>
                     </form>
                     <div id="formStatus" class="form-status"></div>
                 </div>
