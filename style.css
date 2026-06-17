@@ -2634,9 +2634,91 @@ ul {
     .video-replay-btn:hover,
     .btn-primary:hover,
     .btn-secondary:hover,
-    .scroll-to-top:hover {
+    .scroll-to-top:hover,
+    .bento-card:hover,
+    .detail-item:hover,
+    .tech-diagnostic-module:hover {
         transform: none !important;
         box-shadow: none !important;
+    }
+
+    /* Reset bento cards, contact items, and diagnostic modules hover effects on mobile */
+    .bento-card:hover {
+        border-color: rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+    }
+    .bento-card:hover .bento-card-icon {
+        transform: none !important;
+        background: rgba(var(--bento-rgb), 0.08) !important;
+        box-shadow: 0 0 10px rgba(var(--bento-rgb), 0.15) !important;
+    }
+    .bento-card:hover .bento-tags span {
+        background: rgba(255, 255, 255, 0.04) !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .detail-item:hover {
+        border-color: rgba(255, 255, 255, 0.06) !important;
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+    .detail-item:hover .detail-icon {
+        transform: none !important;
+        background: rgba(var(--contact-rgb), 0.06) !important;
+        border-color: rgba(var(--contact-rgb), 0.2) !important;
+        box-shadow: 0 0 8px rgba(var(--contact-rgb), 0.08) !important;
+    }
+    .detail-item:hover .detail-info strong {
+        color: var(--text-primary) !important;
+    }
+
+    .tech-diagnostic-module:hover {
+        border-color: rgba(255, 255, 255, 0.06) !important;
+        box-shadow: none !important;
+    }
+    .tech-diagnostic-module:hover .tech-log-console {
+        max-height: 0 !important;
+        opacity: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    .tech-diagnostic-module:hover .tech-ring {
+        animation: none !important;
+    }
+    .tech-diagnostic-module:hover .tech-icon {
+        color: #ffffff !important;
+        transform: none !important;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;
+    }
+    .tech-diagnostic-module:hover .tech-status-badge {
+        color: rgba(255, 255, 255, 0.4) !important;
+        opacity: 1 !important;
+    }
+    .tech-diagnostic-module:hover .tech-toggle-arrow {
+        color: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    /* Preserve active state overrides on mobile (toggled by click/tap) */
+    .tech-diagnostic-module.active {
+        border-color: rgba(var(--theme-rgb), 0.35) !important;
+        box-shadow: 0 0 25px rgba(var(--theme-rgb), 0.15), inset 0 0 12px rgba(var(--theme-rgb), 0.05) !important;
+    }
+    .tech-diagnostic-module.active .tech-log-console {
+        max-height: 180px !important;
+        opacity: 1 !important;
+        padding-bottom: 20px !important;
+    }
+    .tech-diagnostic-module.active .tech-icon {
+        color: var(--theme-color) !important;
+        transform: scale(1.15) !important;
+        text-shadow: 0 0 15px var(--theme-color) !important;
+    }
+    .tech-diagnostic-module.active .tech-status-badge {
+        color: var(--theme-color) !important;
+        opacity: 0.9 !important;
+    }
+    .tech-diagnostic-module.active .tech-toggle-arrow {
+        transform: rotate(180deg) !important;
+        color: var(--theme-color) !important;
     }
 
     /* Disable spotlight glow effects on mobile for performance and tap layout cleanliness */
