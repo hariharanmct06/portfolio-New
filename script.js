@@ -500,6 +500,29 @@ window.addEventListener('load', () => {
             });
         }
     }
+
+    /* ==========================================================================
+       INTERACTIVE TECHNOLOGY DASHBOARD MODULES
+       ========================================================================== */
+    const techModules = document.querySelectorAll('.tech-diagnostic-module');
+    
+    techModules.forEach(module => {
+        module.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent immediate document click trigger
+            const isActive = module.classList.contains('active');
+            techModules.forEach(m => m.classList.remove('active'));
+            
+            if (!isActive) {
+                module.classList.add('active');
+            }
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.tech-diagnostic-module')) {
+            techModules.forEach(m => m.classList.remove('active'));
+        }
+    });
 });
 
 // ==========================================================================
