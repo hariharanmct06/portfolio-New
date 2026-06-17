@@ -411,12 +411,18 @@
                 <!-- Professional Profile Photo Card -->
                 <div class="skills-photo-card">
                     <div class="photo-frame">
-                        <img src="assets/images/hariharan-suit.jpg" alt="Hariharan M" class="skills-avatar">
+                        <video class="skills-avatar" id="skillsVideo" autoplay loop muted playsinline>
+                            <source src="assets/videos/Animate_face_speaking_text_202606171220.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                         <div class="photo-glow-effect"></div>
                         <div class="photo-badges">
                             <span class="photo-badge badge-orange">MECHATRONICS</span>
                             <span class="photo-badge badge-blue">UI/UX DESIGN</span>
                         </div>
+                        <button class="photo-replay-btn" id="photoReplayBtn" title="Replay Video" aria-label="Replay Video">
+                            <i class="fas fa-redo"></i>
+                        </button>
                     </div>
                     <div class="photo-card-info">
                         <h3>Hariharan M</h3>

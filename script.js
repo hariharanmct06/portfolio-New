@@ -507,6 +507,28 @@ window.addEventListener('load', () => {
         }
     }
 
+    // Skills Section Video Autoplay and Replay Handler
+    const skillsVideo = document.getElementById('skillsVideo');
+    const photoReplayBtn = document.getElementById('photoReplayBtn');
+    
+    if (skillsVideo) {
+        // Ensure the video plays muted initially (required for autoplay)
+        skillsVideo.muted = true;
+        skillsVideo.play().catch(err => {
+            console.log("Skills video autoplay prevented: ", err);
+        });
+    }
+    
+    if (photoReplayBtn && skillsVideo) {
+        photoReplayBtn.addEventListener('click', () => {
+            skillsVideo.currentTime = 0;
+            skillsVideo.muted = false; // Unmute on explicit user replay click
+            skillsVideo.play().catch(err => {
+                console.log("Skills video replay failed: ", err);
+            });
+        });
+    }
+
     /* ==========================================================================
        INTERACTIVE TECHNOLOGY DASHBOARD MODULES
        ========================================================================== */
