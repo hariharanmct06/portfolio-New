@@ -1416,12 +1416,12 @@ ul {
 
 /* Glassmorphic Language Card */
 .lang-card {
-    background: rgba(15, 23, 42, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(18, 26, 44, 0.75); /* Increased card background opacity for higher contrast */
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Brighter border */
     border-radius: var(--radius-md);
     padding: 24px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
@@ -1429,6 +1429,7 @@ ul {
     flex-direction: column;
     gap: 16px;
     text-align: left;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Stronger shadow for card clarity */
 }
 
 /* Specific theme color variables for neon shadows & glows */
@@ -1456,9 +1457,9 @@ ul {
 /* Hover state with glow and lift */
 .lang-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(var(--theme-rgb), 0.3);
-    box-shadow: 0 10px 30px -10px rgba(var(--theme-rgb), 0.2), 
-                inset 0 0 15px rgba(var(--theme-rgb), 0.05);
+    border-color: rgba(var(--theme-rgb), 0.45);
+    box-shadow: 0 10px 30px -10px rgba(var(--theme-rgb), 0.35), 
+                inset 0 0 15px rgba(var(--theme-rgb), 0.08);
 }
 
 /* Header Elements */
@@ -1467,12 +1468,14 @@ ul {
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap; /* Wrap content to prevent clipping on narrow viewports */
 }
 
 .lang-meta {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap; /* Prevent long titles + badges from wrapping awkwardly */
 }
 
 .lang-code-badge {
@@ -1508,6 +1511,7 @@ ul {
     padding: 3px 8px;
     border-radius: 20px;
     text-transform: uppercase;
+    white-space: nowrap; /* Keep the level badge intact */
 }
 
 /* Sleek Minimalist Progress Bar styling */
@@ -1519,8 +1523,8 @@ ul {
 
 .lang-progress-bar {
     flex-grow: 1;
-    height: 4px;
-    background-color: rgba(255, 255, 255, 0.04);
+    height: 6px; /* Slightly thicker for visibility */
+    background-color: rgba(255, 255, 255, 0.12); /* Brighter track background */
     border-radius: 10px;
     overflow: hidden;
 }
@@ -1528,8 +1532,8 @@ ul {
 .lang-progress-fill {
     height: 100%;
     border-radius: 10px;
-    background: linear-gradient(90deg, var(--theme-color) 0%, rgba(var(--theme-rgb), 0.5) 100%);
-    box-shadow: 0 0 10px rgba(var(--theme-rgb), 0.4);
+    background: linear-gradient(90deg, var(--theme-color) 0%, rgba(var(--theme-rgb), 0.6) 100%);
+    box-shadow: 0 0 10px rgba(var(--theme-rgb), 0.5); /* Stronger glow */
     width: 0;
     transition: width 1.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2035,6 +2039,11 @@ ul {
         padding: 0 20px !important;
     }
 
+    .languages-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
     /* Premium Glassmorphic Mobile Header */
     .header {
         background: rgba(5, 5, 8, 0.8) !important;
@@ -2377,10 +2386,6 @@ ul {
     .stats-counter-grid {
         grid-template-columns: 1fr;
         gap: 24px;
-    }
-    
-    .languages-grid {
-        grid-template-columns: 1fr;
     }
     
     .contact-info-panel, .contact-form-panel {
