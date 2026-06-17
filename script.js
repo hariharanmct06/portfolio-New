@@ -461,6 +461,7 @@ window.addEventListener('load', () => {
             heroVideo.preservesPitch = true;
             heroVideo.webkitPreservesPitch = true;
             heroVideo.mozPreservesPitch = true;
+            heroVideo.loop = false; // Ensure it does not loop automatically
             
             // Detect if video is portrait (width < height)
             if (heroVideo.videoWidth < heroVideo.videoHeight) {
@@ -516,26 +517,26 @@ window.addEventListener('load', () => {
             });
         }
 
-        // Show replay button when video ends
-        if (heroVideo) {
-            heroVideo.addEventListener('ended', () => {
-                const videoReplayBtn = document.getElementById('videoReplayBtn');
-                if (videoReplayBtn) {
-                    videoReplayBtn.style.display = 'inline-flex';
-                    videoReplayBtn.style.alignItems = 'center';
-                }
-            });
-        }
+        // Replay button display controller based on playback states
+        if (heroVideo && videoReplayBtn) {
+            const showReplayBtn = () => {
+                videoReplayBtn.style.display = 'inline-flex';
+                videoReplayBtn.style.alignItems = 'center';
+            };
+            const hideReplayBtn = () => {
+                videoReplayBtn.style.display = 'none';
+            };
 
-        // Replay button click handler
-        const videoReplayBtn = document.getElementById('videoReplayBtn');
-        if (videoReplayBtn && heroVideo) {
+            heroVideo.addEventListener('play', hideReplayBtn);
+            heroVideo.addEventListener('pause', showReplayBtn);
+            heroVideo.addEventListener('ended', showReplayBtn);
+
+            // Replay button click handler
             videoReplayBtn.addEventListener('click', () => {
                 heroVideo.currentTime = 0;
                 heroVideo.muted = false; // Keep voice unmuted
-                heroVideo.play().then(() => {
-                    videoReplayBtn.style.display = 'none';
-                }).catch(err => {
+                heroVideo.loop = false;  // Ensure it does not loop automatically
+                heroVideo.play().catch(err => {
                     console.log("Replay failed: ", err);
                 });
             });
