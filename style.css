@@ -2559,6 +2559,7 @@ ul {
     
     .typewriter-text {
         white-space: nowrap !important; /* Prevent line breaks */
+        font-size: clamp(16px, 5.5vw, 36px) !important; /* Prevent clipping of long titles on narrow screens */
     }
     
     .hero-desc {
