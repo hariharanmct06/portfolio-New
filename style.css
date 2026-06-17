@@ -1561,6 +1561,238 @@ ul {
 }
 
 /* ==========================================================================
+   BENTO BOX GRID - CERTIFICATIONS & COURSES
+   ========================================================================== */
+.certifications-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(260px, auto);
+    gap: 24px;
+    margin-top: 40px;
+}
+
+/* Bento Card glassmorphic frame */
+.bento-card {
+    background: rgba(18, 26, 44, 0.7); /* Match improved contrast language cards */
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Subtle starting border */
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                box-shadow 0.5s ease, 
+                border-color 0.5s ease;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Bento Grid Spans for Desktop */
+.bento-card-wide-top {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+.bento-card-tall {
+    grid-column: span 1;
+    grid-row: span 2;
+}
+
+.bento-card-wide-bottom {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+/* Bento Card Inner Layout */
+.bento-card-inner {
+    padding: 32px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+}
+
+/* Bento Theme Custom variables */
+.bento-card[data-bento-theme="orange"] { 
+    --bento-theme: #f97316; 
+    --bento-rgb: 249, 115, 22; 
+}
+.bento-card[data-bento-theme="blue"] { 
+    --bento-theme: #3b82f6; 
+    --bento-rgb: 59, 130, 246; 
+}
+.bento-card[data-bento-theme="green"] { 
+    --bento-theme: #10b981; 
+    --bento-rgb: 16, 185, 129; 
+}
+
+/* Glowing Accent Border & Glow Shadow on Hover/Active */
+.bento-card:hover {
+    border-color: rgba(var(--bento-rgb), 0.45);
+    box-shadow: 0 15px 35px -10px rgba(var(--bento-rgb), 0.35), 
+                inset 0 0 15px rgba(var(--bento-rgb), 0.08);
+}
+
+/* Bento Header Styling */
+.bento-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bento-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background: rgba(var(--bento-rgb), 0.08);
+    color: var(--bento-theme);
+    border: 1px solid rgba(var(--bento-rgb), 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 0 10px rgba(var(--bento-rgb), 0.15);
+    transition: all 0.3s ease;
+}
+
+.bento-card:hover .bento-card-icon {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(var(--bento-rgb), 0.3);
+    background: rgba(var(--bento-rgb), 0.12);
+}
+
+/* Glowing Neon Status Badge */
+.bento-status-tag {
+    font-family: monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--bento-theme);
+    background: rgba(var(--bento-rgb), 0.06);
+    border: 1px solid rgba(var(--bento-rgb), 0.25);
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 10px rgba(var(--bento-rgb), 0.15);
+    animation: bento-pulse 2s infinite ease-in-out;
+}
+
+@keyframes bento-pulse {
+    0% { opacity: 0.8; box-shadow: 0 0 5px rgba(var(--bento-rgb), 0.1); }
+    50% { opacity: 1; box-shadow: 0 0 15px rgba(var(--bento-rgb), 0.35); }
+    100% { opacity: 0.8; box-shadow: 0 0 5px rgba(var(--bento-rgb), 0.1); }
+}
+
+/* Content Area */
+.bento-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+.bento-card-content h3 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: 0.2px;
+}
+
+.bento-card-content p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Bento Tags Pill Layout */
+.bento-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.bento-tags span {
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.bento-card:hover .bento-tags span {
+    background: rgba(var(--bento-rgb), 0.04);
+    border-color: rgba(var(--bento-rgb), 0.15);
+    color: var(--text-primary);
+}
+
+.vertical-tags {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.vertical-tags span {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Responsive grid media overrides */
+@media (max-width: 992px) {
+    .certifications-bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: minmax(220px, auto);
+    }
+    .bento-card-wide-top {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+    .bento-card-tall {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+    .bento-card-wide-bottom {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .certifications-bento-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+        gap: 16px;
+    }
+    .bento-card-wide-top, .bento-card-tall, .bento-card-wide-bottom {
+        grid-column: span 1 !important;
+        grid-row: span 1 !important;
+    }
+    .vertical-tags {
+        flex-direction: row;
+    }
+    .vertical-tags span {
+        width: auto;
+    }
+    .bento-card-inner {
+        padding: 24px;
+        gap: 16px;
+    }
+}
+
+/* ==========================================================================
    CONTACT SECTION
    ========================================================================== */
 .contact-grid {

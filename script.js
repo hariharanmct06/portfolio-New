@@ -260,6 +260,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.about-card-item').forEach(el => el.classList.add('reveal'));
     document.querySelectorAll('.lang-card').forEach(el => el.classList.add('reveal'));
     document.querySelectorAll('.timeline-item').forEach(el => el.classList.add('reveal'));
+    
+    // Staggered bento cards reveal transition delays
+    document.querySelectorAll('.bento-card').forEach((el, index) => {
+        el.classList.add('reveal');
+        el.style.setProperty('--delay', `${index * 150}ms`);
+    });
 
     /* ==========================================================================
        CONTACT FORM SUBMIT (SIMULATED PROMPT)
@@ -350,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Spotlight + 3D Tilt Cards (Only for non-touch devices to keep it smooth)
-    const tiltCards = document.querySelectorAll('.shape-card-3d, .stat-box');
+    const tiltCards = document.querySelectorAll('.shape-card-3d, .stat-box, .bento-card');
     const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
 
     tiltCards.forEach(card => {
