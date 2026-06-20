@@ -451,6 +451,7 @@ window.addEventListener('load', () => {
     const preloader = document.getElementById('preloader');
     const preloaderEnterBtn = document.getElementById('preloaderEnterBtn');
     const heroVideo = document.getElementById('heroVideo');
+    const videoReplayBtn = document.getElementById('videoReplayBtn');
     
     // Slow down the video sound & verify pitch preservation for clarity
     if (heroVideo) {
