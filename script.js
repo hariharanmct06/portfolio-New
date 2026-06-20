@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================================
 // PRELOADER LOADING SCREEN HANDLER & ENTER BUTTON AUDIO CONTROLLER
 // ==========================================================================
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const preloader = document.getElementById('preloader');
     const preloaderEnterBtn = document.getElementById('preloaderEnterBtn');
     const heroVideo = document.getElementById('heroVideo');
