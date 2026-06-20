@@ -128,9 +128,9 @@
                 <a href="animation-video-resume.html" class="nav-link">Video Resume</a>
                 <a href="#skills" class="nav-link">Skills & Languages</a>
                 <a href="#contact" class="nav-link">Contact</a>
-                <a href="assets/documents/resume.jpg" download class="btn btn-secondary nav-btn" style="padding: 6px 16px; font-size: 0.85rem; margin-left: 10px;">
-                    <i class="fas fa-download"></i> Resume
-                </a>
+                <button class="btn btn-secondary nav-btn" id="navViewResumeBtn" style="padding: 6px 16px; font-size: 0.85rem; margin-left: 10px;">
+                    <i class="fas fa-file-alt"></i> View Resume & Portfolio
+                </button>
             </nav>
             <div class="menu-toggle" id="mobileMenuBtn">
                 <span class="bar"></span>
@@ -149,8 +149,8 @@
         <a href="animation-video-resume.html" class="mobile-link">Video Resume</a>
         <a href="#skills" class="mobile-link">Skills & Languages</a>
         <a href="#contact" class="mobile-link">Contact</a>
-        <a href="assets/documents/resume.jpg" download class="mobile-link" style="color: var(--accent-primary);">
-            <i class="fas fa-download"></i> Download Resume
+        <a href="#" class="mobile-link" id="mobileViewResumeBtn" style="color: var(--accent-primary);">
+            <i class="fas fa-file-alt"></i> View Resume & Portfolio
         </a>
     </div>
 
@@ -187,9 +187,9 @@
                 </p>
                 <div class="hero-actions">
                     <a href="#contact" class="btn btn-primary">Get in Touch</a>
-                    <a href="assets/documents/resume.jpg" download class="btn btn-secondary">
-                        <i class="fas fa-download"></i> Download Resume
-                    </a>
+                    <button class="btn btn-secondary" id="viewResumeBtn">
+                        <i class="fas fa-file-alt"></i> View Resume & Portfolio
+                    </button>
                     <a href="https://hari-char-bot.vercel.app/" target="_blank" rel="noopener" class="btn btn-secondary">
                         <i class="fas fa-robot"></i> Chat with AI
                     </a>
@@ -953,6 +953,69 @@
             <p style="font-size: 0.75rem; opacity: 0.6; letter-spacing: 0.5px; margin: 0;">This portfolio is designed and created by Hari Bots & Business Solution</p>
         </div>
     </footer>
+
+    <!-- Resume & Portfolio Modal Overlay -->
+    <div class="resume-modal" id="resumeModal">
+        <div class="resume-modal-backdrop" id="resumeModalBackdrop"></div>
+        <div class="resume-modal-container">
+            <div class="resume-modal-header">
+                <div class="resume-modal-title">
+                    <i class="fas fa-file-alt"></i> Resume & Portfolio
+                </div>
+                <div class="resume-modal-actions">
+                    <a href="assets/documents/resume_portfolio.pdf" download class="btn btn-primary resume-modal-download-btn">
+                        <i class="fas fa-download"></i> Download Resume
+                    </a>
+                    <button class="resume-modal-close" id="closeResumeModalBtn" aria-label="Close Preview">&times;</button>
+                </div>
+            </div>
+            <div class="resume-modal-content">
+                <button class="resume-slider-btn prev-btn" id="resumePrevBtn" aria-label="Previous Page">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="resume-viewer-frame">
+                    <div class="resume-slider-wrapper" id="resumeSliderWrapper">
+                        <div class="resume-slide active" data-page="1">
+                            <img src="assets/images/resume_portfolio/page_1.jpg" alt="Resume Page 1" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="2">
+                            <img src="assets/images/resume_portfolio/page_2.jpg" alt="Resume Page 2" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="3">
+                            <img src="assets/images/resume_portfolio/page_3.jpg" alt="Resume Page 3" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="4">
+                            <img src="assets/images/resume_portfolio/page_4.jpg" alt="Resume Page 4" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="5">
+                            <img src="assets/images/resume_portfolio/page_5.jpg" alt="Resume Page 5" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="6">
+                            <img src="assets/images/resume_portfolio/page_6.jpg" alt="Resume Page 6" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="7">
+                            <img src="assets/images/resume_portfolio/page_7.jpg" alt="Resume Page 7" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="8">
+                            <img src="assets/images/resume_portfolio/page_8.jpg" alt="Resume Page 8" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="9">
+                            <img src="assets/images/resume_portfolio/page_9.jpg" alt="Resume Page 9" loading="lazy">
+                        </div>
+                        <div class="resume-slide" data-page="10">
+                            <img src="assets/images/resume_portfolio/page_10.jpg" alt="Resume Page 10" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+                <button class="resume-slider-btn next-btn" id="resumeNextBtn" aria-label="Next Page">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="resume-modal-footer">
+                <div class="resume-page-indicator" id="resumePageIndicator">Page 1 of 10</div>
+            </div>
+        </div>
+    </div>
 
     <!-- Custom JS -->
     <script src="script.js"></script>
