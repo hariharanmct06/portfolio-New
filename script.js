@@ -503,11 +503,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (preloaderEnterBtn) {
             preloaderEnterBtn.addEventListener('click', () => {
                 if (heroVideo) {
-                    heroVideo.currentTime = 0; // Play from the start
-                    heroVideo.muted = false; // Unmute voice
-                    heroVideo.play().catch(err => {
-                        console.log("Audio play failed on click: ", err);
-                    });
+                    try {
+                        if (heroVideo.readyState >= 1) {
+                            heroVideo.currentTime = 0; // Play from the start
+                        }
+                        heroVideo.muted = false; // Unmute voice
+                        heroVideo.play().catch(err => {
+                            console.log("Audio play failed on click: ", err);
+                        });
+                    } catch (videoErr) {
+                        console.log("Video playback trigger failed: ", videoErr);
+                    }
                 }
                 
                 // Fade out and remove loading screen overlay
