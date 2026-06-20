@@ -2915,6 +2915,7 @@ ul {
 .preloader-svg {
     width: 100%;
     height: 100%;
+    pointer-events: none; /* Allow clicks to pass through to the button beneath it */
 }
 
 /* Animations for Preloader Details */
@@ -3073,6 +3074,11 @@ ul {
         max-width: 300px;
         justify-content: center;
     }
+}
+
+#preloaderEnterBtn {
+    pointer-events: auto !important;
+    z-index: 10002 !important;
 }
 
 #preloaderEnterBtn:hover {
