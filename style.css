@@ -365,9 +365,6 @@ ul {
     width: 100%;
 }
 
-.mobile-hero-avatar {
-    display: none;
-}
 
 .greeting-badge {
     display: inline-flex;
@@ -3030,10 +3027,6 @@ ul {
         display: none !important;
     }
 
-    /* Mobile Hero Layout & Elements - Stacks Below Video Card */
-    .mobile-hero-avatar {
-        display: none !important; /* Hidden because main video is visible at the top */
-    }
     
     .hero-section {
         min-height: auto !important;
