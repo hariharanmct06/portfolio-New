@@ -2,6 +2,11 @@
    DESIGN SYSTEM & VARIABLES
    ========================================================================== */
 :root {
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+
     --bg-primary: #050508;
     --bg-secondary: #0b0f19;
     --bg-tertiary: #121824;
@@ -44,6 +49,11 @@
 html {
     scroll-behavior: smooth;
     font-size: 16px;
+    overflow-x: hidden;
+    width: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 body {
@@ -52,7 +62,26 @@ body {
     font-family: var(--font-body);
     line-height: 1.6;
     overflow-x: hidden;
+    width: 100%;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Universal Touch & Haptic Feedback Enhancements */
+button, a, input, select, textarea, .btn, .passion-card, .bento-card, .shape-card-3d, .tech-diagnostic-module, .lang-card, .detail-item {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent auto-zoom on iOS Safari input focus */
+input, select, textarea {
+    font-size: 16px !important;
+}
+
+/* Native-feel Haptic Tap Feedback on Interactive Buttons */
+.btn:active, .nav-btn:active, .mobile-link:active, .detail-item:active, .form-btn:active {
+    transform: scale(0.97) !important;
+    transition: transform 0.1s ease !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -196,7 +225,7 @@ ul {
    ========================================================================== */
 .header {
     position: fixed;
-    top: 16px;
+    top: calc(16px + var(--sat));
     left: 50%;
     transform: translateX(-50%);
     width: 96%;
@@ -204,6 +233,8 @@ ul {
     height: 66px;
     z-index: 1000;
     padding: 0 28px;
+    padding-left: max(28px, var(--sal));
+    padding-right: max(28px, var(--sar));
     background: rgba(13, 13, 13, 0.65);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -219,7 +250,7 @@ ul {
 }
 
 .header.sticky {
-    top: 10px;
+    top: calc(10px + var(--sat));
     background: rgba(13, 13, 13, 0.85);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
