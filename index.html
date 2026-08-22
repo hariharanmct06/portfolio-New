@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hariharan M | Mechatronics & Industry 4.0 Engineer</title>
     <meta name="description" content="Professional Portfolio of Hariharan M - Mechatronics Engineering Candidate, n8n Automation Maker, GitHub Practitioner, AI & Digital Marketing Learner, DevOps & Full-Stack Learner, and Cybersecurity Enthusiast.">
-    <!-- Google Fonts: Outfit and Inter -->
+    <!-- Google Fonts: Outfit, Inter, Space Grotesk, Sora -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
@@ -226,109 +226,177 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about-section scroll-section">
-        <!-- High-tech background grid and glowing theme orbs -->
+    <!-- About Section: Futuristic 3D AI & Mechatronics Command Center -->
+    <section id="about" class="about-section scroll-section hud-theme">
+        <!-- Robotic Lab & Futuristic HUD Background Overlay -->
         <div class="about-bg-grid"></div>
+        <div class="about-circuit-pattern"></div>
+        <canvas id="aboutParticleCanvas" class="about-particle-canvas"></canvas>
         <div class="about-glow-orb orb-orange"></div>
         <div class="about-glow-orb orb-blue"></div>
+        <div class="volumetric-fog"></div>
+        <div class="hud-scanning-line"></div>
 
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">About Me</h2>
-                <div class="title-underline"></div>
+        <div class="container relative-z2">
+            <!-- Futuristic HUD Section Header -->
+            <div class="section-header hud-header">
+                <div class="hud-top-tag">
+                    <span class="hud-status-dot"></span>
+                    <span class="hud-code">[ SYS.COMMAND_CENTER // ABOUT.v3.0 ]</span>
+                </div>
+                <h2 class="section-title hud-title">
+                    <span class="title-tech">ABOUT</span> <span class="title-accent">ME</span>
+                </h2>
+                <div class="hud-title-underline">
+                    <span class="underline-line"></span>
+                    <span class="underline-diamond"></span>
+                    <span class="underline-line"></span>
+                </div>
             </div>
 
-            <div class="about-grid">
-                <!-- Left: Interactive 3D Shape Showcase cards -->
-                <div class="about-cards shapes-3d-gallery">
+            <div class="about-grid hud-dashboard-grid">
+                <!-- Left: 3 Floating Holographic Glass Cards -->
+                <div class="about-cards shapes-3d-gallery hud-left-deck">
                     <!-- Card 1: Founder & Creative Director -->
-                    <div class="shape-card-3d" id="shape-card-founder" style="border-color: rgba(59, 130, 246, 0.25);">
-                        <div class="card-icon-2d" style="background-color: rgba(59, 130, 246, 0.08); color: #3b82f6;">
-                            <i class="fas fa-robot"></i>
+                    <div class="shape-card-3d holo-card" id="shape-card-founder">
+                        <div class="holo-corner corner-tl"></div>
+                        <div class="holo-corner corner-tr"></div>
+                        <div class="holo-corner corner-bl"></div>
+                        <div class="holo-corner corner-br"></div>
+                        <div class="card-neon-ray"></div>
+                        <div class="card-icon-wrapper">
+                            <div class="energy-ring-spinner ring-blue"></div>
+                            <div class="card-icon-2d icon-blue">
+                                <i class="fas fa-robot"></i>
+                            </div>
                         </div>
                         <div class="shape-card-content">
+                            <div class="hud-card-badge badge-blue">ENTERPRISE ARCHITECTURE</div>
                             <h3>Founder & Creative Director</h3>
                             <p>Leading <strong>Hari Bot & Business Solutions</strong>, building AI automation, custom chatbots, and digital marketing.</p>
-                            <a href="haribot.html" style="color: #3b82f6; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">View Company Page <i class="fas fa-arrow-right"></i></a>
+                            <a href="haribot.html" class="holo-link-btn">
+                                <span>View Company Page</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
 
-                    <!-- Card 2: Founder & CEO of Sujok AI Bot -->
-                    <div class="shape-card-3d" id="shape-card-sujok" style="border-color: rgba(16, 185, 129, 0.25);">
-                        <div class="card-icon-2d" style="background-color: rgba(16, 185, 129, 0.08); color: #10b981;">
-                            <i class="fas fa-hand-holding-heart"></i>
+                    <!-- Card 2: Mechatronics Engineering -->
+                    <div class="shape-card-3d holo-card" id="shape-card-mechatronics">
+                        <div class="holo-corner corner-tl"></div>
+                        <div class="holo-corner corner-tr"></div>
+                        <div class="holo-corner corner-bl"></div>
+                        <div class="holo-corner corner-br"></div>
+                        <div class="card-neon-ray"></div>
+                        <div class="card-icon-wrapper">
+                            <div class="energy-ring-spinner ring-orange"></div>
+                            <div class="card-icon-2d icon-orange">
+                                <i class="fas fa-cogs"></i>
+                            </div>
                         </div>
                         <div class="shape-card-content">
-                            <h3>Founder & CEO of Sujok AI Bot</h3>
-                            <p>Integrating ancient acupressure healing wisdom with smart wellness AI bot systems.</p>
-                            <a href="sujokai.html" style="color: #10b981; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;">View Company Page <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Mechatronics -->
-                    <div class="shape-card-3d" id="shape-card-mechatronics" style="border-color: rgba(249, 115, 22, 0.25);">
-                        <div class="card-icon-2d" style="background-color: rgba(249, 115, 22, 0.08); color: #f97316;">
-                            <i class="fas fa-cogs"></i>
-                        </div>
-                        <div class="shape-card-content">
+                            <div class="hud-card-badge badge-orange">HARDWARE & ROBOTICS</div>
                             <h3>Mechatronics Engineering</h3>
                             <p>Integrating mechanical design, electrical controllers, sensors, and intelligent algorithms in robotics.</p>
                         </div>
                     </div>
 
-                    <!-- Card 4: AI & Automation -->
-                    <div class="shape-card-3d" id="shape-card-ai" style="border-color: rgba(255, 255, 255, 0.25);">
-                        <div class="card-icon-2d" style="background-color: rgba(255, 255, 255, 0.08); color: #ffffff;">
-                            <i class="fas fa-brain"></i>
+                    <!-- Card 3: AI & Automation -->
+                    <div class="shape-card-3d holo-card" id="shape-card-ai">
+                        <div class="holo-corner corner-tl"></div>
+                        <div class="holo-corner corner-tr"></div>
+                        <div class="holo-corner corner-bl"></div>
+                        <div class="holo-corner corner-br"></div>
+                        <div class="card-neon-ray"></div>
+                        <div class="card-icon-wrapper">
+                            <div class="energy-ring-spinner ring-emerald"></div>
+                            <div class="card-icon-2d icon-emerald">
+                                <i class="fas fa-brain"></i>
+                            </div>
                         </div>
                         <div class="shape-card-content">
+                            <div class="hud-card-badge badge-emerald">INTELLIGENT SYSTEMS</div>
                             <h3>Artificial Intelligence & Automation</h3>
                             <p>Exploring RAG-based systems, custom agents, and building autonomous workflows via n8n automation.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right: Bio and Timeline -->
-                <div class="about-text-content">
-                    <p class="about-bio">
-                        I am a DevOps & Full-Stack learner and tech enthusiast fascinated by how mechanical devices, electronic sensors, and algorithms converge in Industry 4.0. With a solid foundation in Python and C++, I build automation pipelines using n8n and utilize GitHub for version control. I possess excellent communication skills and approach learning AI, cybersecurity, and Digital Marketing with a structured, builder-focused mindset.
-                    </p>
-                    
-                    <div class="stats-counter-grid">
-                        <div class="stat-box">
-                            <span class="stat-number">2+</span>
-                            <span class="stat-label">Coding Languages</span>
+                <!-- Right: Holographic Intelligence Panel -->
+                <div class="about-text-content hud-right-panel">
+                    <!-- Bio with Holographic Glass Container & Blue Scanning Beam -->
+                    <div class="bio-holo-container">
+                        <div class="holo-scan-laser"></div>
+                        <div class="bio-header-hud">
+                            <i class="fas fa-terminal"></i>
+                            <span>SYSTEM_BIOGRAPHY.LOG // VERIFIED</span>
+                            <span class="hud-live-tag">LIVE</span>
                         </div>
-                        <div class="stat-box">
-                            <span class="stat-number">4</span>
-                            <span class="stat-label">Spoken Languages</span>
+                        <p class="about-bio">
+                            I am a DevOps & Full-Stack learner and tech enthusiast fascinated by how mechanical devices, electronic sensors, and algorithms converge in Industry 4.0. With a solid foundation in Python and C++, I build automation pipelines using n8n and utilize GitHub for version control. I possess excellent communication skills and approach learning AI, cybersecurity, and Digital Marketing with a structured, builder-focused mindset.
+                        </p>
+                    </div>
+
+                    <!-- Stats Counter Grid: Glowing Holographic Capsules -->
+                    <div class="stats-counter-grid hud-stats-grid">
+                        <div class="stat-box holo-stat-capsule" data-target="2">
+                            <div class="stat-energy-arc ring-blue"></div>
+                            <div class="stat-inner">
+                                <span class="stat-number" data-count="2">2+</span>
+                                <span class="stat-label">Coding Languages</span>
+                            </div>
                         </div>
-                        <div class="stat-box">
-                            <span class="stat-number">SNS</span>
-                            <span class="stat-label">B.E. Mechatronics</span>
+                        <div class="stat-box holo-stat-capsule" data-target="4">
+                            <div class="stat-energy-arc ring-orange"></div>
+                            <div class="stat-inner">
+                                <span class="stat-number" data-count="4">4</span>
+                                <span class="stat-label">Spoken Languages</span>
+                            </div>
+                        </div>
+                        <div class="stat-box holo-stat-capsule text-stat">
+                            <div class="stat-energy-arc ring-emerald"></div>
+                            <div class="stat-inner">
+                                <span class="stat-number text-emerald">SNS</span>
+                                <span class="stat-label">B.E. Mechatronics</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Video Portfolio Button -->
-                    <div class="video-portfolio-btn-wrapper" style="margin: 25px 0; display: flex; align-items: center; gap: 15px;">
-                        <div class="attention-arrow" aria-hidden="true">
-                            <i class="fas fa-arrow-right"></i>
+                    <!-- Video Resume Button CTA -->
+                    <div class="video-portfolio-btn-wrapper hud-cta-wrapper">
+                        <div class="attention-arrow-hud" aria-hidden="true">
+                            <i class="fas fa-chevron-right"></i>
+                            <i class="fas fa-chevron-right"></i>
                         </div>
-                        <a href="animation-video-resume.html" class="btn btn-primary glowing-pulse-btn colorful-theme-btn" style="width: fit-content; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">
-                            <i class="fas fa-play-circle" style="font-size: 1.1rem;"></i> Watch My Video Resume
+                        <a href="animation-video-resume.html" class="btn btn-primary cyber-video-btn" id="hudVideoBtn">
+                            <span class="liquid-energy-bg"></span>
+                            <span class="btn-inner-content">
+                                <i class="fas fa-play-circle play-pulse-icon"></i>
+                                <span>Watch My Video Resume</span>
+                            </span>
+                            <span class="cyber-btn-border"></span>
                         </a>
                     </div>
 
-                    <!-- Education Timeline -->
-                    <div class="education-timeline-wrapper">
-                        <h3 class="timeline-title"><i class="fas fa-graduation-cap"></i> 3D Education Timeline</h3>
-                        <div class="timeline-3d-rail">
-                            <div class="timeline-card-3d">
+                    <!-- 3D Holographic Education Timeline -->
+                    <div class="education-timeline-wrapper holo-timeline-container">
+                        <h3 class="timeline-title hud-timeline-title">
+                            <i class="fas fa-graduation-cap icon-neon"></i> 
+                            <span>3D Education Timeline</span>
+                            <span class="timeline-hud-sub">[ 3 MILESTONES ]</span>
+                        </h3>
+                        <div class="timeline-3d-rail hud-rail">
+                            <div class="laser-beam-traveler"></div>
+                            
+                            <!-- Milestone 1 -->
+                            <div class="timeline-card-3d active-node-card">
+                                <div class="timeline-node node-emerald">
+                                    <span class="node-ping"></span>
+                                </div>
                                 <div class="card-3d-inner">
                                     <!-- FRONT -->
                                     <div class="card-3d-front">
-                                        <div class="timeline-badge"></div>
+                                        <div class="timeline-badge-emerald">CURRENT</div>
                                         <span class="timeline-date">2026 - 2030</span>
                                         <h4>B.E. Mechatronics Engineering (1st Year)</h4>
                                         <p class="institution">SNS College of Technology</p>
@@ -347,11 +415,14 @@
                                 </div>
                             </div>
 
+                            <!-- Milestone 2 -->
                             <div class="timeline-card-3d">
+                                <div class="timeline-node node-blue">
+                                    <span class="node-ping"></span>
+                                </div>
                                 <div class="card-3d-inner">
                                     <!-- FRONT -->
                                     <div class="card-3d-front">
-                                        <div class="timeline-badge"></div>
                                         <span class="timeline-date">2024 - 2026</span>
                                         <h4>Higher Secondary Course (12th Grade)</h4>
                                         <p class="institution">Suguna RIP V School</p>
@@ -370,11 +441,14 @@
                                 </div>
                             </div>
 
+                            <!-- Milestone 3 -->
                             <div class="timeline-card-3d">
+                                <div class="timeline-node node-orange">
+                                    <span class="node-ping"></span>
+                                </div>
                                 <div class="card-3d-inner">
                                     <!-- FRONT -->
                                     <div class="card-3d-front">
-                                        <div class="timeline-badge"></div>
                                         <span class="timeline-date">Completed in 2024</span>
                                         <h4>Secondary School Leaving Certificate (10th Grade)</h4>
                                         <p class="institution">Suguna RIP V School</p>
@@ -392,6 +466,13 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="blueprint-ruler-bar">
+                            <span class="ruler-line"></span>
+                            <span class="ruler-mark">01</span>
+                            <span class="ruler-mark">02</span>
+                            <span class="ruler-mark">03</span>
+                            <span class="ruler-line"></span>
                         </div>
                     </div>
                 </div>

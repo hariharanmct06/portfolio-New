@@ -631,3 +631,131 @@ window.addEventListener('blur', () => {
 window.addEventListener('focus', () => {
     document.body.style.filter = 'none';
 });
+
+/* ==========================================================================
+   FUTURISTIC ABOUT COMMAND CENTER INTERACTIVE LOGIC
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Particle Canvas Engine for About Me Section
+    const particleCanvas = document.getElementById('aboutParticleCanvas');
+    if (particleCanvas) {
+        const ctx = particleCanvas.getContext('2d');
+        let particles = [];
+        const particleCount = 35;
+
+        function resizeCanvas() {
+            if (particleCanvas.parentElement) {
+                particleCanvas.width = particleCanvas.parentElement.clientWidth;
+                particleCanvas.height = particleCanvas.parentElement.clientHeight;
+            }
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * (particleCanvas.width || 800);
+                this.y = Math.random() * (particleCanvas.height || 600);
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.radius = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? '#36D7FF' : '#FF7B1A';
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > particleCanvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > particleCanvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                // Draw connecting laser threads
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 100) {
+                        ctx.save();
+                        ctx.globalAlpha = (1 - dist / 100) * 0.15;
+                        ctx.strokeStyle = '#36D7FF';
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    }
+
+    // 2. Animated Stats Counter & Laser Scanner Pass Trigger on Scroll
+    const aboutSection = document.getElementById('about');
+    let animatedStats = false;
+
+    if (aboutSection && 'IntersectionObserver' in window) {
+        const aboutObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animatedStats) {
+                    animatedStats = true;
+                    // Trigger count up for numbers
+                    document.querySelectorAll('.holo-stat-capsule[data-target]').forEach(capsule => {
+                        const target = parseInt(capsule.getAttribute('data-target'));
+                        const numberEl = capsule.querySelector('.stat-number');
+                        if (numberEl) {
+                            let count = 0;
+                            const isPlus = numberEl.textContent.includes('+');
+                            const interval = setInterval(() => {
+                                count++;
+                                numberEl.textContent = count + (isPlus ? '+' : '');
+                                if (count >= target) clearInterval(interval);
+                            }, 250);
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.25 });
+        aboutObserver.observe(aboutSection);
+    }
+
+    // 3. Cyber Video Resume Button Magnetic Attraction & Ripple
+    const hudVideoBtn = document.getElementById('hudVideoBtn');
+    if (hudVideoBtn) {
+        hudVideoBtn.addEventListener('mousemove', (e) => {
+            const rect = hudVideoBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            hudVideoBtn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.04)`;
+        });
+
+        hudVideoBtn.addEventListener('mouseleave', () => {
+            hudVideoBtn.style.transform = 'translate(0px, 0px) scale(1)';
+        });
+    }
+});
