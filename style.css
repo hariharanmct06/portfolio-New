@@ -200,10 +200,10 @@ ul {
     left: 50%;
     transform: translateX(-50%);
     width: 95%;
-    max-width: 1360px;
+    max-width: 1400px;
     height: 66px;
     z-index: 1000;
-    padding: 0 24px;
+    padding: 0 28px;
     background: rgba(13, 13, 13, 0.65);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -246,6 +246,8 @@ ul {
     gap: 10px;
     text-decoration: none;
     white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 36px; /* Guaranteed minimum 36px separation from first menu item */
     transition: transform 0.25s ease;
 }
 
@@ -289,7 +291,8 @@ ul {
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 26px;
+    flex-shrink: 1;
 }
 
 .nav-link {
@@ -299,9 +302,10 @@ ul {
     letter-spacing: 0.4px;
     color: rgba(247, 251, 255, 0.85);
     position: relative;
-    padding: 6px 2px;
+    padding: 6px 8px;
     text-decoration: none;
     white-space: nowrap;
+    flex-shrink: 0;
     transition: all 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -311,13 +315,22 @@ ul {
     text-shadow: 0 0 12px rgba(255, 138, 0, 0.5);
 }
 
+/* Active Link Pill Style (Clean fit for active state) */
 .nav-link.active {
-    color: #ffffff;
+    color: #FF8A00;
     font-weight: 600;
-    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    background: rgba(255, 138, 0, 0.12);
+    border-radius: 10px;
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 138, 0, 0.3);
+    text-shadow: 0 0 10px rgba(255, 138, 0, 0.3);
 }
 
-/* Thin Animated Orange–Cyan Accent Line */
+.nav-link.active::after {
+    display: none;
+}
+
+/* Thin Animated Orange–Cyan Accent Line for Hovered Links */
 .nav-link::after {
     content: '';
     position: absolute;
@@ -333,7 +346,7 @@ ul {
     opacity: 0;
 }
 
-.nav-link:hover::after, .nav-link.active::after {
+.nav-link:hover::after {
     transform: translateX(-50%) scaleX(1);
     opacity: 1;
 }
