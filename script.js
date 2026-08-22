@@ -758,4 +758,252 @@ document.addEventListener('DOMContentLoaded', () => {
             hudVideoBtn.style.transform = 'translate(0px, 0px) scale(1)';
         });
     }
+
+    /* ==========================================================================
+       FAVORITE SPORTS & PASSIONS SECTION INTERACTIVE ENGINE (Strict Addition)
+       ========================================================================== */
+    const passionsSection = document.getElementById('passions');
+    if (passionsSection) {
+        // 1. IntersectionObserver for Entrance Animation & Auto-pause when off-screen
+        const scanLine = passionsSection.querySelector('.passions-scan-line');
+        const passionCards = passionsSection.querySelectorAll('.passion-card');
+        let passionsActive = false;
+        let isPassionsInView = false;
+
+        if ('IntersectionObserver' in window) {
+            const passionsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    isPassionsInView = entry.isIntersecting;
+                    if (entry.isIntersecting && !passionsActive) {
+                        passionsActive = true;
+                        // Trigger robotic scan line sweep
+                        if (scanLine) scanLine.classList.add('scanning');
+                        
+                        // Staggered card reveal
+                        passionCards.forEach((card, index) => {
+                            setTimeout(() => {
+                                card.classList.add('in-view');
+                            }, 200 + index * 120);
+                        });
+                    }
+                });
+            }, { threshold: 0.2 });
+            passionsObserver.observe(passionsSection);
+        } else {
+            passionCards.forEach(card => card.classList.add('in-view'));
+        }
+
+        // 2. Background Constellation Canvas
+        const bgCanvas = document.getElementById('passionsConstellationCanvas');
+        if (bgCanvas) {
+            const ctx = bgCanvas.getContext('2d');
+            let bgWidth = 0, bgHeight = 0;
+            let bgParticles = [];
+            const particleCount = 35;
+
+            function resizeBgCanvas() {
+                if (bgCanvas.parentElement) {
+                    bgWidth = bgCanvas.width = bgCanvas.parentElement.clientWidth;
+                    bgHeight = bgCanvas.height = bgCanvas.parentElement.clientHeight;
+                }
+            }
+            resizeBgCanvas();
+            window.addEventListener('resize', resizeBgCanvas);
+
+            for (let i = 0; i < particleCount; i++) {
+                bgParticles.push({
+                    x: Math.random() * (bgWidth || 800),
+                    y: Math.random() * (bgHeight || 600),
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 2 + 1,
+                    color: Math.random() > 0.5 ? '#FF7B1A' : '#38bdf8',
+                    alpha: Math.random() * 0.4 + 0.1
+                });
+            }
+
+            function drawBgConstellation() {
+                if (isPassionsInView && ctx) {
+                    ctx.clearRect(0, 0, bgWidth, bgHeight);
+                    for (let i = 0; i < bgParticles.length; i++) {
+                        const p = bgParticles[i];
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if (p.x < 0 || p.x > bgWidth) p.vx *= -1;
+                        if (p.y < 0 || p.y > bgHeight) p.vy *= -1;
+
+                        ctx.save();
+                        ctx.globalAlpha = p.alpha;
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+
+                        // Connect nearby particles
+                        for (let j = i + 1; j < bgParticles.length; j++) {
+                            const p2 = bgParticles[j];
+                            const dx = p.x - p2.x;
+                            const dy = p.y - p2.y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 100) {
+                                ctx.save();
+                                ctx.globalAlpha = (1 - dist / 100) * 0.12;
+                                ctx.strokeStyle = '#38bdf8';
+                                ctx.lineWidth = 0.6;
+                                ctx.beginPath();
+                                ctx.moveTo(p.x, p.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.stroke();
+                                ctx.restore();
+                            }
+                        }
+                    }
+                }
+                requestAnimationFrame(drawBgConstellation);
+            }
+            drawBgConstellation();
+        }
+
+        // 3. Card-level Interactive Particle Canvases (Chess, Cricket, Gym, Magic)
+        const cardCanvases = document.querySelectorAll('.card-particle-canvas');
+        cardCanvases.forEach(canvas => {
+            const ctx = canvas.getContext('2d');
+            let width = (canvas.width = canvas.parentElement.clientWidth || 300);
+            let height = (canvas.height = canvas.parentElement.clientHeight || 180);
+            let particles = [];
+
+            function addBurst(x, y, count = 12, color = '#38bdf8') {
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 3 + 1;
+                    particles.push({
+                        x: x || width / 2,
+                        y: y || height / 2,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        radius: Math.random() * 2.5 + 1,
+                        alpha: 1,
+                        color: color
+                    });
+                }
+            }
+
+            const card = canvas.closest('.passion-card');
+            if (card) {
+                const passionType = card.getAttribute('data-passion');
+                const colorMap = {
+                    chess: '#FF7B1A',
+                    cricket: '#38bdf8',
+                    gym: '#22c55e',
+                    magic: '#a855f7'
+                };
+
+                card.addEventListener('mouseenter', (e) => {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    addBurst(x, y, 15, colorMap[passionType] || '#38bdf8');
+                });
+
+                card.addEventListener('click', (e) => {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    addBurst(x, y, 20, colorMap[passionType] || '#38bdf8');
+
+                    // Special trigger for Cricket impact shockwave
+                    if (passionType === 'cricket') {
+                        const shockwave = card.querySelector('#cricketShockwave');
+                        if (shockwave) {
+                            shockwave.style.left = `${x - 20}px`;
+                            shockwave.style.top = `${y - 20}px`;
+                            shockwave.style.animation = 'none';
+                            void shockwave.offsetWidth;
+                            shockwave.style.animation = 'shockwavePulse 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                        }
+                    }
+                });
+            }
+
+            function renderCardParticles() {
+                if (isPassionsInView && ctx) {
+                    ctx.clearRect(0, 0, width, height);
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        const p = particles[i];
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.alpha -= 0.025;
+                        if (p.alpha <= 0) {
+                            particles.splice(i, 1);
+                            continue;
+                        }
+                        ctx.save();
+                        ctx.globalAlpha = p.alpha;
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+                requestAnimationFrame(renderCardParticles);
+            }
+            renderCardParticles();
+        });
+
+        // 4. Parallax Plane & Spring Tilt tracking on mousemove
+        let targetMouseX = 0, targetMouseY = 0;
+        let currentMouseX = 0, currentMouseY = 0;
+
+        passionsSection.addEventListener('mousemove', (e) => {
+            const rect = passionsSection.getBoundingClientRect();
+            targetMouseX = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+            targetMouseY = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        });
+
+        passionsSection.addEventListener('mouseleave', () => {
+            targetMouseX = 0;
+            targetMouseY = 0;
+        });
+
+        function updatePassionsParallax() {
+            if (isPassionsInView) {
+                currentMouseX += (targetMouseX - currentMouseX) * 0.08;
+                currentMouseY += (targetMouseY - currentMouseY) * 0.08;
+
+                // Parallax Depth Plane 1 (Background Grid)
+                const bgGrid = passionsSection.querySelector('.passions-bg-grid');
+                if (bgGrid) {
+                    bgGrid.style.transform = `translate(${currentMouseX * 12}px, ${currentMouseY * 12}px)`;
+                }
+
+                // Parallax Depth Plane 2 (Card Layer Spring Tilt)
+                if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.innerWidth > 768) {
+                    passionCards.forEach(card => {
+                        const tiltX = -currentMouseY * 5;
+                        const tiltY = currentMouseX * 5;
+                        card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(10px)`;
+                    });
+                }
+
+                // Parallax Depth Plane 3 (3D Stage Floating Elements)
+                const knight = document.getElementById('chessKnight');
+                if (knight) {
+                    knight.style.transform = `translateZ(30px) rotateX(-55deg) translate(${currentMouseX * 10}px, ${currentMouseY * 10}px)`;
+                }
+                const bat = document.getElementById('cricketBat');
+                if (bat) {
+                    bat.style.transform = `rotate(${-35 + currentMouseX * 12}deg) translateZ(20px)`;
+                }
+                const wand = document.getElementById('magicWand');
+                if (wand) {
+                    wand.style.transform = `rotate(${40 + currentMouseX * 12}deg) translateZ(25px)`;
+                }
+            }
+            requestAnimationFrame(updatePassionsParallax);
+        }
+        updatePassionsParallax();
+    }
 });
+

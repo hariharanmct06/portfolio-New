@@ -853,6 +853,194 @@
         </div>
     </section>
 
+    <!-- Favorite Sports & Passions Section -->
+    <section id="passions" class="passions-section scroll-section">
+        <!-- Ambient Background FX Layer -->
+        <div class="passions-bg-grid"></div>
+        <div class="passions-scan-line"></div>
+        <div class="passions-constellation-canvas-wrap">
+            <canvas id="passionsConstellationCanvas" class="passions-bg-canvas"></canvas>
+        </div>
+        <div class="passions-fog-orb orb-orange"></div>
+        <div class="passions-fog-orb orb-blue"></div>
+
+        <div class="container relative-z2">
+            <!-- Section Header -->
+            <div class="section-header passions-header">
+                <div class="passions-telemetry-tag">
+                    <span class="telemetry-dot"></span>
+                    <span class="telemetry-code">[ SYS.ONLINE // MODULE_04 // SPORTS_PASSIONS ]</span>
+                </div>
+                <h2 class="section-title passions-title">
+                    FAVORITE SPORTS <span class="text-coral">&amp; PASSIONS</span>
+                </h2>
+                <p class="passions-subtitle">
+                    Beyond technology, these are the activities that shape my focus, discipline, creativity, and mindset.
+                </p>
+                <div class="title-underline"></div>
+            </div>
+
+            <!-- 2x2 Grid Container -->
+            <div class="passions-grid">
+                <!-- Card 1: CHESS -->
+                <div class="passion-card" data-passion="chess">
+                    <div class="card-border-glow"></div>
+                    <div class="card-hud-corner corner-tl"></div>
+                    <div class="card-hud-corner corner-tr"></div>
+                    <div class="card-hud-corner corner-bl"></div>
+                    <div class="card-hud-corner corner-br"></div>
+                    <div class="card-telemetry">MODULE_04.1 // CHESS.STRATEGY</div>
+                    
+                    <div class="passion-stage chess-stage">
+                        <canvas class="card-particle-canvas" id="chessParticleCanvas"></canvas>
+                        <div class="chess-3d-board-wrap">
+                            <div class="chess-board-grid">
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                            <!-- Floating 3D Chess Pieces -->
+                            <div class="chess-piece knight-piece" id="chessKnight">
+                                <i class="fas fa-chess-knight"></i>
+                            </div>
+                            <div class="chess-piece king-piece">
+                                <i class="fas fa-chess-king"></i>
+                            </div>
+                            <div class="chess-piece queen-piece">
+                                <i class="fas fa-chess-queen"></i>
+                            </div>
+                            <div class="chess-piece pawn-piece">
+                                <i class="fas fa-chess-pawn"></i>
+                            </div>
+                            <!-- Hologram Stack of Captured Pieces -->
+                            <div class="captured-hologram-stack">
+                                <i class="fas fa-chess-rook holo-piece"></i>
+                                <i class="fas fa-chess-bishop holo-piece"></i>
+                                <i class="fas fa-chess-pawn holo-piece"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="passion-info">
+                        <div class="passion-badge badge-orange"><i class="fas fa-brain"></i> STRATEGY &amp; TACTICS</div>
+                        <h3>CHESS — Master of Strategy</h3>
+                        <p>Fostering deep analytical thinking, foresight, pattern recognition, and calm decision-making under high pressure.</p>
+                        <div class="passion-stats">
+                            <span><i class="fas fa-chess-board"></i> Tactical Foresight</span>
+                            <span><i class="fas fa-bolt"></i> Pattern Recognition</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: CRICKET -->
+                <div class="passion-card" data-passion="cricket">
+                    <div class="card-border-glow"></div>
+                    <div class="card-hud-corner corner-tl"></div>
+                    <div class="card-hud-corner corner-tr"></div>
+                    <div class="card-hud-corner corner-bl"></div>
+                    <div class="card-hud-corner corner-br"></div>
+                    <div class="card-telemetry">MODULE_04.2 // CRICKET.PRECISION</div>
+                    
+                    <div class="passion-stage cricket-stage">
+                        <canvas class="card-particle-canvas" id="cricketParticleCanvas"></canvas>
+                        <div class="stadium-spotlight-cone"></div>
+                        <div class="cricket-3d-wrap">
+                            <div class="cricket-bat-3d" id="cricketBat">
+                                <div class="bat-handle"></div>
+                            </div>
+                            <div class="cricket-ball-3d" id="cricketBall">
+                                <div class="ball-seam"></div>
+                            </div>
+                            <div class="impact-shockwave-ring" id="cricketShockwave"></div>
+                        </div>
+                    </div>
+
+                    <div class="passion-info">
+                        <div class="passion-badge badge-blue"><i class="fas fa-bullseye"></i> PRECISION &amp; POWER</div>
+                        <h3>CRICKET — Precision &amp; Power</h3>
+                        <p>Honing split-second reflexes, hand-eye coordination, team leadership, and tactical execution under stadium pressure.</p>
+                        <div class="passion-stats">
+                            <span><i class="fas fa-stopwatch"></i> Reflex Speed</span>
+                            <span><i class="fas fa-users-gear"></i> Team Synergy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: GYM -->
+                <div class="passion-card" data-passion="gym">
+                    <div class="card-border-glow"></div>
+                    <div class="card-hud-corner corner-tl"></div>
+                    <div class="card-hud-corner corner-tr"></div>
+                    <div class="card-hud-corner corner-bl"></div>
+                    <div class="card-hud-corner corner-br"></div>
+                    <div class="card-telemetry">MODULE_04.3 // GYM.STRENGTH</div>
+                    
+                    <div class="passion-stage gym-stage">
+                        <canvas class="card-particle-canvas" id="gymParticleCanvas"></canvas>
+                        <div class="gym-platform-3d">
+                            <div class="carbon-core-glow"></div>
+                            <div class="dumbbell-3d" id="gymDumbbell">
+                                <div class="weight-plate plate-l2"></div>
+                                <div class="weight-plate plate-l1"></div>
+                                <div class="dumbbell-handle">
+                                    <div class="handle-pulse-line"></div>
+                                </div>
+                                <div class="weight-plate plate-r1"></div>
+                                <div class="weight-plate plate-r2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="passion-info">
+                        <div class="passion-badge badge-green"><i class="fas fa-dumbbell"></i> STRENGTH &amp; DISCIPLINE</div>
+                        <h3>GYM — Strength &amp; Discipline</h3>
+                        <p>Building relentless consistency, physical resilience, mental toughness, and progressive overload principles into daily life.</p>
+                        <div class="passion-stats">
+                            <span><i class="fas fa-fire"></i> Progressive Overload</span>
+                            <span><i class="fas fa-shield-heart"></i> Mental Resilience</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: MAGIC -->
+                <div class="passion-card" data-passion="magic">
+                    <div class="card-border-glow"></div>
+                    <div class="card-hud-corner corner-tl"></div>
+                    <div class="card-hud-corner corner-tr"></div>
+                    <div class="card-hud-corner corner-bl"></div>
+                    <div class="card-hud-corner corner-br"></div>
+                    <div class="card-telemetry">MODULE_04.4 // MAGIC.CREATIVITY</div>
+                    
+                    <div class="passion-stage magic-stage">
+                        <canvas class="card-particle-canvas" id="magicParticleCanvas"></canvas>
+                        <div class="magic-3d-wrap">
+                            <div class="magic-wand-3d" id="magicWand">
+                                <div class="wand-gold-tip"></div>
+                            </div>
+                            <div class="magic-spellbook"></div>
+                            <div class="magic-crystal-orb" id="magicOrb"></div>
+                        </div>
+                    </div>
+
+                    <div class="passion-info">
+                        <div class="passion-badge badge-purple"><i class="fas fa-wand-magic-sparkles"></i> CREATIVITY &amp; WONDER</div>
+                        <h3>MAGIC — Creativity Beyond Reality</h3>
+                        <p>Unlocking imaginative storytelling, misdirection mastery, sleight-of-hand agility, and creating unforgettable moments of awe.</p>
+                        <div class="passion-stats">
+                            <span><i class="fas fa-wand-sparkles"></i> Misdirection &amp; Flow</span>
+                            <span><i class="fas fa-hand-sparkles"></i> Dexterity &amp; Elegance</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="contact-section scroll-section">
         <div class="container">
