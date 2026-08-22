@@ -1283,8 +1283,7 @@ ul {
 .timeline-node {
     position: absolute;
     left: -44px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 24px;
     width: 16px;
     height: 16px;
     border-radius: 50%;
@@ -1308,8 +1307,8 @@ ul {
     position: absolute;
     top: -4px;
     left: -4px;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     border: 1px solid var(--emerald-green);
     animation: pingNode 2s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -1322,15 +1321,16 @@ ul {
 .timeline-card-3d {
     perspective: 1000px;
     width: 100%;
-    min-height: 150px;
+    min-height: auto;
     cursor: pointer;
     position: relative;
 }
 
 .card-3d-inner {
-    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     width: 100%;
-    height: 100%;
     transform-style: preserve-3d;
     transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1340,9 +1340,8 @@ ul {
 }
 
 .card-3d-front, .card-3d-back {
-    position: absolute;
+    grid-area: 1 / 1 / 2 / 2;
     width: 100%;
-    height: 100%;
     backface-visibility: hidden;
     border-radius: 14px;
     padding: 20px 24px;
@@ -1353,7 +1352,7 @@ ul {
     -webkit-backdrop-filter: blur(20px);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
@@ -1451,7 +1450,7 @@ ul {
     font-size: 0.72rem;
     color: rgba(247, 251, 255, 0.5);
     align-self: flex-end;
-    margin-top: auto;
+    margin-top: 12px;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -1478,11 +1477,11 @@ ul {
     margin: 0 10px;
 }
 
-/* Responsive adjustments for HUD About Section */
+/* Responsive adjustments for HUD About Section strictly scoped under #about / .hud-theme */
 @media (max-width: 992px) {
     .hud-dashboard-grid {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 36px;
     }
     .hud-title {
         font-size: 2.4rem;
@@ -1490,16 +1489,74 @@ ul {
 }
 
 @media (max-width: 576px) {
-    .hud-stats-grid {
-        grid-template-columns: 1fr;
+    .about-section.hud-theme {
+        padding: 60px 0;
+    }
+    .hud-header {
+        margin-bottom: 36px;
     }
     .hud-title {
-        font-size: 1.8rem;
+        font-size: 1.65rem;
+        letter-spacing: 1px;
+    }
+    .hud-top-tag {
+        font-size: 0.68rem;
+        padding: 3px 10px;
     }
     .holo-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
         padding: 20px;
     }
+    .card-icon-wrapper {
+        transform: none;
+    }
+    .hud-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .holo-stat-capsule {
+        padding: 16px 12px;
+    }
+    .stat-number {
+        font-size: 1.8rem;
+    }
+    .hud-cta-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+    .attention-arrow-hud {
+        display: none;
+    }
+    .cyber-video-btn {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+    }
+    .hud-rail {
+        padding-left: 28px;
+    }
+    .timeline-node {
+        left: -36px;
+        width: 14px;
+        height: 14px;
+        top: 20px;
+    }
+    .node-ping {
+        width: 18px;
+        height: 18px;
+    }
+    .card-3d-front, .card-3d-back {
+        padding: 16px 18px;
+    }
+    .card-3d-front h4, .card-3d-back h4 {
+        font-size: 0.98rem;
+    }
 }
+
 
 /* ==========================================================================
    SKILLS SECTION
