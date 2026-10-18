@@ -503,11 +503,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const homeRect = homeSection.getBoundingClientRect();
                 if (homeRect.bottom < window.innerHeight * 0.35 || window.scrollY >= (nextSection.offsetTop - 180)) {
                     hasAutoScrolledFromIntro = true;
+                    window.__hasAutoScrolledFromIntro = true;
                     return;
                 }
             }
 
             hasAutoScrolledFromIntro = true;
+            window.__hasAutoScrolledFromIntro = true;
+            window.__isIntroAutoScrolling = true;
+            setTimeout(() => {
+                window.__isIntroAutoScrolling = false;
+            }, 1800);
 
             const sectionHeading = nextSection.querySelector('.section-header, .section-title, h2') || nextSection;
             const header = document.querySelector('.header');
@@ -654,6 +660,400 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    /* ==========================================================================
+       ONE-TIME SLOW AUTOMATIC SCROLLING BEHAVIOR
+       Sequence: First intentional downward scroll -> slow automatic scrolling ->
+                 visitor intervenes -> manual scrolling for remainder of visit.
+       ========================================================================== */
+    const initOneTimeSlowAutoScroll = () => {
+        // Reduced-motion check: Disable if visitor system prefers reduced motion
+        const isReducedMotion = () => {
+            return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        };
+
+        if (isReducedMotion()) {
+            return;
+        }
+
+        const STATE_IDLE = 'IDLE';
+        const STATE_ARMED = 'ARMED';
+        const STATE_GESTURE = 'GESTURE';
+        const STATE_AUTOSCROLLING = 'AUTOSCROLLING';
+        const STATE_STOPPED = 'STOPPED';
+
+        let state = STATE_IDLE;
+        let rafId = null;
+        let lastFrameTimestamp = null;
+        let currentVirtualScrollY = 0;
+        let gestureSettleTimer = null;
+        let isTouching = false;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchInitiatedDownward = false;
+
+        // Gentle, consistent speed: ~28 CSS pixels per second (25-35 px/s range)
+        const SPEED_PX_PER_SEC = 28;
+
+        const getMaxScroll = () => {
+            return Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.clientHeight,
+                document.documentElement.scrollHeight,
+                document.documentElement.offsetHeight
+            ) - window.innerHeight;
+        };
+
+        // Permanent shutdown for the remainder of this page visit
+        const stopPermanently = (reason) => {
+            if (state === STATE_STOPPED) return;
+            state = STATE_STOPPED;
+
+            if (gestureSettleTimer) {
+                clearTimeout(gestureSettleTimer);
+                gestureSettleTimer = null;
+            }
+
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+
+            // Restore native smooth scrolling behavior
+            document.documentElement.style.scrollBehavior = '';
+
+            // Clean up event listeners to keep memory clean and ensure no future reactivation
+            window.removeEventListener('wheel', handleWheel);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchmove', handleTouchMove);
+            window.removeEventListener('touchend', handleTouchEnd);
+            window.removeEventListener('touchcancel', handleTouchEnd);
+            window.removeEventListener('pointerdown', handlePointerDown);
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('scroll', handleNativeScroll);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('pagehide', handlePageHide);
+            window.removeEventListener('blur', handleBlur);
+        };
+
+        // Frame-by-frame gentle scroll step (independent of screen refresh rate)
+        const autoScrollStep = (timestamp) => {
+            if (state !== STATE_AUTOSCROLLING) return;
+
+            if (!lastFrameTimestamp) {
+                lastFrameTimestamp = timestamp;
+            }
+
+            const elapsed = timestamp - lastFrameTimestamp;
+            lastFrameTimestamp = timestamp;
+
+            // Cap elapsed delta to 100ms to prevent jumps if frame stalls
+            const deltaSec = Math.min(elapsed, 100) / 1000;
+            currentVirtualScrollY += SPEED_PX_PER_SEC * deltaSec;
+
+            const maxScroll = getMaxScroll();
+            if (currentVirtualScrollY >= maxScroll - 2) {
+                window.scrollTo(0, maxScroll);
+                stopPermanently('bottom_reached');
+                return;
+            }
+
+            window.scrollTo(0, currentVirtualScrollY);
+            rafId = requestAnimationFrame(autoScrollStep);
+        };
+
+        const startAutoScrolling = () => {
+            if (state === STATE_STOPPED) return;
+
+            // Preloader check
+            const preloaderEl = document.getElementById('preloader');
+            if (preloaderEl && !preloaderEl.classList.contains('fade-out') && window.getComputedStyle(preloaderEl).display !== 'none') {
+                return;
+            }
+
+            // Verify visitor has not reached the bottom
+            const maxScroll = getMaxScroll();
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            if (currentScroll >= maxScroll - 15) {
+                stopPermanently('already_at_bottom');
+                return;
+            }
+
+            // Verify we are past or scrolling away from the intro
+            if (!isPastIntro()) {
+                state = STATE_ARMED;
+                return;
+            }
+
+            state = STATE_AUTOSCROLLING;
+            currentVirtualScrollY = currentScroll;
+            lastFrameTimestamp = null;
+
+            // Set scrollBehavior to 'auto' while rAF runs for buttery smooth 60/120fps motion
+            document.documentElement.style.scrollBehavior = 'auto';
+
+            rafId = requestAnimationFrame(autoScrollStep);
+        };
+
+        const onGestureSettled = () => {
+            if (state !== STATE_GESTURE) return;
+            if (isTouching) return; // Do not start while visitor is still touching screen
+
+            startAutoScrolling();
+        };
+
+        const resetGestureSettleTimer = () => {
+            if (gestureSettleTimer) {
+                clearTimeout(gestureSettleTimer);
+            }
+            gestureSettleTimer = setTimeout(onGestureSettled, 350);
+        };
+
+        // Check if intro video transition or preloader is active
+        const isIntroActive = () => {
+            if (window.__isIntroAutoScrolling) return true;
+            const preloaderEl = document.getElementById('preloader');
+            if (preloaderEl && !preloaderEl.classList.contains('fade-out') && window.getComputedStyle(preloaderEl).display !== 'none') {
+                return true;
+            }
+            return false;
+        };
+
+        // Check if user is past or scrolling past the hero / intro section
+        const isPastIntro = () => {
+            if (window.__hasAutoScrolledFromIntro) return true;
+            const currentY = window.pageYOffset || document.documentElement.scrollTop;
+            const aboutSection = document.getElementById('about');
+            if (aboutSection && currentY >= (aboutSection.offsetTop - 300)) {
+                return true;
+            }
+            if (currentY > window.innerHeight * 0.35) {
+                return true;
+            }
+            return false;
+        };
+
+        const armIfReady = () => {
+            if (state === STATE_IDLE && !isIntroActive()) {
+                state = STATE_ARMED;
+            }
+        };
+
+        // Mouse Wheel & Trackpad
+        const handleWheel = (e) => {
+            if (state === STATE_STOPPED) return;
+
+            // If auto-scrolling is active, any wheel gesture immediately halts it permanently
+            if (state === STATE_AUTOSCROLLING) {
+                stopPermanently('wheel_intervention');
+                return;
+            }
+
+            // If in gesture settle window
+            if (state === STATE_GESTURE) {
+                if (e.deltaY < -2) {
+                    // Upward scroll cancels auto-scroll permanently
+                    stopPermanently('wheel_upward_canceled');
+                } else if (e.deltaY > 0) {
+                    resetGestureSettleTimer();
+                }
+                return;
+            }
+
+            armIfReady();
+
+            // Detect first intentional downward scroll
+            if (state === STATE_ARMED && !isIntroActive()) {
+                if (e.deltaY > 5) {
+                    state = STATE_GESTURE;
+                    resetGestureSettleTimer();
+                }
+            }
+        };
+
+        // Touch gestures (iOS Safari, Android Chrome, Tablets)
+        const handleTouchStart = (e) => {
+            if (state === STATE_STOPPED) return;
+
+            isTouching = true;
+
+            // If auto-scrolling is running, touching the screen is an explicit pause
+            if (state === STATE_AUTOSCROLLING) {
+                stopPermanently('touch_pause');
+                return;
+            }
+
+            if (e.touches && e.touches.length > 0) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchInitiatedDownward = false;
+            }
+        };
+
+        const handleTouchMove = (e) => {
+            if (state === STATE_STOPPED) return;
+
+            if (state === STATE_AUTOSCROLLING) {
+                stopPermanently('touchmove_intervention');
+                return;
+            }
+
+            if (!e.touches || e.touches.length === 0) return;
+
+            const currentX = e.touches[0].clientX;
+            const currentY = e.touches[0].clientY;
+            const deltaY = touchStartY - currentY; // Finger dragging UP -> page scrolling DOWN
+            const deltaX = touchStartX - currentX;
+
+            // Upward scrolling gesture (finger dragging down)
+            if (deltaY < -20 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                if (state === STATE_GESTURE) {
+                    stopPermanently('touch_upward_canceled');
+                }
+                return;
+            }
+
+            // Downward scrolling gesture (finger dragging up)
+            if (deltaY > 20 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                armIfReady();
+
+                if ((state === STATE_ARMED || state === STATE_GESTURE) && !isIntroActive()) {
+                    touchInitiatedDownward = true;
+                    state = STATE_GESTURE;
+                    resetGestureSettleTimer();
+                }
+            }
+        };
+
+        const handleTouchEnd = () => {
+            isTouching = false;
+            if (state === STATE_STOPPED) return;
+
+            if (state === STATE_GESTURE && touchInitiatedDownward) {
+                resetGestureSettleTimer();
+            }
+        };
+
+        // Tap or Click handler:
+        // Treat a tap or click as explicit way to pause auto-scrolling.
+        // Passive listener ensures normal element actions (accordions, links, buttons) are preserved!
+        const handlePointerDown = (e) => {
+            if (state === STATE_AUTOSCROLLING) {
+                stopPermanently('pointer_pause');
+            } else if (state === STATE_GESTURE) {
+                stopPermanently('pointer_interrupted_settle');
+            }
+        };
+
+        // Keyboard navigation
+        const handleKeyDown = (e) => {
+            if (state === STATE_STOPPED) return;
+
+            const navKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' ', 'Tab', 'Escape'];
+
+            if (state === STATE_AUTOSCROLLING) {
+                if (navKeys.includes(e.key)) {
+                    stopPermanently('keyboard_intervention');
+                }
+                return;
+            }
+
+            armIfReady();
+
+            if (state === STATE_ARMED && !isIntroActive()) {
+                const isDownKey = e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey);
+                if (isDownKey) {
+                    state = STATE_GESTURE;
+                    resetGestureSettleTimer();
+                }
+            } else if (state === STATE_GESTURE) {
+                const isUpKey = e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'Home' || (e.key === ' ' && e.shiftKey);
+                if (isUpKey) {
+                    stopPermanently('keyboard_upward_canceled');
+                } else if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+                    resetGestureSettleTimer();
+                }
+            }
+        };
+
+        // Native scroll listener (tracks momentum completion & scrollbar interactions)
+        let lastObservedScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+        const handleNativeScroll = () => {
+            const currentY = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (state === STATE_GESTURE) {
+                resetGestureSettleTimer();
+            } else if (state === STATE_AUTOSCROLLING) {
+                // If scrollbar dragged or sudden external scroll position jump occurs
+                if (Math.abs(currentY - currentVirtualScrollY) > 25) {
+                    stopPermanently('external_scroll_deviation');
+                }
+            }
+
+            lastObservedScrollY = currentY;
+        };
+
+        // Visibility & Page Exit handlers
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                stopPermanently('tab_hidden');
+            }
+        };
+
+        const handlePageHide = () => {
+            stopPermanently('page_hide');
+        };
+
+        const handleBlur = () => {
+            stopPermanently('window_blur');
+        };
+
+        // Reduced-motion runtime change listener
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+                if (e.matches) {
+                    stopPermanently('reduced_motion_enabled');
+                }
+            });
+        }
+
+        // Navigation elements: selecting a section or opening mobile menu permanently disables
+        const navElements = document.querySelectorAll('.nav-link, .mobile-link, #mobileMenuBtn, #scrollToTop');
+        navElements.forEach(el => {
+            el.addEventListener('click', () => {
+                stopPermanently('navigation_action');
+            }, { passive: true });
+        });
+
+        // Register passive event listeners
+        window.addEventListener('wheel', handleWheel, { passive: true });
+        window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchmove', handleTouchMove, { passive: true });
+        window.addEventListener('touchend', handleTouchEnd, { passive: true });
+        window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+        window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+        window.addEventListener('keydown', handleKeyDown, { passive: true });
+        window.addEventListener('scroll', handleNativeScroll, { passive: true });
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('pagehide', handlePageHide);
+        window.addEventListener('blur', handleBlur);
+
+        // Preloader enter button handling
+        const preloaderEnterBtn = document.getElementById('preloaderEnterBtn');
+        if (preloaderEnterBtn) {
+            preloaderEnterBtn.addEventListener('click', () => {
+                setTimeout(() => {
+                    armIfReady();
+                }, 1000);
+            }, { passive: true });
+        } else {
+            armIfReady();
+        }
+    };
+
+    // Initialize One-Time Slow Auto-Scroller
+    initOneTimeSlowAutoScroll();
 
 });
 
