@@ -633,22 +633,25 @@ document.addEventListener('DOMContentLoaded', () => {
        ========================================================================== */
     const techModules = document.querySelectorAll('.tech-diagnostic-module');
     
+    // Ensure the first accordion box is expanded by default on fresh page visits
+    if (techModules.length > 0 && !document.querySelector('.tech-diagnostic-module.active')) {
+        techModules[0].classList.add('active');
+    }
+    
     techModules.forEach(module => {
         module.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent immediate document click trigger
+            // Prevent interference if user clicks any interactive element inside
+            if (e.target.closest('a, button, input')) return;
+            
             const isActive = module.classList.contains('active');
+            
+            // Close all boxes, then expand the clicked box if it wasn't already active
             techModules.forEach(m => m.classList.remove('active'));
             
             if (!isActive) {
                 module.classList.add('active');
             }
         });
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.tech-diagnostic-module')) {
-            techModules.forEach(m => m.classList.remove('active'));
-        }
     });
 
 

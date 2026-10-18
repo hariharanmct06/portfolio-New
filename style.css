@@ -2090,7 +2090,7 @@ ul {
 /* Open states */
 .tech-diagnostic-module:hover .tech-log-console,
 .tech-diagnostic-module.active .tech-log-console {
-    max-height: 180px;
+    max-height: 800px;
     opacity: 1;
     padding-bottom: 20px;
 }
@@ -2101,6 +2101,8 @@ ul {
     color: var(--theme-color);
     margin-bottom: 8px;
     opacity: 0.8;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .console-logs {
@@ -2117,13 +2119,18 @@ ul {
     font-size: 0.78rem;
     color: var(--text-secondary);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
+    line-height: 1.45;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .console-logs li .prompt {
     color: var(--theme-color);
     font-weight: 700;
+    flex-shrink: 0;
+    line-height: 1.45;
 }
 
 /* Skill Circle Dials for Languages (Right side) */
@@ -3437,7 +3444,7 @@ ul {
         box-shadow: 0 0 25px rgba(var(--theme-rgb), 0.15), inset 0 0 12px rgba(var(--theme-rgb), 0.05) !important;
     }
     .tech-diagnostic-module.active .tech-log-console {
-        max-height: 180px !important;
+        max-height: 800px !important;
         opacity: 1 !important;
         padding-bottom: 20px !important;
     }
