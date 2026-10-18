@@ -1187,23 +1187,28 @@ ul {
     text-shadow: 0 0 10px var(--electric-blue);
 }
 
-/* Custom Executive Layout for Card 1: Founder & Creative Director */
-#shape-card-founder {
+/* Custom Executive Layout for Left Deck Cards: Founder, Mechatronics, AI */
+.hud-left-deck .holo-card,
+#shape-card-founder,
+#shape-card-mechatronics,
+#shape-card-ai {
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
     padding: 24px 26px;
 }
 
-#shape-card-founder .founder-header-row {
+.deck-card-header-row,
+.founder-header-row {
     display: flex;
     align-items: center;
     gap: 16px;
     width: 100%;
 }
 
-#shape-card-founder .founder-badge {
-    margin-bottom: 0;
+.deck-card-badge,
+.founder-badge {
+    margin-bottom: 0 !important;
     font-size: 0.72rem;
     padding: 6px 12px;
     letter-spacing: 1.5px;
@@ -1211,13 +1216,15 @@ ul {
     line-height: 1.35;
 }
 
-#shape-card-founder .founder-body-content {
+.deck-card-body-content,
+.founder-body-content {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-#shape-card-founder .founder-body-content h3 {
+.deck-card-body-content h3,
+.founder-body-content h3 {
     font-family: var(--font-futuristic);
     font-size: clamp(1.22rem, 1.45vw, 1.38rem);
     font-weight: 700;
@@ -1228,15 +1235,21 @@ ul {
     transform: translateZ(20px);
 }
 
-#shape-card-founder .founder-body-content p {
+.deck-card-body-content p,
+.founder-body-content p {
     font-size: clamp(0.94rem, 1.08vw, 1.02rem);
     color: rgba(247, 251, 255, 0.85);
     line-height: 1.6;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     transform: translateZ(15px);
 }
 
-#shape-card-founder .founder-body-content p strong {
+#shape-card-founder .founder-body-content p {
+    margin-bottom: 12px;
+}
+
+.deck-card-body-content p strong,
+.founder-body-content p strong {
     color: var(--titanium-white);
     font-weight: 600;
 }
@@ -1734,20 +1747,22 @@ ul {
         font-size: 0.68rem;
         padding: 3px 10px;
     }
-    .holo-card {
+    .holo-card,
+    .hud-left-deck .holo-card,
+    #shape-card-founder,
+    #shape-card-mechatronics,
+    #shape-card-ai {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
-        padding: 20px;
-    }
-    #shape-card-founder {
-        padding: 20px;
         gap: 14px;
+        padding: 20px;
     }
-    #shape-card-founder .founder-header-row {
+    .deck-card-header-row,
+    .founder-header-row {
         gap: 12px;
     }
-    #shape-card-founder .founder-badge {
+    .deck-card-badge,
+    .founder-badge {
         font-size: 0.68rem;
         padding: 5px 10px;
     }
