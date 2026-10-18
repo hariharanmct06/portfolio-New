@@ -12,7 +12,7 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css?v=2.1">
+    <link rel="stylesheet" href="style.css?v=2.2">
 </head>
 <body>
 
@@ -861,55 +861,32 @@
         </div>
     </section>
 
-    <!-- Take Control — Hariharan’s Robot Playground Section -->
-    <section id="passions" class="robot-playground-section scroll-section">
-        <div id="rp" data-mode="idle" role="region" aria-label="Take Control — Hariharan’s Robot Playground">
-            <h1>Take Control <span>— Hariharan’s Robot Playground</span></h1>
-            <div class="grid">
-                <div class="stagebox">
-                    <div class="ov ov-intro" id="intro">
-                        <h2>Your turn. Take control.</h2>
-                        <p>Drive a little robot through my world of engineering, creativity, and curiosity.</p>
-                        <button class="btn pri" id="start">Start Exploring</button>
-                        <p class="hint"><span class="d">Use arrow keys or WASD to drive.</span><span class="t">Hold the arrow buttons below to drive.</span></p>
-                        <button class="btn link" id="free">Explore Without Driving</button>
-                    </div>
-                    <div class="ov" id="pauseov" hidden>
-                        <h2>Paused</h2>
-                        <p>Press Resume when you’re ready.</p>
-                        <button class="btn pri" id="resume">Resume</button>
-                    </div>
-                    <div class="stage" id="stage" tabindex="0" role="group" aria-label="Robot arena. Focus here, then use arrow keys or WASD to drive.">
-                        <canvas id="cv" width="800" height="520" aria-hidden="true"></canvas>
-                    </div>
-                </div>
-                <div class="ctrl">
-                    <div class="row">
-                        <button class="btn" id="pause" disabled>Pause</button>
-                        <button class="btn" id="reset">Reset</button>
-                    </div>
-                    <div class="dpad" id="dpad" role="group" aria-label="Drive controls">
-                        <button data-d="up" style="grid-area:up" aria-label="Move up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
-                        <button data-d="left" style="grid-area:left" aria-label="Move left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(-90deg)"><path d="M6 15l6-6 6 6"/></svg></button>
-                        <button data-d="down" style="grid-area:down" aria-label="Move down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(180deg)"><path d="M6 15l6-6 6 6"/></svg></button>
-                        <button data-d="right" style="grid-area:right" aria-label="Move right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(90deg)"><path d="M6 15l6-6 6 6"/></svg></button>
-                    </div>
-                </div>
-                <aside class="panel" aria-label="Discoveries">
-                    <div class="prog">Zones discovered: <b id="cnt">0</b>/4</div>
-                    <div class="bar" aria-hidden="true"><i id="fill"></i></div>
-                    <ul class="chips" id="chips"></ul>
-                    <article class="card" id="card" aria-live="polite">
-                        <h3 id="ct"></h3><p id="cp"></p>
-                        <button class="btn" id="cx">Dismiss</button>
-                    </article>
-                    <div class="done" id="done" hidden>
-                        <p>Exploration complete. Thanks for stepping into my world.</p>
-                        <button class="btn pri" id="again">Explore Again</button>
-                    </div>
-                    <p class="st" id="st" role="status" aria-live="polite">Press Start Exploring to begin.</p>
-                </aside>
+    <!-- Circuit Runner — Hariharan’s Tech Playground Section -->
+    <section id="passions" class="circuit-runner-section scroll-section">
+        <div id="cr" class="wrap" role="region" aria-label="Circuit Runner — Hariharan’s Tech Playground">
+            <h1>Jump into my tech world.</h1>
+            <p class="sub">Collect chips. Dodge glitches. Keep going.</p>
+            <div class="hud">
+                <div id="bxsc"><small>Score</small><b id="sc">0</b></div>
+                <div><small>Multiplier</small><b id="mu">×1</b></div>
+                <div><small>Shield</small><b id="sh">Off</b></div>
+                <div><small>Personal best</small><b id="bs">0</b></div>
             </div>
+            <div class="stage" id="stage" tabindex="0" role="application" aria-label="Circuit Runner game. Press Space or Up Arrow to jump.">
+                <canvas id="cv"></canvas>
+                <div class="ov" id="ov">
+                    <h2 id="ot">Circuit Runner</h2>
+                    <p id="om">Press Space or ↑ to jump. Jump again in mid-air for a double jump.</p>
+                    <button class="pri" id="go">Start</button>
+                </div>
+            </div>
+            <button class="jumpbar" id="jb" type="button">JUMP</button>
+            <div class="ctl">
+                <button id="pb" disabled>Pause</button>
+                <button id="rb">Restart</button>
+                <button id="sb" aria-pressed="false">Sound: off</button>
+            </div>
+            <p class="hint">Click the game to focus it, then use Space or ↑. Glowing dots above the robot show jumps left. Miss two chips in a row and your multiplier resets.</p>
         </div>
     </section>
 
@@ -1052,6 +1029,6 @@
 
 
     <!-- Custom JS -->
-    <script src="script.js?v=2.1"></script>
+    <script src="script.js?v=2.2"></script>
 </body>
 </html>
