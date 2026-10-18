@@ -481,6 +481,69 @@ document.addEventListener('DOMContentLoaded', () => {
         heroVideo.play().catch(err => {
             console.log("Background muted play prevented: ", err);
         });
+
+        // Automatic smooth scroll to the next content section once intro video finishes playing
+        let hasAutoScrolledFromIntro = false;
+
+        const handleIntroVideoEnded = () => {
+            if (hasAutoScrolledFromIntro) return;
+
+            // Ensure preloader is dismissed before performing automatic scroll
+            const preloaderOverlay = document.getElementById('preloader');
+            if (preloaderOverlay && !preloaderOverlay.classList.contains('fade-out') && window.getComputedStyle(preloaderOverlay).display !== 'none') {
+                return;
+            }
+
+            const nextSection = document.getElementById('about') || document.querySelector('.about-section');
+            if (!nextSection) return;
+
+            // If the user has already scrolled away from the intro, do not unexpectedly move them
+            const homeSection = document.getElementById('home');
+            if (homeSection) {
+                const homeRect = homeSection.getBoundingClientRect();
+                if (homeRect.bottom < window.innerHeight * 0.35 || window.scrollY >= (nextSection.offsetTop - 180)) {
+                    hasAutoScrolledFromIntro = true;
+                    return;
+                }
+            }
+
+            hasAutoScrolledFromIntro = true;
+
+            const sectionHeading = nextSection.querySelector('.section-header, .section-title, h2') || nextSection;
+            const header = document.querySelector('.header');
+
+            const headerTop = header ? (parseFloat(window.getComputedStyle(header).top) || 0) : 0;
+            const headerHeight = header ? (header.offsetHeight + headerTop) : 76;
+            const navbarOffset = headerHeight + 16; // Maintain 16px clearance below floating navbar
+
+            const headingTopInDoc = window.pageYOffset + sectionHeading.getBoundingClientRect().top;
+            const sectionTopInDoc = window.pageYOffset + nextSection.getBoundingClientRect().top;
+            const targetScrollTop = Math.max(0, Math.round(Math.min(sectionTopInDoc, headingTopInDoc - navbarOffset)));
+
+            const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const scrollBehavior = prefersReducedMotion ? 'auto' : 'smooth';
+
+            if (prefersReducedMotion) {
+                document.documentElement.style.scrollBehavior = 'auto';
+            }
+
+            try {
+                window.scrollTo({
+                    top: targetScrollTop,
+                    behavior: scrollBehavior
+                });
+            } catch (err) {
+                window.scrollTo(0, targetScrollTop);
+            }
+
+            if (prefersReducedMotion) {
+                setTimeout(() => {
+                    document.documentElement.style.scrollBehavior = '';
+                }, 50);
+            }
+        };
+
+        heroVideo.addEventListener('ended', handleIntroVideoEnded);
     }
 
     if (preloader) {
