@@ -456,6 +456,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Slow down the video sound & verify pitch preservation for clarity
     if (heroVideo) {
         heroVideo.muted = true; // Start muted to satisfy browser checks
+        heroVideo.playsInline = true;
+        heroVideo.setAttribute('playsinline', '');
+        heroVideo.setAttribute('webkit-playsinline', '');
         
         const configureVideoPlayback = () => {
             heroVideo.playbackRate = 0.95; // Slightly faster for natural feel
@@ -468,6 +471,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (heroVideo.videoWidth < heroVideo.videoHeight) {
                 heroVideo.classList.add('video-portrait');
             }
+
+            // Ensure muted play starts immediately so video frames render
+            if (heroVideo.paused) {
+                heroVideo.play().catch(err => {
+                    console.log("Background muted play prevented: ", err);
+                    updatePlayButtonUI();
+                });
+            }
         };
 
         // If metadata is already loaded, apply speed settings, else wait for it
@@ -477,12 +488,60 @@ document.addEventListener('DOMContentLoaded', () => {
             heroVideo.addEventListener('loadedmetadata', configureVideoPlayback);
         }
 
-        // Force browser to play muted in the background to start buffer loading
+        // Force browser to play muted in the background to start buffer loading and frame render
         heroVideo.play().catch(err => {
             console.log("Background muted play prevented: ", err);
         });
 
-        // Automatic smooth scroll to the next content section once intro video finishes playing
+        // Dynamic Play / Unmute / Replay Button Controller
+        const updatePlayButtonUI = () => {
+            if (!videoReplayBtn || !heroVideo) return;
+
+            if (heroVideo.ended) {
+                videoReplayBtn.innerHTML = '<i class="fas fa-undo-alt"></i> <span>Replay Intro</span>';
+                videoReplayBtn.style.display = 'inline-flex';
+                videoReplayBtn.style.alignItems = 'center';
+            } else if (heroVideo.paused) {
+                videoReplayBtn.innerHTML = '<i class="fas fa-play"></i> <span>Play Intro</span>';
+                videoReplayBtn.style.display = 'inline-flex';
+                videoReplayBtn.style.alignItems = 'center';
+            } else if (heroVideo.muted) {
+                videoReplayBtn.innerHTML = '<i class="fas fa-volume-up"></i> <span>Unmute Intro</span>';
+                videoReplayBtn.style.display = 'inline-flex';
+                videoReplayBtn.style.alignItems = 'center';
+            } else {
+                // Video is actively playing unmuted
+                videoReplayBtn.style.display = 'none';
+            }
+        };
+
+        heroVideo.addEventListener('play', updatePlayButtonUI);
+        heroVideo.addEventListener('pause', updatePlayButtonUI);
+        heroVideo.addEventListener('ended', updatePlayButtonUI);
+        heroVideo.addEventListener('volumechange', updatePlayButtonUI);
+
+        // Click handler for play / unmute / replay button
+        if (videoReplayBtn) {
+            videoReplayBtn.addEventListener('click', () => {
+                if (heroVideo.ended || heroVideo.paused) {
+                    heroVideo.currentTime = 0;
+                    heroVideo.muted = false;
+                    heroVideo.loop = false;
+                    const p = heroVideo.play();
+                    if (p !== undefined) {
+                        p.catch(() => {
+                            heroVideo.muted = true;
+                            heroVideo.play().catch(e => console.warn(e));
+                        });
+                    }
+                } else if (heroVideo.muted) {
+                    heroVideo.muted = false;
+                }
+                updatePlayButtonUI();
+            });
+        }
+
+        // Automatic smooth scroll to the next content section strictly on playback completion
         let hasAutoScrolledFromIntro = false;
 
         const handleIntroVideoEnded = () => {
@@ -499,9 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // If the user has already scrolled away from the intro, do not unexpectedly move them
             const homeSection = document.getElementById('home');
+            const currentY = window.pageYOffset || document.documentElement.scrollTop;
             if (homeSection) {
                 const homeRect = homeSection.getBoundingClientRect();
-                if (homeRect.bottom < window.innerHeight * 0.35 || window.scrollY >= (nextSection.offsetTop - 180)) {
+                if (homeRect.bottom < window.innerHeight * 0.35 || currentY >= (nextSection.offsetTop - 180)) {
                     hasAutoScrolledFromIntro = true;
                     window.__hasAutoScrolledFromIntro = true;
                     return;
@@ -511,9 +571,6 @@ document.addEventListener('DOMContentLoaded', () => {
             hasAutoScrolledFromIntro = true;
             window.__hasAutoScrolledFromIntro = true;
             window.__isIntroAutoScrolling = true;
-            setTimeout(() => {
-                window.__isIntroAutoScrolling = false;
-            }, 1800);
 
             const sectionHeading = nextSection.querySelector('.section-header, .section-title, h2') || nextSection;
             const header = document.querySelector('.header');
@@ -547,6 +604,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.documentElement.style.scrollBehavior = '';
                 }, 50);
             }
+
+            setTimeout(() => {
+                window.__isIntroAutoScrolling = false;
+            }, 1500);
         };
 
         heroVideo.addEventListener('ended', handleIntroVideoEnded);
@@ -577,11 +638,19 @@ document.addEventListener('DOMContentLoaded', () => {
                             heroVideo.currentTime = 0; // Play from the start
                         }
                         heroVideo.muted = false; // Unmute voice
-                        heroVideo.play().catch(err => {
-                            console.log("Audio play failed on click: ", err);
-                        });
+                        const playPromise = heroVideo.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(err => {
+                                console.warn("Unmuted autoplay restricted, playing muted as fallback:", err);
+                                // Fallback to muted playback immediately so video is 100% visible
+                                heroVideo.muted = true;
+                                heroVideo.play().catch(e => {
+                                    console.warn("Muted playback also blocked:", e);
+                                });
+                            });
+                        }
                     } catch (videoErr) {
-                        console.log("Video playback trigger failed: ", videoErr);
+                        console.warn("Video playback trigger failed: ", videoErr);
                     }
                 }
                 
@@ -590,31 +659,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     preloader.style.display = 'none';
                 }, 800);
-            });
-        }
-
-        // Replay button display controller based on playback states
-        if (heroVideo && videoReplayBtn) {
-            const showReplayBtn = () => {
-                videoReplayBtn.style.display = 'inline-flex';
-                videoReplayBtn.style.alignItems = 'center';
-            };
-            const hideReplayBtn = () => {
-                videoReplayBtn.style.display = 'none';
-            };
-
-            heroVideo.addEventListener('play', hideReplayBtn);
-            heroVideo.addEventListener('pause', showReplayBtn);
-            heroVideo.addEventListener('ended', showReplayBtn);
-
-            // Replay button click handler
-            videoReplayBtn.addEventListener('click', () => {
-                heroVideo.currentTime = 0;
-                heroVideo.muted = false; // Keep voice unmuted
-                heroVideo.loop = false;  // Ensure it does not loop automatically
-                heroVideo.play().catch(err => {
-                    console.log("Replay failed: ", err);
-                });
             });
         }
     }
@@ -676,20 +720,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const STATE_IDLE = 'IDLE';
-        const STATE_ARMED = 'ARMED';
-        const STATE_GESTURE = 'GESTURE';
+        const STATE_INITIATING = 'INITIATING';
         const STATE_AUTOSCROLLING = 'AUTOSCROLLING';
-        const STATE_STOPPED = 'STOPPED';
+        const STATE_DISABLED = 'DISABLED';
 
         let state = STATE_IDLE;
         let rafId = null;
         let lastFrameTimestamp = null;
         let currentVirtualScrollY = 0;
+        let autoScrollStartTime = 0;
         let gestureSettleTimer = null;
         let isTouching = false;
         let touchStartX = 0;
         let touchStartY = 0;
-        let touchInitiatedDownward = false;
+        let hasTouchDownward = false;
 
         // Gentle, consistent speed: ~28 CSS pixels per second (25-35 px/s range)
         const SPEED_PX_PER_SEC = 28;
@@ -706,8 +750,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Permanent shutdown for the remainder of this page visit
         const stopPermanently = (reason) => {
-            if (state === STATE_STOPPED) return;
-            state = STATE_STOPPED;
+            if (state === STATE_DISABLED) return;
+            state = STATE_DISABLED;
 
             if (gestureSettleTimer) {
                 clearTimeout(gestureSettleTimer);
@@ -722,7 +766,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Restore native smooth scrolling behavior
             document.documentElement.style.scrollBehavior = '';
 
-            // Clean up event listeners to keep memory clean and ensure no future reactivation
+            // Clean up event listeners so nothing ever fires again
             window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('touchstart', handleTouchStart);
             window.removeEventListener('touchmove', handleTouchMove);
@@ -730,10 +774,8 @@ document.addEventListener('DOMContentLoaded', () => {
             window.removeEventListener('touchcancel', handleTouchEnd);
             window.removeEventListener('pointerdown', handlePointerDown);
             window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('scroll', handleNativeScroll);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.removeEventListener('pagehide', handlePageHide);
-            window.removeEventListener('blur', handleBlur);
         };
 
         // Frame-by-frame gentle scroll step (independent of screen refresh rate)
@@ -763,7 +805,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const startAutoScrolling = () => {
-            if (state === STATE_STOPPED) return;
+            if (state === STATE_DISABLED) return;
 
             // Preloader check
             const preloaderEl = document.getElementById('preloader');
@@ -779,15 +821,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Verify we are past or scrolling away from the intro
-            if (!isPastIntro()) {
-                state = STATE_ARMED;
-                return;
-            }
-
             state = STATE_AUTOSCROLLING;
             currentVirtualScrollY = currentScroll;
             lastFrameTimestamp = null;
+            autoScrollStartTime = performance.now();
 
             // Set scrollBehavior to 'auto' while rAF runs for buttery smooth 60/120fps motion
             document.documentElement.style.scrollBehavior = 'auto';
@@ -796,7 +833,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const onGestureSettled = () => {
-            if (state !== STATE_GESTURE) return;
+            if (state !== STATE_INITIATING) return;
             if (isTouching) return; // Do not start while visitor is still touching screen
 
             startAutoScrolling();
@@ -806,7 +843,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (gestureSettleTimer) {
                 clearTimeout(gestureSettleTimer);
             }
-            gestureSettleTimer = setTimeout(onGestureSettled, 350);
+            gestureSettleTimer = setTimeout(onGestureSettled, 380);
         };
 
         // Check if intro video transition or preloader is active
@@ -819,53 +856,48 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         };
 
-        // Check if user is past or scrolling past the hero / intro section
-        const isPastIntro = () => {
-            if (window.__hasAutoScrolledFromIntro) return true;
-            const currentY = window.pageYOffset || document.documentElement.scrollTop;
-            const aboutSection = document.getElementById('about');
-            if (aboutSection && currentY >= (aboutSection.offsetTop - 300)) {
-                return true;
-            }
-            if (currentY > window.innerHeight * 0.35) {
-                return true;
-            }
-            return false;
-        };
-
-        const armIfReady = () => {
-            if (state === STATE_IDLE && !isIntroActive()) {
-                state = STATE_ARMED;
-            }
+        const isReadyForDownScroll = () => {
+            if (state === STATE_DISABLED) return false;
+            if (isIntroActive()) return false;
+            return true;
         };
 
         // Mouse Wheel & Trackpad
         const handleWheel = (e) => {
-            if (state === STATE_STOPPED) return;
+            if (state === STATE_DISABLED) return;
 
-            // If auto-scrolling is active, any wheel gesture immediately halts it permanently
+            // When actively auto-scrolling:
             if (state === STATE_AUTOSCROLLING) {
-                stopPermanently('wheel_intervention');
+                // Upward wheel is ALWAYS an intentional intervention
+                if (e.deltaY < -1) {
+                    stopPermanently('wheel_upward');
+                    return;
+                }
+                // Downward wheel: treat the initiating burst as ONE action
+                // Ignore residual downward inertia for the first 350ms of auto-scrolling
+                const elapsedSinceStart = performance.now() - autoScrollStartTime;
+                if (elapsedSinceStart > 350) {
+                    stopPermanently('wheel_new_scroll');
+                }
                 return;
             }
 
-            // If in gesture settle window
-            if (state === STATE_GESTURE) {
+            // During initiating gesture settle window:
+            if (state === STATE_INITIATING) {
                 if (e.deltaY < -2) {
                     // Upward scroll cancels auto-scroll permanently
                     stopPermanently('wheel_upward_canceled');
                 } else if (e.deltaY > 0) {
+                    // Part of same initiating burst: reset settle timer
                     resetGestureSettleTimer();
                 }
                 return;
             }
 
-            armIfReady();
-
-            // Detect first intentional downward scroll
-            if (state === STATE_ARMED && !isIntroActive()) {
+            // In IDLE state: detect first intentional downward scroll
+            if (isReadyForDownScroll()) {
                 if (e.deltaY > 5) {
-                    state = STATE_GESTURE;
+                    state = STATE_INITIATING;
                     resetGestureSettleTimer();
                 }
             }
@@ -873,28 +905,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Touch gestures (iOS Safari, Android Chrome, Tablets)
         const handleTouchStart = (e) => {
-            if (state === STATE_STOPPED) return;
+            if (state === STATE_DISABLED) return;
 
             isTouching = true;
 
             // If auto-scrolling is running, touching the screen is an explicit pause
             if (state === STATE_AUTOSCROLLING) {
-                stopPermanently('touch_pause');
-                return;
+                const elapsedSinceStart = performance.now() - autoScrollStartTime;
+                if (elapsedSinceStart > 100) {
+                    stopPermanently('touch_pause');
+                    return;
+                }
             }
 
             if (e.touches && e.touches.length > 0) {
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
-                touchInitiatedDownward = false;
+                hasTouchDownward = false;
             }
         };
 
         const handleTouchMove = (e) => {
-            if (state === STATE_STOPPED) return;
+            if (state === STATE_DISABLED) return;
 
             if (state === STATE_AUTOSCROLLING) {
-                stopPermanently('touchmove_intervention');
+                const elapsedSinceStart = performance.now() - autoScrollStartTime;
+                if (elapsedSinceStart > 100) {
+                    stopPermanently('touchmove_intervention');
+                }
                 return;
             }
 
@@ -907,7 +945,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Upward scrolling gesture (finger dragging down)
             if (deltaY < -20 && Math.abs(deltaY) > Math.abs(deltaX)) {
-                if (state === STATE_GESTURE) {
+                if (state === STATE_INITIATING) {
                     stopPermanently('touch_upward_canceled');
                 }
                 return;
@@ -915,11 +953,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Downward scrolling gesture (finger dragging up)
             if (deltaY > 20 && Math.abs(deltaY) > Math.abs(deltaX)) {
-                armIfReady();
-
-                if ((state === STATE_ARMED || state === STATE_GESTURE) && !isIntroActive()) {
-                    touchInitiatedDownward = true;
-                    state = STATE_GESTURE;
+                if (isReadyForDownScroll()) {
+                    hasTouchDownward = true;
+                    state = STATE_INITIATING;
                     resetGestureSettleTimer();
                 }
             }
@@ -927,27 +963,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const handleTouchEnd = () => {
             isTouching = false;
-            if (state === STATE_STOPPED) return;
+            if (state === STATE_DISABLED) return;
 
-            if (state === STATE_GESTURE && touchInitiatedDownward) {
+            if (state === STATE_INITIATING && hasTouchDownward) {
                 resetGestureSettleTimer();
             }
         };
 
         // Tap or Click handler:
-        // Treat a tap or click as explicit way to pause auto-scrolling.
+        // Treat as explicit way to pause during auto-scrolling.
         // Passive listener ensures normal element actions (accordions, links, buttons) are preserved!
         const handlePointerDown = (e) => {
             if (state === STATE_AUTOSCROLLING) {
-                stopPermanently('pointer_pause');
-            } else if (state === STATE_GESTURE) {
-                stopPermanently('pointer_interrupted_settle');
+                const elapsedSinceStart = performance.now() - autoScrollStartTime;
+                if (elapsedSinceStart > 100) {
+                    stopPermanently('pointer_pause');
+                }
             }
         };
 
         // Keyboard navigation
         const handleKeyDown = (e) => {
-            if (state === STATE_STOPPED) return;
+            if (state === STATE_DISABLED) return;
 
             const navKeys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' ', 'Tab', 'Escape'];
 
@@ -958,15 +995,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            armIfReady();
-
-            if (state === STATE_ARMED && !isIntroActive()) {
+            if (isReadyForDownScroll()) {
                 const isDownKey = e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey);
                 if (isDownKey) {
-                    state = STATE_GESTURE;
+                    state = STATE_INITIATING;
                     resetGestureSettleTimer();
                 }
-            } else if (state === STATE_GESTURE) {
+            } else if (state === STATE_INITIATING) {
                 const isUpKey = e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'Home' || (e.key === ' ' && e.shiftKey);
                 if (isUpKey) {
                     stopPermanently('keyboard_upward_canceled');
@@ -974,24 +1009,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     resetGestureSettleTimer();
                 }
             }
-        };
-
-        // Native scroll listener (tracks momentum completion & scrollbar interactions)
-        let lastObservedScrollY = window.pageYOffset || document.documentElement.scrollTop;
-
-        const handleNativeScroll = () => {
-            const currentY = window.pageYOffset || document.documentElement.scrollTop;
-
-            if (state === STATE_GESTURE) {
-                resetGestureSettleTimer();
-            } else if (state === STATE_AUTOSCROLLING) {
-                // If scrollbar dragged or sudden external scroll position jump occurs
-                if (Math.abs(currentY - currentVirtualScrollY) > 25) {
-                    stopPermanently('external_scroll_deviation');
-                }
-            }
-
-            lastObservedScrollY = currentY;
         };
 
         // Visibility & Page Exit handlers
@@ -1003,10 +1020,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const handlePageHide = () => {
             stopPermanently('page_hide');
-        };
-
-        const handleBlur = () => {
-            stopPermanently('window_blur');
         };
 
         // Reduced-motion runtime change listener
@@ -1034,22 +1047,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
         window.addEventListener('pointerdown', handlePointerDown, { passive: true });
         window.addEventListener('keydown', handleKeyDown, { passive: true });
-        window.addEventListener('scroll', handleNativeScroll, { passive: true });
         document.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('pagehide', handlePageHide);
-        window.addEventListener('blur', handleBlur);
-
-        // Preloader enter button handling
-        const preloaderEnterBtn = document.getElementById('preloaderEnterBtn');
-        if (preloaderEnterBtn) {
-            preloaderEnterBtn.addEventListener('click', () => {
-                setTimeout(() => {
-                    armIfReady();
-                }, 1000);
-            }, { passive: true });
-        } else {
-            armIfReady();
-        }
     };
 
     // Initialize One-Time Slow Auto-Scroller

@@ -4747,6 +4747,8 @@ ul {
         animation: none !important;
         transform: none !important;
     }
+}
+
 /* Clickable Card Link & Profile Tag Styles for Chess Item */
 a.passion-card-link {
     text-decoration: none;
