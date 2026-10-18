@@ -1225,250 +1225,301 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================================================
-       FAVORITE SPORTS & PASSIONS SECTION INTERACTIVE ENGINE (Strict Addition)
+       ROBOT PLAYGROUND INTERACTIVE ENGINE (Take Control — Hariharan’s Robot Playground)
        ========================================================================== */
-    const passionsSection = document.getElementById('passions');
-    if (passionsSection) {
-        // 1. IntersectionObserver for Entrance Animation & Auto-pause when off-screen
-        const scanLine = passionsSection.querySelector('.passions-scan-line');
-        const passionCards = passionsSection.querySelectorAll('.passion-card');
-        let passionsActive = false;
-        let isPassionsInView = false;
+    (function(){
+        "use strict";
+        var R = document.getElementById("rp");
+        if (!R) return;
+        var $ = function(i){ return document.getElementById(i); };
+        var cv = $("cv"), ctx = cv.getContext("2d"), stage = $("stage");
+        var W = 800, H = 520, BR = 17, SPEED = 210, START = {x: 400, y: 250};
+        var RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var IC = {
+            0: "M12 9a3 3 0 100 6 3 3 0 000-6zM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2",
+            1: "M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16",
+            2: "M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z",
+            3: "M9 21h6M10 21v-3h4v3M9 18c0-3 1-5 1-7a3 3 0 114 0c0 2 1 4 1 7zM12 3v2M11 4h2"
+        };
+        function svg(p){
+            return '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + p + '"/></svg>';
+        }
+        var ZONES = [
+            {n:"Robotics & Automation", s:"Robotics", x:150, y:140, r:38, t:"I’m Hariharan M, a Mechatronics student exploring how mechanical systems, electronics, and software work together."},
+            {n:"AI & Coding", s:"AI & Coding", x:650, y:130, r:38, t:"I enjoy exploring AI applications, computer vision, and automation to turn ideas into useful experiences."},
+            {n:"Design & Creativity", s:"Design", x:170, y:400, r:38, t:"I’m interested in UI/UX, digital experiences, and creative content that makes technology easier to understand."},
+            {n:"Beyond Engineering", s:"Beyond", x:640, y:410, r:38, t:"Chess, magic, and mentalism are part of my world too—combining strategy, curiosity, and performance."}
+        ];
+        var OBS = [{x:300, y:80, w:36, h:150}, {x:470, y:290, w:150, h:34}, {x:250, y:340, w:100, h:34}];
+
+        /* ---------- game state & logic (no DOM) ---------- */
+        var S = {mode:"idle", x:START.x, y:START.y, vx:0, vy:0, ang:0, wheel:0, t:0, found:[0,0,0,0], open:-1, done:false, free:false, celebrate:0};
+        var KEYS = {up:["ArrowUp","KeyW"], down:["ArrowDown","KeyS"], left:["ArrowLeft","KeyA"], right:["ArrowRight","KeyD"]};
+        var codes = {}, pad = {};
+        function held(d){ return !!pad[d] || KEYS[d].some(function(c){ return codes[c]; }); }
+        function clamp(v,a,b){ return v<a?a:v>b?b:v; }
+        function resolve(){
+            S.x = clamp(S.x, 38, W - 38);
+            S.y = clamp(S.y, 38, H - 38);
+            OBS.forEach(function(o){
+                var cx = clamp(S.x, o.x, o.x + o.w), cy = clamp(S.y, o.y, o.y + o.h), dx = S.x - cx, dy = S.y - cy, d = Math.hypot(dx, dy);
+                if (d < BR) {
+                    if (d > 0.001) { S.x = cx + dx / d * BR; S.y = cy + dy / d * BR; }
+                    else {
+                        var l = S.x - o.x, r = o.x + o.w - S.x, u = S.y - o.y, b = o.y + o.h - S.y, m = Math.min(l, r, u, b);
+                        if (m === l) S.x = o.x - BR; else if (m === r) S.x = o.x + o.w + BR; else if (m === u) S.y = o.y - BR; else S.y = o.y + o.h + BR;
+                    }
+                }
+            });
+        }
+        function update(dt){
+            S.t += dt;
+            if (S.celebrate > 0) S.celebrate -= dt;
+            if (S.mode === "playing") {
+                var ix = (held("right")?1:0) - (held("left")?1:0), iy = (held("down")?1:0) - (held("up")?1:0), m = Math.hypot(ix, iy);
+                if (m) { ix /= m; iy /= m; }
+                var a = 1 - Math.exp(-dt * 14);
+                S.vx += (ix * SPEED - S.vx) * a;
+                S.vy += (iy * SPEED - S.vy) * a;
+                S.x += S.vx * dt; resolve();
+                S.y += S.vy * dt; resolve();
+                var sp = Math.hypot(S.vx, S.vy);
+                S.wheel += sp * dt * 1.2;
+                if (sp > 12) {
+                    var tg = Math.atan2(S.vy, S.vx), df = ((tg - S.ang + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+                    S.ang += df * (1 - Math.exp(-dt * 12));
+                }
+                ZONES.forEach(function(z, i){
+                    if (!S.found[i] && Math.hypot(S.x - z.x, S.y - z.y) < z.r) discover(i);
+                });
+            } else if (!RM) {
+                S.ang = Math.sin(S.t * .7) * .7;
+            }
+        }
+
+        /* ---------- rendering ---------- */
+        function rr(x, y, w, h, r){
+            if (ctx.roundRect) {
+                ctx.beginPath();
+                ctx.roundRect(x, y, w, h, r);
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.lineTo(x + w - r, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+                ctx.lineTo(x + w, y + h - r);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                ctx.lineTo(x + r, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+                ctx.lineTo(x, y + r);
+                ctx.quadraticCurveTo(x, y, x + r, y);
+                ctx.closePath();
+            }
+        }
+        function draw(){
+            var k = cv.width / W;
+            ctx.setTransform(k, 0, 0, k, 0, 0);
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = "#0c0e10"; rr(14, 34, 772, 484, 34); ctx.fill();
+            var g = ctx.createLinearGradient(0, 14, 0, 498);
+            g.addColorStop(0, "#2a2f37");
+            g.addColorStop(1, "#1f2329");
+            ctx.fillStyle = g; rr(14, 14, 772, 484, 34); ctx.fill();
+            ctx.strokeStyle = "rgba(143,211,255,.25)"; ctx.lineWidth = 2; rr(14, 14, 772, 484, 34); ctx.stroke();
+            ctx.strokeStyle = "rgba(255,255,255,.04)"; ctx.lineWidth = 1; ctx.beginPath();
+            for (var gx = 60; gx < W - 40; gx += 50) { ctx.moveTo(gx, 30); ctx.lineTo(gx, 484); }
+            for (var gy = 60; gy < H - 40; gy += 50) { ctx.moveTo(30, gy); ctx.lineTo(770, gy); }
+            ctx.stroke();
+            ctx.setLineDash([6, 10]); ctx.strokeStyle = "rgba(143,211,255,.14)"; ctx.lineWidth = 2; ctx.beginPath();
+            ZONES.forEach(function(z){ ctx.moveTo(START.x, START.y); ctx.lineTo(z.x, z.y); });
+            ctx.stroke(); ctx.setLineDash([]);
+            ctx.strokeStyle = "rgba(255,138,61,.45)"; ctx.beginPath(); ctx.arc(START.x, START.y, 26, 0, 7); ctx.stroke();
+            OBS.forEach(function(o){
+                ctx.fillStyle = "rgba(0,0,0,.35)"; rr(o.x + 8, o.y + 14, o.w, o.h, 10); ctx.fill();
+                ctx.fillStyle = "#14171b"; rr(o.x, o.y + 9, o.w, o.h, 10); ctx.fill();
+                ctx.fillStyle = "#39404b"; rr(o.x, o.y, o.w, o.h, 10); ctx.fill();
+                ctx.strokeStyle = "rgba(143,211,255,.35)"; ctx.lineWidth = 1.5; rr(o.x + 3, o.y + 3, o.w - 6, o.h - 6, 8); ctx.stroke();
+            });
+            ZONES.forEach(function(z, i){
+                var f = S.found[i], col = f ? "#4ade80" : "#8fd3ff", p = (RM || f) ? 0 : Math.sin(S.t * 3) * 2;
+                if (f) {
+                    var rg = ctx.createRadialGradient(z.x, z.y, 6, z.x, z.y, z.r + 34);
+                    rg.addColorStop(0, "rgba(74,222,128,.4)");
+                    rg.addColorStop(1, "rgba(74,222,128,0)");
+                    ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(z.x, z.y, z.r + 34, 0, 7); ctx.fill();
+                }
+                ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.beginPath(); ctx.ellipse(z.x + 4, z.y + 8, z.r, z.r * .9, 0, 0, 7); ctx.fill();
+                ctx.fillStyle = f ? "rgba(74,222,128,.22)" : "rgba(143,211,255,.08)";
+                ctx.strokeStyle = col; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.arc(z.x, z.y, z.r + p, 0, 7); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = col; ctx.font = "700 22px system-ui,sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.fillText(f ? "✓" : String(i + 1), z.x, z.y + 1);
+                ctx.font = "600 14px system-ui,sans-serif"; ctx.fillStyle = "#f4f6f8"; ctx.fillText(z.s, z.x, z.y + z.r + 20);
+                if (S.celebrate > 0 && !RM) {
+                    var q = (3 - S.celebrate) % 1;
+                    ctx.strokeStyle = "rgba(74,222,128," + (1 - q) * .8 + ")"; ctx.lineWidth = 3;
+                    ctx.beginPath(); ctx.arc(z.x, z.y, z.r + q * 60, 0, 7); ctx.stroke();
+                }
+            });
+            drawRobot();
+        }
+        function drawRobot(){
+            ctx.save(); ctx.translate(S.x, S.y);
+            ctx.fillStyle = "rgba(0,0,0,.38)"; ctx.beginPath(); ctx.ellipse(3, 12, 21, 12, 0, 0, 7); ctx.fill();
+            ctx.rotate(S.ang);
+            [-1, 1].forEach(function(s){
+                ctx.fillStyle = "#0f1216"; rr(-11, s * 15 - 4.5, 22, 9, 4.5); ctx.fill();
+                ctx.strokeStyle = "#59626f"; ctx.lineWidth = 1.5; ctx.beginPath();
+                for (var i = 0; i < 4; i++) {
+                    var x = ((i * 6 + S.wheel) % 24 + 24) % 24 - 12;
+                    if (Math.abs(x) < 9) { ctx.moveTo(x, s * 15 - 3); ctx.lineTo(x, s * 15 + 3); }
+                }
+                ctx.stroke();
+            });
+            ctx.fillStyle = "#e8edf3"; rr(-16, -12.5, 32, 25, 10); ctx.fill();
+            ctx.strokeStyle = "#9aa6b4"; ctx.lineWidth = 1.5; ctx.stroke();
+            ctx.fillStyle = "#11151a"; rr(1, -9.5, 14, 19, 7); ctx.fill();
+            var b = (!RM && (S.t % 3.4) > 3.25) ? .15 : 1;
+            ctx.fillStyle = "#8fd3ff"; ctx.shadowColor = "#8fd3ff"; ctx.shadowBlur = 6;
+            [-4.5, 4.5].forEach(function(e){ ctx.beginPath(); ctx.ellipse(8.5, e, 2.7, 2.7 * b, 0, 0, 7); ctx.fill(); });
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = "#9aa6b4"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(-13, -6); ctx.stroke();
+            ctx.fillStyle = "#ff8a3d"; ctx.beginPath(); ctx.arc(-13, -6, 2.6 + (RM ? 0 : Math.sin(S.t * 5) * .5), 0, 7); ctx.fill();
+            ctx.restore();
+        }
+
+        /* ---------- loop & intersection observer ---------- */
+        var raf = 0, last = 0, inView = true;
+        function needs(){ return inView && (S.mode === "playing" || (!RM && (S.mode === "idle" || S.mode === "explore"))); }
+        function frame(ts){
+            raf = 0;
+            var dt = Math.min(.05, (ts - last) / 1000 || 0);
+            last = ts;
+            update(dt);
+            draw();
+            if (needs() && !document.hidden) raf = requestAnimationFrame(frame);
+        }
+        function kick(){
+            if (!raf && !document.hidden && needs()) {
+                last = performance.now();
+                raf = requestAnimationFrame(frame);
+            } else if (!raf) draw();
+        }
+        function size(){
+            var w = stage.clientWidth || 600, d = Math.min(window.devicePixelRatio || 1, 2), pw = Math.min(Math.round(w * d), 1200);
+            cv.width = pw; cv.height = Math.round(pw * H / W); draw();
+        }
+        if (window.ResizeObserver) new ResizeObserver(size).observe(stage); else addEventListener("resize", size);
 
         if ('IntersectionObserver' in window) {
-            const passionsObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    isPassionsInView = entry.isIntersecting;
-                    if (entry.isIntersecting && !passionsActive) {
-                        passionsActive = true;
-                        // Trigger robotic scan line sweep
-                        if (scanLine) scanLine.classList.add('scanning');
-                        
-                        // Staggered card reveal
-                        passionCards.forEach((card, index) => {
-                            setTimeout(() => {
-                                card.classList.add('in-view');
-                            }, 200 + index * 120);
-                        });
-                    }
-                });
-            }, { threshold: 0.2 });
-            passionsObserver.observe(passionsSection);
-        } else {
-            passionCards.forEach(card => card.classList.add('in-view'));
+            inView = false;
+            var obs = new IntersectionObserver(function(entries){
+                inView = entries[0].isIntersecting;
+                if (inView) {
+                    kick();
+                } else {
+                    if (S.mode === "playing") setPause(true);
+                    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+                }
+            }, { threshold: 0.05 });
+            obs.observe(R);
         }
 
-        // 2. Background Constellation Canvas
-        const bgCanvas = document.getElementById('passionsConstellationCanvas');
-        if (bgCanvas) {
-            const ctx = bgCanvas.getContext('2d');
-            let bgWidth = 0, bgHeight = 0;
-            let bgParticles = [];
-            const particleCount = 35;
-
-            function resizeBgCanvas() {
-                if (bgCanvas.parentElement) {
-                    bgWidth = bgCanvas.width = bgCanvas.parentElement.clientWidth;
-                    bgHeight = bgCanvas.height = bgCanvas.parentElement.clientHeight;
-                }
-            }
-            resizeBgCanvas();
-            window.addEventListener('resize', resizeBgCanvas);
-
-            for (let i = 0; i < particleCount; i++) {
-                bgParticles.push({
-                    x: Math.random() * (bgWidth || 800),
-                    y: Math.random() * (bgHeight || 600),
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4,
-                    radius: Math.random() * 2 + 1,
-                    color: Math.random() > 0.5 ? '#FF7B1A' : '#38bdf8',
-                    alpha: Math.random() * 0.4 + 0.1
-                });
-            }
-
-            function drawBgConstellation() {
-                if (isPassionsInView && ctx) {
-                    ctx.clearRect(0, 0, bgWidth, bgHeight);
-                    for (let i = 0; i < bgParticles.length; i++) {
-                        const p = bgParticles[i];
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        if (p.x < 0 || p.x > bgWidth) p.vx *= -1;
-                        if (p.y < 0 || p.y > bgHeight) p.vy *= -1;
-
-                        ctx.save();
-                        ctx.globalAlpha = p.alpha;
-                        ctx.fillStyle = p.color;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.restore();
-
-                        // Connect nearby particles
-                        for (let j = i + 1; j < bgParticles.length; j++) {
-                            const p2 = bgParticles[j];
-                            const dx = p.x - p2.x;
-                            const dy = p.y - p2.y;
-                            const dist = Math.sqrt(dx * dx + dy * dy);
-                            if (dist < 100) {
-                                ctx.save();
-                                ctx.globalAlpha = (1 - dist / 100) * 0.12;
-                                ctx.strokeStyle = '#38bdf8';
-                                ctx.lineWidth = 0.6;
-                                ctx.beginPath();
-                                ctx.moveTo(p.x, p.y);
-                                ctx.lineTo(p2.x, p2.y);
-                                ctx.stroke();
-                                ctx.restore();
-                            }
-                        }
-                    }
-                }
-                requestAnimationFrame(drawBgConstellation);
-            }
-            drawBgConstellation();
+        /* ---------- UI ---------- */
+        var chips = $("chips"), cardEl = $("card"), stEl = $("st");
+        ZONES.forEach(function(z, i){
+            var li = document.createElement("li"), b = document.createElement("button");
+            b.className = "chip"; b.type = "button"; b.disabled = true; b.setAttribute("aria-label", z.n + " (not discovered yet)");
+            b.innerHTML = svg(IC[i]) + '<span></span>'; b.lastChild.textContent = z.n;
+            b.addEventListener("click", function(){ if (S.found[i]) openCard(i); else if (S.free) discover(i); });
+            li.appendChild(b); chips.appendChild(li);
+        });
+        function say(t){ stEl.textContent = t; }
+        function setMode(m){
+            S.mode = m; R.dataset.mode = m;
+            $("intro").hidden = !(m === "idle");
+            $("pauseov").hidden = !(m === "paused");
+            $("pause").disabled = !(m === "playing" || m === "paused");
+            $("pause").textContent = m === "paused" ? "Resume" : "Pause";
+            refreshChips(); kick();
         }
-
-        // 3. Card-level Interactive Particle Canvases (Chess, Cricket, Gym, Magic)
-        const cardCanvases = document.querySelectorAll('.card-particle-canvas');
-        cardCanvases.forEach(canvas => {
-            const ctx = canvas.getContext('2d');
-            let width = (canvas.width = canvas.parentElement.clientWidth || 300);
-            let height = (canvas.height = canvas.parentElement.clientHeight || 180);
-            let particles = [];
-
-            function addBurst(x, y, count = 12, color = '#38bdf8') {
-                for (let i = 0; i < count; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 3 + 1;
-                    particles.push({
-                        x: x || width / 2,
-                        y: y || height / 2,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed,
-                        radius: Math.random() * 2.5 + 1,
-                        alpha: 1,
-                        color: color
-                    });
-                }
-            }
-
-            const card = canvas.closest('.passion-card');
-            if (card) {
-                const passionType = card.getAttribute('data-passion');
-                const colorMap = {
-                    chess: '#FF7B1A',
-                    cricket: '#38bdf8',
-                    gym: '#22c55e',
-                    magic: '#a855f7'
-                };
-
-                card.addEventListener('mouseenter', (e) => {
-                    const rect = canvas.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    addBurst(x, y, 15, colorMap[passionType] || '#38bdf8');
-                });
-
-                card.addEventListener('click', (e) => {
-                    const rect = canvas.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    addBurst(x, y, 20, colorMap[passionType] || '#38bdf8');
-
-                    // Special trigger for Cricket impact shockwave
-                    if (passionType === 'cricket') {
-                        const shockwave = card.querySelector('#cricketShockwave');
-                        if (shockwave) {
-                            shockwave.style.left = `${x - 20}px`;
-                            shockwave.style.top = `${y - 20}px`;
-                            shockwave.style.animation = 'none';
-                            void shockwave.offsetWidth;
-                            shockwave.style.animation = 'shockwavePulse 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
-                        }
-                    }
-                });
-            }
-
-            function renderCardParticles() {
-                if (isPassionsInView && ctx) {
-                    ctx.clearRect(0, 0, width, height);
-                    for (let i = particles.length - 1; i >= 0; i--) {
-                        const p = particles[i];
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.alpha -= 0.025;
-                        if (p.alpha <= 0) {
-                            particles.splice(i, 1);
-                            continue;
-                        }
-                        ctx.save();
-                        ctx.globalAlpha = p.alpha;
-                        ctx.fillStyle = p.color;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.restore();
-                    }
-                }
-                requestAnimationFrame(renderCardParticles);
-            }
-            renderCardParticles();
-        });
-
-        // 4. Parallax Plane & Spring Tilt tracking on mousemove
-        let targetMouseX = 0, targetMouseY = 0;
-        let currentMouseX = 0, currentMouseY = 0;
-
-        passionsSection.addEventListener('mousemove', (e) => {
-            const rect = passionsSection.getBoundingClientRect();
-            targetMouseX = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-            targetMouseY = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-        });
-
-        passionsSection.addEventListener('mouseleave', () => {
-            targetMouseX = 0;
-            targetMouseY = 0;
-        });
-
-        function updatePassionsParallax() {
-            if (isPassionsInView) {
-                currentMouseX += (targetMouseX - currentMouseX) * 0.08;
-                currentMouseY += (targetMouseY - currentMouseY) * 0.08;
-
-                // Parallax Depth Plane 1 (Background Grid)
-                const bgGrid = passionsSection.querySelector('.passions-bg-grid');
-                if (bgGrid) {
-                    bgGrid.style.transform = `translate(${currentMouseX * 12}px, ${currentMouseY * 12}px)`;
-                }
-
-                // Parallax Depth Plane 2 (Card Layer Spring Tilt)
-                if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.innerWidth > 768) {
-                    passionCards.forEach(card => {
-                        const tiltX = -currentMouseY * 5;
-                        const tiltY = currentMouseX * 5;
-                        card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(10px)`;
-                    });
-                }
-
-                // Parallax Depth Plane 3 (3D Stage Floating Elements)
-                const knight = document.getElementById('chessKnight');
-                if (knight) {
-                    knight.style.transform = `translateZ(30px) rotateX(-55deg) translate(${currentMouseX * 10}px, ${currentMouseY * 10}px)`;
-                }
-                const bat = document.getElementById('cricketBat');
-                if (bat) {
-                    bat.style.transform = `rotate(${-35 + currentMouseX * 12}deg) translateZ(20px)`;
-                }
-                const wand = document.getElementById('magicWand');
-                if (wand) {
-                    wand.style.transform = `rotate(${40 + currentMouseX * 12}deg) translateZ(25px)`;
-                }
-            }
-            requestAnimationFrame(updatePassionsParallax);
+        function refreshChips(){
+            [].forEach.call(chips.children, function(li, i){
+                var b = li.firstChild, f = S.found[i];
+                b.disabled = !(f || S.free); b.classList.toggle("found", !!f);
+                b.setAttribute("aria-label", ZONES[i].n + (f ? " (discovered). Open card" : S.free ? ". Open card" : " (not discovered yet)"));
+                b.setAttribute("aria-pressed", S.open === i ? "true" : "false");
+            });
+            var n = S.found.reduce(function(a, b){ return a + b; }, 0);
+            $("cnt").textContent = n; $("fill").style.width = n * 25 + "%";
         }
-        updatePassionsParallax();
-    }
+        function openCard(i){
+            S.open = i; $("ct").textContent = ZONES[i].n; $("cp").textContent = ZONES[i].t;
+            cardEl.classList.remove("show", "pop"); void cardEl.offsetWidth; cardEl.classList.add("show"); if (!RM) cardEl.classList.add("pop");
+            refreshChips();
+        }
+        function closeCard(){
+            S.open = -1; cardEl.classList.remove("show", "pop"); refreshChips();
+            if (S.mode === "playing") stage.focus({preventScroll: true});
+        }
+        function discover(i){
+            S.found[i] = 1; openCard(i); say("Discovered: " + ZONES[i].n + ".");
+            if (S.found.every(Boolean)) complete();
+        }
+        function complete(){ S.done = true; S.celebrate = 3; $("done").hidden = false; say("Exploration complete."); kick(); }
+        function start(){ setMode("playing"); say("Driving. Find the glowing markers."); stage.focus({preventScroll: true}); }
+        function explore(){ S.free = true; setMode("explore"); say("Choose a zone below to open its card."); }
+        function setPause(on){
+            if (on && S.mode === "playing") { codes = {}; pad = {}; clearPad(); setMode("paused"); say("Paused. Press Resume to continue."); }
+            else if (!on && S.mode === "paused") { setMode("playing"); say("Driving."); stage.focus({preventScroll: true}); }
+        }
+        function reset(toPlay){
+            var wasPlay = S.mode === "playing" || S.mode === "paused";
+            S.x = START.x; S.y = START.y; S.vx = S.vy = 0; S.ang = 0; S.found = [0, 0, 0, 0]; S.open = -1; S.done = false; S.celebrate = 0; S.free = false;
+            codes = {}; pad = {}; clearPad();
+            $("done").hidden = true; cardEl.classList.remove("show", "pop");
+            if (toPlay === true || wasPlay) { setMode("playing"); say("Back at the start. Zones discovered: 0/4."); stage.focus({preventScroll: true}); }
+            else { setMode("idle"); say("Press Start Exploring to begin."); }
+            draw();
+        }
+        $("start").addEventListener("click", start);
+        $("free").addEventListener("click", explore);
+        $("pause").addEventListener("click", function(){ setPause(S.mode === "playing"); });
+        $("resume").addEventListener("click", function(){ setPause(false); });
+        $("reset").addEventListener("click", function(){ reset(); });
+        $("again").addEventListener("click", function(){ reset(true); });
+        $("cx").addEventListener("click", closeCard);
+
+        /* ---------- input ---------- */
+        var map = {}; Object.keys(KEYS).forEach(function(d){ KEYS[d].forEach(function(c){ map[c] = d; }); });
+        document.addEventListener("keydown", function(e){
+            if (S.mode !== "playing" || !map[e.code] || !R.contains(document.activeElement)) return;
+            codes[e.code] = true; e.preventDefault();
+        });
+        document.addEventListener("keyup", function(e){ if (codes[e.code]) delete codes[e.code]; });
+        var padBtns = [].slice.call($("dpad").querySelectorAll("button"));
+        function clearPad(){ padBtns.forEach(function(b){ b.classList.remove("on"); }); pad = {}; }
+        padBtns.forEach(function(b){
+            var d = b.dataset.d;
+            function off(){ delete pad[d]; b.classList.remove("on"); }
+            b.addEventListener("pointerdown", function(e){
+                if (S.mode !== "playing") return;
+                e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch(_) {}
+                pad[d] = true; b.classList.add("on"); stage.focus({preventScroll: true});
+            });
+            ["pointerup", "pointercancel", "lostpointercapture", "pointerleave"].forEach(function(n){ b.addEventListener(n, off); });
+            b.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+        });
+        R.addEventListener("focusout", function(){
+            setTimeout(function(){ if (S.mode === "playing" && !R.contains(document.activeElement)) setPause(true); }, 0);
+        });
+        R.addEventListener("pointerdown", function(e){
+            if (S.mode === "playing" && !e.target.closest("button")) stage.focus({preventScroll: true});
+        });
+        addEventListener("blur", function(){ if (S.mode === "playing") setPause(true); });
+        document.addEventListener("visibilitychange", function(){
+            if (document.hidden) { if (S.mode === "playing") setPause(true); if (raf) { cancelAnimationFrame(raf); raf = 0; } } else kick();
+        });
+        setMode("idle"); size();
+    })();
 });
-
