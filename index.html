@@ -12,7 +12,7 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css?v=2.2">
+    <link rel="stylesheet" href="style.css?v=2.3">
 </head>
 <body>
 
@@ -863,30 +863,96 @@
 
     <!-- Circuit Runner — Hariharan’s Tech Playground Section -->
     <section id="passions" class="circuit-runner-section scroll-section">
-        <div id="cr" class="wrap" role="region" aria-label="Circuit Runner — Hariharan’s Tech Playground">
-            <h1>Jump into my tech world.</h1>
-            <p class="sub">Collect chips. Dodge glitches. Keep going.</p>
-            <div class="hud">
-                <div id="bxsc"><small>Score</small><b id="sc">0</b></div>
-                <div><small>Multiplier</small><b id="mu">×1</b></div>
-                <div><small>Shield</small><b id="sh">Off</b></div>
-                <div><small>Personal best</small><b id="bs">0</b></div>
+        <div class="playground" id="playground" role="region" aria-label="Circuit Runner — Hariharan’s Tech Playground">
+            <div class="brand-row">
+                <div class="brand"><span class="brand-mark" aria-hidden="true">⌁</span>CIRCUIT RUNNER</div>
+                <div class="live"><i></i>3 HEARTS</div>
             </div>
-            <div class="stage" id="stage" tabindex="0" role="application" aria-label="Circuit Runner game. Press Space or Up Arrow to jump.">
-                <canvas id="cv"></canvas>
-                <div class="ov" id="ov">
-                    <h2 id="ot">Circuit Runner</h2>
-                    <p id="om">Press Space or ↑ to jump. Jump again in mid-air for a double jump.</p>
-                    <button class="pri" id="go">Start</button>
+            <div class="heading-row">
+                <div>
+                    <p class="byline">Hariharan’s Tech Playground</p>
+                    <h1>Jump into my tech world.</h1>
+                    <p class="subtitle">Collect chips. Dodge glitches. Keep going.</p>
+                </div>
+                <div class="heading-art" aria-hidden="true">
+                    <svg viewBox="0 0 40 40">
+                        <rect x="10" y="10" width="20" height="20" rx="4"/>
+                        <path d="M16 1v9m8-9v9m-8 20v9m8-9v9M1 16h9m-9 8h9m20-8h9m-9 8h9"/>
+                        <rect x="16" y="16" width="8" height="8" rx="1"/>
+                    </svg>
                 </div>
             </div>
-            <button class="jumpbar" id="jb" type="button">JUMP</button>
-            <div class="ctl">
-                <button id="pb" disabled>Pause</button>
-                <button id="rb">Restart</button>
-                <button id="sb" aria-pressed="false">Sound: off</button>
+            <div class="dashboard" aria-label="Run statistics">
+                <div class="stat"><span class="stat-label">SCORE</span><span class="stat-value score-value" id="score">00000</span></div>
+                <div class="stat"><span class="stat-label">MULTIPLIER</span><span class="stat-value multiplier-value" id="multiplier">×1</span><span class="combo-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
+                <div class="stat"><span class="stat-label">SHIELD</span><span class="shield-value" id="shield"><i class="shield-dot"></i><span id="shieldText">OFFLINE</span></span></div>
+                <div class="stat"><span class="stat-label" id="bestLabel">PERSONAL BEST</span><span class="stat-value" id="best">00000</span></div>
             </div>
-            <p class="hint">Click the game to focus it, then use Space or ↑. Glowing dots above the robot show jumps left. Miss two chips in a row and your multiplier resets.</p>
+            <div class="health-bar" id="healthBar">
+                <div class="health-left">
+                    <span class="health-label">LIVES</span>
+                    <span class="hearts" id="lives" role="img" aria-label="3 of 3 hearts remaining">
+                        <svg class="heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S2 15 2 8.5C2 3.4 8.5 1.6 12 6c3.5-4.4 10-2.6 10 2.5C22 15 12 21 12 21Z"/></svg>
+                        <svg class="heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S2 15 2 8.5C2 3.4 8.5 1.6 12 6c3.5-4.4 10-2.6 10 2.5C22 15 12 21 12 21Z"/></svg>
+                        <svg class="heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S2 15 2 8.5C2 3.4 8.5 1.6 12 6c3.5-4.4 10-2.6 10 2.5C22 15 12 21 12 21Z"/></svg>
+                    </span>
+                </div>
+                <span class="health-hint" id="healthHint">3 hearts per run</span>
+            </div>
+            <div class="arena" id="arena">
+                <canvas id="game" tabindex="0" aria-label="Circuit Runner game. Space or Up to jump; press again to double jump. P or Escape to pause." aria-describedby="instructions">Your browser needs Canvas to play Circuit Runner.</canvas>
+                <div class="arena-head" aria-hidden="true">
+                    <span class="scene-label"><span class="scene-number" id="sceneNumber">01</span><span id="sceneName">CIRCUIT BOARD</span></span>
+                    <span class="run-state" id="runState">AWAITING INPUT</span>
+                </div>
+                <div class="arena-foot">
+                    <span class="flight" id="flight" aria-label="Two jumps available">
+                        <i class="jump-dot available"></i><i class="jump-dot available"></i>
+                        <span class="jump-text" id="jumpText">DOUBLE JUMP READY</span>
+                    </span>
+                    <span class="distance" id="distance" aria-label="Distance">000 m</span>
+                </div>
+                <div class="overlay" id="overlay">
+                    <div class="overlay-content">
+                        <div class="overlay-symbol" id="overlaySymbol" aria-hidden="true">↗</div>
+                        <h2 id="overlayTitle">Ready, runner?</h2>
+                        <p id="overlayDescription">A tiny robot. Three hearts.<br>Find your rhythm, then catch some air.</p>
+                        <div class="results" id="results" hidden>
+                            <div class="result"><small>FINAL SCORE</small><strong id="finalScore">00000</strong></div>
+                            <div class="result"><small>BEST</small><strong id="finalBest">00000</strong></div>
+                            <div class="result"><small>DISTANCE</small><strong id="finalDistance">0 m</strong></div>
+                        </div>
+                        <button class="start" id="start">Start run <span aria-hidden="true">→</span></button>
+                        <span class="overlay-hint" id="overlayHint">1 chip = 10 points · 5 in a row = a bigger multiplier</span>
+                    </div>
+                </div>
+            </div>
+            <div class="console">
+                <div class="tools">
+                    <button class="tool" id="pause" aria-label="Pause game" disabled title="Pause / Resume (P)">
+                        <svg viewBox="0 0 20 20" id="pauseIcon" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>
+                        <span class="tool-label" id="pauseLabel">Pause</span>
+                    </button>
+                    <button class="tool" id="restart" aria-label="Restart run" title="Restart run">
+                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7a6.5 6.5 0 1 1-.5 6M4 3v4h4"/></svg>
+                    </button>
+                    <button class="tool" id="sound" aria-label="Turn sound on" aria-pressed="false" title="Sound off">
+                        <svg viewBox="0 0 20 20" aria-hidden="true">
+                            <path d="M9 4 5 7H2v6h3l4 3V4M13 7l5 6m0-6-5 6" id="soundPath"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="key-help" id="instructions"><kbd>SPACE</kbd><span>or</span><kbd>↑</kbd><span>jump · press again to boost</span></div>
+                <button class="jump" id="jump" disabled aria-label="Jump. Press twice for a double jump.">
+                    <span class="button-label">JUMP <span aria-hidden="true">↗</span></span>
+                    <small>tap again for a double jump</small>
+                </button>
+            </div>
+            <div class="notes">
+                <span>Green shield: one protected hit.<br>Other hits: −1 heart and up to 50 points.</span>
+                <span>Lose all 3 hearts: Game Over.<br>Play again to beat your best.</span>
+            </div>
+            <div class="sr-only" id="announcement" role="status" aria-live="polite" aria-atomic="true"></div>
         </div>
     </section>
 
@@ -1029,6 +1095,6 @@
 
 
     <!-- Custom JS -->
-    <script src="script.js?v=2.2"></script>
+    <script src="script.js?v=2.3"></script>
 </body>
 </html>
