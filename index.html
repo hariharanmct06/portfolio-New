@@ -12,7 +12,7 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css?v=2.4">
+    <link rel="stylesheet" href="style.css?v=2.6">
 </head>
 <body>
 
@@ -1052,10 +1052,12 @@
         <p class="hm-enquiry-description">Have an opportunity, a project, or a question? Tell me what’s on your mind and leave an email I can reply to.</p>
         <div class="hm-enquiry-address"><svg aria-hidden="true"><use href="#hm-mail"/></svg><a href="mailto:hariharanmct06@gmail.com">hariharanmct06@gmail.com</a></div>
       </div>
-      <form class="hm-form" id="hm-enquiry-form" action="https://formsubmit.co/hariharanmct06@gmail.com" method="POST" target="_blank" rel="noopener" aria-describedby="hm-enquiry-status">
+      <form class="hm-form" id="hm-enquiry-form" action="https://formsubmit.co/hariharanmct06@gmail.com" method="POST" enctype="application/x-www-form-urlencoded" accept-charset="UTF-8" target="_blank" rel="noopener" aria-describedby="hm-enquiry-delivery-hint hm-enquiry-status">
         <input type="hidden" name="_subject" value="New portfolio enquiry — Hariharan M">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_replyto" id="hm-enquiry-replyto" disabled>
+        <input type="hidden" name="_url" id="hm-enquiry-url" disabled>
         <div class="hm-honeypot" aria-hidden="true"><label>Leave this field empty<input name="_honey" id="hm-enquiry-honey" type="text" tabindex="-1" autocomplete="off"></label></div>
         <fieldset class="hm-form-fields" id="hm-enquiry-fields">
           <legend class="hm-sr-only">Write an enquiry to Hariharan</legend>
@@ -1063,7 +1065,8 @@
           <div class="hm-form-field"><label class="hm-field-label" for="hm-enquiry-email">Your email <span>(required)</span></label><input class="hm-field-input" id="hm-enquiry-email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="you@company.com" required aria-describedby="hm-enquiry-email-help"><p class="hm-field-note" id="hm-enquiry-email-help">So I can reply to your message.</p></div>
           <div class="hm-form-field hm-form-message"><label class="hm-field-label" for="hm-enquiry-message">Your message <span>(required)</span></label><textarea class="hm-field-input" id="hm-enquiry-message" name="message" rows="5" maxlength="3000" placeholder="Tell me a little about your idea, opportunity, or question…" required aria-describedby="hm-enquiry-message-help"></textarea><p class="hm-field-note" id="hm-enquiry-message-help"><span>A short note is enough.</span><span id="hm-enquiry-count" aria-hidden="true">0 / 3000</span></p></div>
         </fieldset>
-        <button class="hm-form-send" id="hm-enquiry-send" type="submit" aria-busy="false"><svg aria-hidden="true"><use href="#hm-mail"/></svg><span id="hm-enquiry-send-label">Send enquiry</span></button>
+        <button class="hm-form-send" id="hm-enquiry-send" type="submit" aria-describedby="hm-enquiry-delivery-hint"><svg aria-hidden="true"><use href="#hm-mail"/></svg><span id="hm-enquiry-send-label">Send enquiry</span><svg aria-hidden="true"><use href="#hm-arrow"/></svg></button>
+        <p class="hm-field-note" id="hm-enquiry-delivery-hint">A confirmation page opens in a new tab.</p>
         <p class="hm-form-status" id="hm-enquiry-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
         <div class="hm-form-alternative"><span>Your note goes to my email inbox.</span><a id="hm-enquiry-draft" href="mailto:hariharanmct06@gmail.com?subject=Portfolio%20enquiry">Prefer an email draft?<svg aria-hidden="true"><use href="#hm-arrow"/></svg></a></div>
       </form>
@@ -1098,6 +1101,6 @@
 
 
     <!-- Custom JS -->
-    <script src="script.js?v=2.4"></script>
+    <script src="script.js?v=2.6"></script>
 </body>
 </html>

@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.setProperty('--delay', `${index * 150}ms`);
     });
 
-        /* ==========================================================================
+            /* ==========================================================================
        THE FIRST HANDSHAKE — 3D INTERACTIVE ROBOTIC HAND & CONTACT MODULE
        ========================================================================== */
     /* A small, purpose-built WebGL renderer. Geometry is created locally. */
@@ -649,12 +649,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('load',postHeight);window.addEventListener('resize',postHeight);postHeight();
 })();
 
-    /* Progressive enhancement for direct enquiry delivery. */
+    /* Native HTML form delivery: the provider shows the real submission result. */
 (function () {
   'use strict';
   const form=document.getElementById('hm-enquiry-form');
   if (!form) return;
-  const fields=document.getElementById('hm-enquiry-fields');
   const name=document.getElementById('hm-enquiry-name');
   const email=document.getElementById('hm-enquiry-email');
   const message=document.getElementById('hm-enquiry-message');
@@ -664,11 +663,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const status=document.getElementById('hm-enquiry-status');
   const counter=document.getElementById('hm-enquiry-count');
   const draft=document.getElementById('hm-enquiry-draft');
+  const replyTo=document.getElementById('hm-enquiry-replyto');
+  const sourceURL=document.getElementById('hm-enquiry-url');
   const inbox='hariharanmct06@gmail.com';
-  const endpoint='https://formsubmit.co/ajax/'+inbox;
-  let busy=false;
+  let busy=false,releaseTimer=0;
   function setStatus(text,state){status.textContent=text;status.dataset.state=state;}
-  function setBusy(value){busy=value;fields.disabled=value;send.disabled=value;send.setAttribute('aria-busy',String(value));label.textContent=value?'Sending your enquiry…':'Send enquiry';}
+  function release(){busy=false;send.disabled=false;label.textContent='Send enquiry';if(releaseTimer)clearTimeout(releaseTimer);releaseTimer=0;}
   function syncDraft(){
     const subject='Portfolio enquiry'+(name.value.trim()?' from '+name.value.trim():'');
     const body='Hi Hariharan,\n\n'+message.value.trim()+'\n\n'+(name.value.trim()?'Name: '+name.value.trim()+'\n':'')+'Reply email: '+email.value.trim();
@@ -680,47 +680,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!/^https?:$/.test(window.location.protocol))setStatus('Direct sending is available on the live portfolio. You can use an email draft while viewing this local preview.','pending');
   }
   syncDraft();localNotice();
-  form.addEventListener('submit',async event=>{
-    event.preventDefault();
-    if(busy)return;
+  form.addEventListener('submit',event=>{
+    if(busy){event.preventDefault();setStatus('Please check the confirmation tab before sending again. Your message is still here.','pending');return;}
     message.setCustomValidity(message.value.trim()?'':'Please write a message before sending.');
     email.value=email.value.trim();
-    if(!form.reportValidity())return;
+    if(!form.reportValidity()){event.preventDefault();return;}
     syncDraft();
     if(!/^https?:$/.test(window.location.protocol)){
+      event.preventDefault();
       setStatus('Direct sending needs the live portfolio. Your message is still here—choose “Prefer an email draft?” below to send it from your email app.','error');return;
     }
     if(honey.value.trim()){
+      event.preventDefault();
       setStatus('The message could not be submitted. Please use the email draft below.','error');return;
     }
     if(window.navigator.onLine===false){
+      event.preventDefault();
       setStatus('You appear to be offline. Your message is still here. Please reconnect and try again.','error');return;
     }
     const source=new URL(window.location.href);
-    const payload={name:name.value.trim()||'Name not provided',email:email.value.trim(),message:message.value.trim(),_replyto:email.value.trim(),_subject:'New portfolio enquiry — Hariharan M',_template:'table',_captcha:'false',_honey:'',_url:source.origin+source.pathname};
-    const controller=typeof AbortController!=='undefined'?new AbortController():null;
-    let timeout=0;
-    try{
-      setBusy(true);setStatus('Sending your message…','pending');
-      if(controller)timeout=setTimeout(()=>controller.abort(),20000);
-      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},credentials:'omit',body:JSON.stringify(payload),...(controller?{signal:controller.signal}:{})});
-      const result=await response.json();
-      const accepted=response.ok && (result.success===true || result.success==='true');
-      const serverMessage=typeof result.message==='string'?result.message:'';
-      const needsActivation=/activat|confirm.{0,30}(?:email|form)|verif.{0,30}email/i.test(serverMessage);
-      if(needsActivation){
-        setStatus(accepted?'Your enquiry is queued for delivery. You can also use the email draft below.':'This inbox connection needs to be activated. Your message is still here—please use the email draft below for now.','pending');
-      }else if(accepted){
-        form.reset();syncDraft();setStatus('Your enquiry was submitted. Thanks for reaching out!','success');
-      }else{
-        setStatus('Your enquiry was not accepted. Your message is still here. Please try again or use the email draft below.','error');
-      }
-    }catch(error){
-      setStatus(error && error.name==='AbortError'?'The request timed out, so I could not confirm submission. Your message is still here; you can retry or use the email draft below.':'I could not confirm submission. Your message is still here. Check your connection, try again, or use the email draft below.','error');
-    }finally{
-      if(timeout)clearTimeout(timeout);setBusy(false);
+    replyTo.value=email.value.trim();replyTo.disabled=false;
+    sourceURL.value=source.origin+source.pathname;sourceURL.disabled=false;
+    // Keep all message fields enabled: the browser must include them in POST.
+    // Allow the browser's normal submit action in the original user gesture.
+    // Do not claim delivery or clear the form from this cross-origin page.
+    busy=true;send.disabled=true;label.textContent='Check the confirmation tab';
+    setStatus('Check the new tab for the send result or email-verification instructions. Your message stays here. If no tab opens, use the email draft below.','pending');
+    releaseTimer=setTimeout(release,8000);
+  });
+  document.addEventListener('securitypolicyviolation',event=>{
+    if(event.effectiveDirective==='form-action' && String(event.blockedURI||'').startsWith('https://formsubmit.co')){
+      release();setStatus('This page blocked the send request. Your message is still here—please use the email draft below.','error');
     }
   });
+  window.addEventListener('pageshow',release);
 })();
 // Floating AI chatbot link pulse removal on click
     if (chatbotFab) {

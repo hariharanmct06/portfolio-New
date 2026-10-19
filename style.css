@@ -2769,10 +2769,8 @@ ul {
     .hm-contact .hm-field-note { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin: 7px 0 0; color: #9baac0; font-size: 11px; line-height: 1.6; }
     .hm-contact .hm-form-send { width: 100%; min-height: 54px; margin-top: 20px; border: 1px solid var(--orange); border-radius: 11px; padding: 13px 18px; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--orange); color: #1b1008; font-size: 14px; font-weight: 650; transition: background .2s,border-color .2s; }
     .hm-contact .hm-form-send:hover { background: #ffa260; border-color: #ffa260; }
-    .hm-contact .hm-form-send:disabled { cursor: progress; opacity: .75; }
+    .hm-contact .hm-form-send:disabled { cursor: default; opacity: .75; }
     .hm-contact .hm-form-send svg { width: 17px; height: 17px; }
-    .hm-contact .hm-form-send[aria-busy="true"]::after { content: ''; width: 14px; height: 14px; border: 2px solid #1b10084d; border-top-color: #1b1008; border-radius: 50%; animation: hm-send-spin .7s linear infinite; }
-    @keyframes hm-send-spin { to { transform: rotate(360deg); } }
     .hm-contact .hm-form-status { min-height: 22px; margin: 13px 0 0; color: #a8b8cc; font-size: 12px; line-height: 1.75; overflow-wrap: anywhere; text-align: left; }
     .hm-contact .hm-form-status[data-state="success"] { color: var(--green); }
     .hm-contact .hm-form-status[data-state="error"] { color: #ffb28c; }
