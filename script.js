@@ -132,6 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================================================
        STICKY HEADER & BACK-TO-TOP BUTTON
        ========================================================================== */
+    let skillsSectionAccessed = false;
+
     const handleScroll = () => {
         const scrollPos = window.scrollY;
         
@@ -159,17 +161,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Video pause synchronization on section scroll
+        // Trigger video play/stop on section access
         if (currentSectionId === 'skills') {
-            const heroVideo = document.getElementById('heroVideo');
-            if (heroVideo && !heroVideo.paused) {
-                heroVideo.pause();
+            if (!skillsSectionAccessed) {
+                skillsSectionAccessed = true;
+                
+                // Stop Home page intro video immediately
+                const heroVideo = document.getElementById('heroVideo');
+                if (heroVideo) {
+                    heroVideo.pause();
+                }
+                
+                // Autoplay skills video unmuted exactly once
+                const skillsVideo = document.getElementById('skillsVideo');
+                if (skillsVideo) {
+                    skillsVideo.currentTime = 0;
+                    skillsVideo.muted = false;
+                    skillsVideo.play().catch(err => {
+                        console.log("Skills video autoplay failed: ", err);
+                    });
+                }
             }
         } else {
-            // Pause skillsVideo when leaving the Skills section
-            const skillsVideo = document.getElementById('skillsVideo');
-            if (skillsVideo && !skillsVideo.paused) {
-                skillsVideo.pause();
+            skillsSectionAccessed = false;
+            
+            // Optionally pause skillsVideo if they scroll away
+            if (currentSectionId === 'home') {
+                const skillsVideo = document.getElementById('skillsVideo');
+                if (skillsVideo) {
+                    skillsVideo.pause();
+                }
             }
         }
 
@@ -994,98 +1015,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /* ==========================================================================
-       SKILLS SECTION VIDEO CONTROLLER
-       ========================================================================== */
+    // Skills Section Video Replay Handler
     const skillsVideo = document.getElementById('skillsVideo');
     const photoReplayBtn = document.getElementById('photoReplayBtn');
-    const skillsSection = document.getElementById('skills');
-
-    if (skillsVideo) {
-        // Requirement 3: Disable looping; keep final frame visible when playback finishes
-        skillsVideo.loop = false;
-        skillsVideo.addEventListener('ended', () => {
-            skillsVideo.pause();
-        });
-
-        // Requirement 1 & 2: Automatic playback allowed only once per portfolio visit
-        let hasAutoPlayed = false;
-        try {
-            hasAutoPlayed = (sessionStorage.getItem('portfolio_skills_video_played') === 'true');
-        } catch (_) {}
-
-        const triggerAutoPlay = () => {
-            if (hasAutoPlayed) return;
-            hasAutoPlayed = true;
-            try {
-                sessionStorage.setItem('portfolio_skills_video_played', 'true');
-            } catch (_) {}
-
+    
+    if (photoReplayBtn && skillsVideo) {
+        photoReplayBtn.addEventListener('click', () => {
             skillsVideo.currentTime = 0;
-            skillsVideo.loop = false;
-            skillsVideo.muted = false; // Preserve current audio settings
-
-            const playPromise = skillsVideo.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    // Respect browser autoplay restrictions gracefully without console errors
-                    if (error && error.name === 'NotAllowedError') {
-                        skillsVideo.muted = true;
-                        skillsVideo.play().catch(() => {});
-                    }
-                });
-            }
-        };
-
-        // Requirement 1: Start automatically ONLY when video is at least 50% visible on screen
-        if (!hasAutoPlayed && 'IntersectionObserver' in window) {
-            const autoPlayObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-                        autoPlayObserver.unobserve(skillsVideo);
-                        autoPlayObserver.disconnect();
-                        triggerAutoPlay();
-                    }
-                });
-            }, {
-                threshold: 0.5
+            skillsVideo.muted = false; // Unmute on explicit user replay click
+            skillsVideo.loop = false; // Ensure it does not loop
+            skillsVideo.play().catch(err => {
+                console.log("Skills video replay failed: ", err);
             });
-            autoPlayObserver.observe(skillsVideo);
-        }
-
-        // Requirement 5: Pause if user leaves section while playing; returning must NOT auto-resume
-        if ('IntersectionObserver' in window && skillsSection) {
-            const leaveSectionObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting && !skillsVideo.paused) {
-                        skillsVideo.pause();
-                    }
-                });
-            }, {
-                threshold: 0
-            });
-            leaveSectionObserver.observe(skillsSection);
-        }
-
-        // Pause on tab switch if playing
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && !skillsVideo.paused) {
-                skillsVideo.pause();
-            }
         });
-
-        // Requirement 4: Replay button starts from beginning and plays once per click
-        if (photoReplayBtn) {
-            photoReplayBtn.addEventListener('click', () => {
-                skillsVideo.currentTime = 0;
-                skillsVideo.loop = false;
-                skillsVideo.muted = false; // Unmuted playback on user click
-                const playPromise = skillsVideo.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(() => {});
-                }
-            });
-        }
     }
 
     /* ==========================================================================
