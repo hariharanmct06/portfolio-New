@@ -302,75 +302,427 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.setProperty('--delay', `${index * 150}ms`);
     });
 
-    /* ==========================================================================
-       CONTACT FORM SUBMIT (SIMULATED PROMPT)
+        /* ==========================================================================
+       THE FIRST HANDSHAKE — 3D INTERACTIVE ROBOTIC HAND & CONTACT MODULE
        ========================================================================== */
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Collect Form Data
-            const nameVal = document.getElementById('name').value;
-            const emailVal = document.getElementById('email').value;
-            const subjectVal = document.getElementById('subject').value;
-            const messageVal = document.getElementById('message').value;
-
-            // Form Submit button visual loading feedback
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalBtnHtml = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = 'Sending... <i class="fas fa-spinner fa-spin"></i>';
-
-            // Send real email via FormSubmit API
-            fetch("https://formsubmit.co/ajax/hariharanmct06@gmail.com", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    name: nameVal,
-                    email: emailVal,
-                    _subject: `Portfolio Enquiry: ${subjectVal}`,
-                    message: messageVal,
-                    _captcha: "false"
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error("Form submission failed");
-                }
-            })
-            .then(data => {
-                // Show Success Notification
-                formStatus.className = 'form-status success';
-                formStatus.innerHTML = '<i class="fas fa-circle-check"></i> Thank you! Your enquiry has been sent directly to Hariharan M. (Note: If this is the first submission, please verify your email when prompted by FormSubmit)';
-                formStatus.style.display = 'block';
-                
-                // Reset form values
-                contactForm.reset();
-            })
-            .catch(error => {
-                // Show Error Notification / fallback visual
-                formStatus.className = 'form-status success';
-                formStatus.innerHTML = '<i class="fas fa-circle-check"></i> opening your default email app to send...';
-                formStatus.style.display = 'block';
-                
-                // Fallback to mailto link
-                const mailtoLink = `mailto:hariharanmct06@gmail.com?subject=${encodeURIComponent(subjectVal)}&body=${encodeURIComponent("Name: " + nameVal + "\nEmail: " + emailVal + "\n\n" + messageVal)}`;
-                window.location.href = mailtoLink;
-            })
-            .finally(() => {
-                // Restore button state
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnHtml;
-            });
-        });
+    /* A small, purpose-built WebGL renderer. Geometry is created locally. */
+(function () {
+  'use strict';
+  const root = document.getElementById('contact') || document.getElementById('hm-contact');
+  if (!root) return;
+  const stage = document.getElementById('hm-stage');
+  const canvas = document.getElementById('hm-canvas');
+  if (!stage || !canvas) return;
+  const handshakeButton = document.getElementById('hm-handshake');
+  const handshakeText = document.getElementById('hm-handshake-text');
+  const welcome = document.getElementById('hm-welcome');
+  const motionButton = document.getElementById('hm-motion');
+  const sceneLabel = document.getElementById('hm-scene-label');
+  const media = matchMedia('(prefers-reduced-motion: reduce)');
+  const state = { yaw: -.22, pitch: -.055, targetYaw: -.22, targetPitch: -.055,
+    motion: !media.matches, visible: true, clock: 0, shakeStart: -100,
+    shaking: false, accent: [0.32,0.64,1], targetAccent: [0.32,0.64,1] };
+  let render = null, raf = 0, previous = 0, resetTimer = 0, toastTimer = 0;
+  const clamp = (x,a,b) => Math.max(a,Math.min(b,x));
+  const mix = (a,b,t) => a+(b-a)*t;
+  function toast(message) {
+    const el = document.getElementById('hm-toast');
+    el.textContent = message; el.classList.add('hm-show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('hm-show'), 3500);
+  }
+  function syncMotion() {
+    motionButton.setAttribute('aria-pressed', String(state.motion));
+    const label = state.motion ? 'Pause ambient motion' : 'Enable ambient motion';
+    motionButton.setAttribute('aria-label',label); motionButton.title = label;
+  }
+  function invalidate() { if (render && !raf && state.visible && !document.hidden) raf = requestAnimationFrame(frame); }
+  function frame(now) {
+    raf = 0;
+    if (!state.visible || document.hidden) { previous = 0; return; }
+    const dt = previous ? Math.min((now-previous)/1000,.05) : 1/60;
+    previous = now;
+    if (state.motion) state.clock += dt;
+    const speed = 1-Math.exp(-dt*10);
+    state.yaw = mix(state.yaw,state.targetYaw,speed);
+    state.pitch = mix(state.pitch,state.targetPitch,speed);
+    state.accent = state.accent.map((x,i) => mix(x,state.targetAccent[i],speed));
+    render(now/1000);
+    if (state.motion || state.shaking || Math.abs(state.yaw-state.targetYaw)>.001 || Math.abs(state.pitch-state.targetPitch)>.001 || state.accent.some((x,i)=>Math.abs(x-state.targetAccent[i])>.002)) invalidate();
+  }
+  function shake() {
+    if (state.shaking) return;
+    state.shaking = true; state.shakeStart = performance.now()/1000;
+    root.classList.add('hm-shaking'); handshakeButton.disabled = true;
+    handshakeText.textContent = 'Nice to meet you, too.';
+    welcome.textContent = 'Great to meet you. What shall we build together?';
+    sceneLabel.textContent = 'CONNECTION MADE';
+    state.targetAccent = [.42,.95,.69]; invalidate();
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      state.shaking = false; root.classList.remove('hm-shaking'); handshakeButton.disabled = false;
+      handshakeText.textContent = 'Shake hands again'; state.targetAccent = [.32,.64,1];
+      sceneLabel.textContent = stage.classList.contains('hm-webgl') ? 'INTERACTIVE 3D' : 'LET’S CONNECT'; invalidate();
+    },media.matches ? 500 : 1800);
+  }
+  handshakeButton.addEventListener('click',shake);
+  motionButton.addEventListener('click',()=>{ state.motion = !state.motion; previous = 0; syncMotion(); invalidate(); });
+  document.getElementById('hm-reset').addEventListener('click',()=>{
+    state.targetYaw=-.22; state.targetPitch=-.055;
+    if(media.matches){state.yaw=state.targetYaw;state.pitch=state.targetPitch;}
+    invalidate(); toast('3D view reset.');
+  });
+  function motionPreferenceChanged() { state.motion = !media.matches; syncMotion(); invalidate(); }
+  if(media.addEventListener) media.addEventListener('change',motionPreferenceChanged); else media.addListener(motionPreferenceChanged);
+  syncMotion();
+  document.querySelectorAll('.hm-contact [data-copy]').forEach(button => button.addEventListener('click',async()=>{
+    const value=button.dataset.copy; let success=false;
+    try { if(navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(value); success=true; } } catch (_) {}
+    if(!success) {
+      const field=document.createElement('textarea'); field.value=value; field.setAttribute('readonly','');
+      field.style.cssText='position:fixed;left:-9999px;top:0;font-size:16px'; document.body.appendChild(field);
+      field.select(); field.setSelectionRange(0,value.length);
+      try { success=document.execCommand('copy'); } catch (_) {} field.remove(); button.focus({preventScroll:true});
     }
+    toast(success ? button.dataset.copyLabel+' copied.' : 'Select and copy: '+value);
+  }));
+  const tones={orange:[1,.38,.12],green:[.42,.95,.69],blue:[.32,.64,1]};
+  document.querySelectorAll('.hm-contact [data-channel]').forEach(link=>{
+    const enter=()=>{state.targetAccent=tones[link.dataset.tone];invalidate();};
+    const leave=()=>{state.targetAccent=state.shaking?tones.green:tones.blue;invalidate();};
+    link.addEventListener('pointerenter',enter);link.addEventListener('pointerleave',leave);
+    link.addEventListener('focus',enter);link.addEventListener('blur',leave);
+  });
+  let pointer=null;
+  canvas.addEventListener('pointerdown',event=>{
+    if(event.button!==0 || !event.isPrimary)return;
+    pointer={id:event.pointerId,x:event.clientX,y:event.clientY,yaw:state.targetYaw,pitch:state.targetPitch,dragging:false};
+  });
+  canvas.addEventListener('pointermove',event=>{
+    if(!pointer || pointer.id!==event.pointerId)return;
+    const dx=event.clientX-pointer.x,dy=event.clientY-pointer.y;
+    if(!pointer.dragging && Math.abs(dy)>12 && Math.abs(dy)>Math.abs(dx) && event.pointerType==='touch'){pointer=null;return;}
+    if(Math.abs(dx)>6 || (event.pointerType==='mouse' && Math.abs(dy)>6)){
+      pointer.dragging=true;
+      if(!canvas.hasPointerCapture(event.pointerId))canvas.setPointerCapture(event.pointerId);
+    }
+    if(pointer.dragging){
+      state.targetYaw=clamp(pointer.yaw+dx*.008,-1.6,1.5);
+      state.targetPitch=clamp(pointer.pitch+dy*.004,-.48,.42);
+      if(media.matches){state.yaw=state.targetYaw;state.pitch=state.targetPitch;}
+      invalidate();
+    }
+  });
+  canvas.addEventListener('pointerup',event=>{
+    if(!pointer || pointer.id!==event.pointerId)return;
+    const wasDrag=pointer.dragging, distance=Math.hypot(event.clientX-pointer.x,event.clientY-pointer.y);
+    pointer=null;
+    if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);
+    if(!wasDrag && distance<9)shake();
+  });
+  canvas.addEventListener('pointercancel',()=>{pointer=null;});
+  canvas.addEventListener('lostpointercapture',()=>{pointer=null;});
+  canvas.addEventListener('keydown',event=>{
+    if(event.key==='Enter' || event.key===' '){event.preventDefault();shake();return;}
+    const actions={ArrowLeft:()=>state.targetYaw-=.12,ArrowRight:()=>state.targetYaw+=.12,ArrowUp:()=>state.targetPitch-=.08,ArrowDown:()=>state.targetPitch+=.08,Home:()=>{state.targetYaw=-.22;state.targetPitch=-.055;}};
+    if(actions[event.key]){event.preventDefault();actions[event.key]();state.targetYaw=clamp(state.targetYaw,-1.6,1.5);state.targetPitch=clamp(state.targetPitch,-.48,.42);if(media.matches){state.yaw=state.targetYaw;state.pitch=state.targetPitch;}invalidate();}
+  });
 
-    // Floating AI chatbot link pulse removal on click
+  /* Matrix routines use column-major matrices, matching WebGL. */
+  const I=()=>new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
+  function mul(a,b){const r=new Float32Array(16);for(let c=0;c<4;c++)for(let row=0;row<4;row++)r[c*4+row]=a[row]*b[c*4]+a[4+row]*b[c*4+1]+a[8+row]*b[c*4+2]+a[12+row]*b[c*4+3];return r;}
+  function translation(x,y,z){const m=I();m[12]=x;m[13]=y;m[14]=z;return m;}
+  function scaling(x,y,z){const m=I();m[0]=x;m[5]=y;m[10]=z;return m;}
+  function rx(a){const m=I(),c=Math.cos(a),s=Math.sin(a);m[5]=c;m[6]=s;m[9]=-s;m[10]=c;return m;}
+  function ry(a){const m=I(),c=Math.cos(a),s=Math.sin(a);m[0]=c;m[2]=-s;m[8]=s;m[10]=c;return m;}
+  function rz(a){const m=I(),c=Math.cos(a),s=Math.sin(a);m[0]=c;m[1]=s;m[4]=-s;m[5]=c;return m;}
+  function transform(x=0,y=0,z=0,sx=1,sy=1,sz=1,ax=0,ay=0,az=0){return mul(translation(x,y,z),mul(rz(az),mul(ry(ay),mul(rx(ax),scaling(sx,sy,sz)))));}
+  function perspective(fov,aspect,near,far){const f=1/Math.tan(fov/2),m=new Float32Array(16);m[0]=f/aspect;m[5]=f;m[10]=(far+near)/(near-far);m[11]=-1;m[14]=2*far*near/(near-far);return m;}
+  function normalize(v){const l=Math.hypot(...v)||1;return v.map(x=>x/l);}
+  function cross(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+  function lookAt(eye,target){const z=normalize(eye.map((v,i)=>v-target[i])),x=normalize(cross([0,1,0],z)),y=cross(z,x),m=I();m[0]=x[0];m[1]=y[0];m[2]=z[0];m[4]=x[1];m[5]=y[1];m[6]=z[1];m[8]=x[2];m[9]=y[2];m[10]=z[2];m[12]=-x.reduce((s,v,i)=>s+v*eye[i],0);m[13]=-y.reduce((s,v,i)=>s+v*eye[i],0);m[14]=-z.reduce((s,v,i)=>s+v*eye[i],0);return m;}
+  function normalMatrix(m){
+    const a=m[0],b=m[4],c=m[8],d=m[1],e=m[5],f=m[9],g=m[2],h=m[6],i=m[10];
+    const det=a*(e*i-f*h)-b*(d*i-f*g)+c*(d*h-e*g),s=1/(det||1);
+    return new Float32Array([(e*i-f*h)*s,(c*h-b*i)*s,(b*f-c*e)*s,(f*g-d*i)*s,(a*i-c*g)*s,(c*d-a*f)*s,(d*h-e*g)*s,(b*g-a*h)*s,(a*e-b*d)*s]);
+  }
+  class Node {
+    constructor(matrix=I(),mesh=null,material=null){this.matrix=matrix;this.mesh=mesh;this.material=material;this.children=[];}
+    add(n){this.children.push(n);return n;}
+  }
+  let gl=null;
+  function fallback(){stage.classList.remove('hm-webgl');sceneLabel.textContent='LET’S CONNECT';canvas.style.opacity='0';canvas.setAttribute('aria-label','Robotic handshake illustration. Press Enter to connect.');}
+  function init3D(){
+    gl=canvas.getContext('webgl',{alpha:true,antialias:true,powerPreference:'low-power',premultipliedAlpha:false});
+    if(!gl){fallback();return;}
+    const vertexSource=`
+      attribute vec3 aPosition; attribute vec3 aNormal;
+      uniform mat4 uModel; uniform mat4 uVP; uniform mat3 uNormal;
+      varying vec3 vPosition; varying vec3 vNormal;
+      void main(){vec4 p=uModel*vec4(aPosition,1.0);vPosition=p.xyz;vNormal=uNormal*aNormal;gl_Position=uVP*p;}
+    `;
+    const fragmentSource=`
+      precision mediump float;
+      varying vec3 vPosition; varying vec3 vNormal;
+      uniform vec3 uColor; uniform vec3 uEye; uniform vec3 uAccent;
+      uniform float uMetal; uniform float uGlow; uniform float uKind; uniform float uOpacity;
+      void main(){
+        if(uKind>2.5){
+          float radius=length(vPosition.xz);float fade=1.0-smoothstep(2.1,4.7,radius);
+          vec2 g=abs(fract(vPosition.xz*.85-.5)-.5);
+          float grid=1.0-smoothstep(.008,.022,min(g.x,g.y));
+          float shadow=exp(-dot(vPosition.xz*vec2(.72,1.05),vPosition.xz*vec2(.72,1.05))*1.2);
+          vec3 col=mix(vec3(.06,.085,.12),vec3(.008,.012,.02),shadow);
+          col+=uAccent*grid*.095;gl_FragColor=vec4(col,fade*.9);return;
+        }
+        vec3 n=normalize(vNormal);vec3 view=normalize(uEye-vPosition);
+        vec3 key=normalize(vec3(-3.0,6.0,5.0));vec3 fill=normalize(vec3(4.0,1.0,2.0));
+        float diffuse=max(dot(n,key),0.0);float fillLight=max(dot(n,fill),0.0);
+        float spec=pow(max(dot(n,normalize(key+view)),0.0),mix(30.0,105.0,uMetal));
+        vec3 reflected=reflect(-view,n);
+        float softbox=pow(max(0.0,1.0-abs(reflected.y-.55)*1.5),9.0);
+        float strip=pow(max(0.0,1.0-abs(reflected.x+.45)*2.0),14.0);
+        float fresnel=pow(1.0-max(dot(n,view),0.0),3.2);
+        vec3 ambient=vec3(.16,.21,.29);
+        vec3 col=uColor*(ambient+diffuse*.77+fillLight*.24);
+        col+=vec3(.88,.94,1.0)*(spec*.9+softbox*uMetal*.28+strip*uMetal*.22);
+        col+=uAccent*(fresnel*.28+fillLight*.045)*(.4+uMetal*.6);
+        float ao=mix(.65,1.0,smoothstep(-1.9,.1,vPosition.y));col*=ao;
+        col=mix(col,uColor*(1.0+uGlow*.25),uGlow);
+        col=pow(max(col,vec3(0.0)),vec3(.88));
+        gl_FragColor=vec4(col,uOpacity);
+      }
+    `;
+    function shader(kind,source){const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error('Unable to compile 3D shader.');return s;}
+    const program=gl.createProgram();gl.attachShader(program,shader(gl.VERTEX_SHADER,vertexSource));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,fragmentSource));gl.linkProgram(program);
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error('Unable to initialize 3D rendering.');
+    gl.useProgram(program);
+    const aPosition=gl.getAttribLocation(program,'aPosition'),aNormal=gl.getAttribLocation(program,'aNormal');
+    const u={};['Model','VP','Normal','Color','Eye','Accent','Metal','Glow','Kind','Opacity'].forEach(k=>u[k]=gl.getUniformLocation(program,'u'+k));
+    gl.enableVertexAttribArray(aPosition);gl.enableVertexAttribArray(aNormal);gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+    function geometry(positions,normals,mode=gl.TRIANGLES){const p=gl.createBuffer(),n=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,p);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(positions),gl.STATIC_DRAW);gl.bindBuffer(gl.ARRAY_BUFFER,n);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(normals),gl.STATIC_DRAW);return{p,n,count:positions.length/3,mode};}
+    function surfaces(rows,cols,point){const positions=[],normals=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)for(const [dr,dc] of [[0,0],[1,0],[1,1],[0,0],[1,1],[0,1]]){const v=point((r+dr)/rows,(c+dc)/cols);positions.push(...v.p);normals.push(...v.n);}return{positions,normals};}
+    function roundedBox(){const p=[],n=[];for(let face=0;face<6;face++){const axis=Math.floor(face/2),sign=face%2?1:-1;const out=surfaces(5,5,(a,b)=>{const q=[0,0,0];q[axis]=sign*.5;q[(axis+1)%3]=a-.5;q[(axis+2)%3]=b-.5;const center=q.map(v=>clamp(v,-.37,.37)),normal=normalize(q.map((v,i)=>v-center[i]));return{p:center.map((v,i)=>v+normal[i]*.13),n:normal};});p.push(...out.positions);n.push(...out.normals);}return geometry(p,n);}
+    function sphere(){const s=surfaces(10,16,(a,b)=>{const theta=a*Math.PI,phi=b*Math.PI*2,n=[Math.sin(theta)*Math.cos(phi),Math.cos(theta),Math.sin(theta)*Math.sin(phi)];return{p:n.map(v=>v*.5),n};});return geometry(s.positions,s.normals);}
+    function cylinder(){const p=[],n=[],steps=24;for(let j=0;j<steps;j++){const a=j/steps*Math.PI*2,b=(j+1)/steps*Math.PI*2;for(const [theta,y] of [[a,-.5],[b,-.5],[b,.5],[a,-.5],[b,.5],[a,.5]]){p.push(Math.cos(theta)*.5,y,Math.sin(theta)*.5);n.push(Math.cos(theta),0,Math.sin(theta));}for(const y of [-.5,.5]){for(const v of [[0,y,0],[Math.cos(a)*.5,y,Math.sin(a)*.5],[Math.cos(b)*.5,y,Math.sin(b)*.5]]){p.push(...v);n.push(0,Math.sign(y),0);}}}return geometry(p,n);}
+    function torus(){const out=surfaces(32,8,(a,b)=>{const t=a*Math.PI*2,q=b*Math.PI*2,major=.5,minor=.045;return{p:[Math.cos(t)*(major+minor*Math.cos(q)),minor*Math.sin(q),Math.sin(t)*(major+minor*Math.cos(q))],n:[Math.cos(t)*Math.cos(q),Math.sin(q),Math.sin(t)*Math.cos(q)]};});return geometry(out.positions,out.normals);}
+    const box=roundedBox(),ball=sphere(),cyl=cylinder(),ring=torus();
+    const floor=geometry([-6,0,-6,6,0,-6,6,0,6,-6,0,-6,6,0,6,-6,0,6],Array(6).fill([0,1,0]).flat());
+    const mat=(color,metal=.5,glow=0,kind=0,opacity=1)=>({color,metal,glow,kind,opacity});
+    const silver=mat([.64,.72,.82],.93),white=mat([.79,.84,.91],.65),dark=mat([.055,.08,.115],.86),graphite=mat([.14,.19,.26],.9),rubber=mat([.027,.037,.05],.08),orange=mat([1,.32,.055],.5,.8),blue=mat([.23,.64,1],.2,.9),green=mat([.4,.92,.65],.15,.8),lens=mat([.025,.11,.23],1,.16),ground=mat([0,0,0],0,0,3);
+    const world=new Node();
+    function part(parent,mesh,material,x=0,y=0,z=0,sx=1,sy=1,sz=1,ax=0,ay=0,az=0){return parent.add(new Node(transform(x,y,z,sx,sy,sz,ax,ay,az),mesh,material));}
+    part(world,floor,ground,0,-2.24,0);
+    const base=new Node(translation(0,-2.18,0));world.add(base);
+    part(base,cyl,dark,0,0,0,2.5,.16,2.5);
+    part(base,cyl,graphite,0,.1,0,2.18,.09,2.18);
+    const pulseRing=part(base,ring,blue,0,.15,0,2.23,1,2.23);
+    part(base,ring,orange,0,.06,0,2.5,.45,2.5);
+    for(let j=0;j<12;j++){const a=j/12*Math.PI*2;part(base,box,j%3===0?orange:graphite,Math.cos(a)*1.04,.165,Math.sin(a)*1.04,.13,.018,.05,0,-a,0);}
+    part(base,cyl,rubber,0,.21,0,.82,.22,.82);
+    part(base,cyl,silver,0,.33,0,.65,.15,.65);
+    const arm=new Node();world.add(arm);
+    part(arm,ball,dark,0,-1.73,0,.81,.72,.81);
+    part(arm,cyl,graphite,0,-1.72,0,.9,.55,.9,0,0,Math.PI/2);
+    part(arm,cyl,silver,-.3,-1.72,0,.68,.09,.68,0,0,Math.PI/2);
+    part(arm,cyl,orange,.32,-1.72,0,.55,.055,.55,0,0,Math.PI/2);
+    part(arm,box,dark,0,-.97,0,.68,1.37,.68,0,0,-.035);
+    part(arm,box,silver,-.21,-.97,.09,.24,1.31,.56,0,0,-.075);
+    part(arm,box,white,.23,-.97,.07,.25,1.29,.56,0,0,.07);
+    part(arm,box,graphite,0,-.98,.35,.29,1.16,.12);
+    part(arm,box,orange,-.22,-.96,.382,.045,1.03,.035);
+    part(arm,box,blue,.2,-1.03,.382,.026,.65,.033);
+    part(arm,box,dark,0,-.96,-.37,.41,1.07,.1);
+    for(let j=0;j<5;j++)part(arm,box,rubber,-.01,-.6-j*.14,.425,.19,.045,.024,0,0,.1);
+    for(const y of [-1.49,-.4]){part(arm,cyl,graphite,0,y,0,.8,.12,.8);part(arm,ring,silver,0,y+.055,0,.76,.7,.76);}
+    const wrist=arm.add(new Node(translation(0,-.23,0)));
+    part(wrist,cyl,rubber,0,0,0,.56,.38,.56);
+    part(wrist,cyl,silver,0,.13,0,.64,.12,.64);
+    part(wrist,ring,blue,0,.2,0,.6,.65,.6);
+    const hand=wrist.add(new Node(translation(0,.27,0)));
+    part(hand,box,silver,0,.48,0,1.27,1.19,.48,0,0,-.025);
+    part(hand,box,white,-.43,.53,.06,.25,.98,.5,0,0,-.09);
+    part(hand,box,white,.44,.53,.06,.23,.98,.5,0,0,.09);
+    part(hand,box,dark,0,.53,.264,.94,.89,.1);
+    part(hand,box,graphite,0,.49,.325,.76,.73,.035);
+    part(hand,cyl,rubber,0,.54,.362,.56,.06,.56,Math.PI/2);
+    part(hand,cyl,lens,0,.54,.405,.43,.045,.43,Math.PI/2);
+    part(hand,ring,blue,0,.54,.437,.43,.5,.43,Math.PI/2);
+    part(hand,cyl,blue,0,.54,.443,.08,.016,.08,Math.PI/2);
+    part(hand,ring,silver,0,.54,.415,.6,.52,.6,Math.PI/2);
+    for(const x of [-.37,.37])for(const y of [.2,.86]){part(hand,cyl,graphite,x,y,.351,.064,.019,.064,Math.PI/2);part(hand,box,silver,x,y,.365,.035,.006,.008,0,0,.5);}
+    part(hand,box,green,-.09,.2,.365,.23,.025,.012);
+    part(hand,box,green,.12,.2,.365,.055,.025,.012);
+    part(hand,box,blue,-.28,.54,.362,.018,.27,.012);
+    part(hand,box,blue,.28,.54,.362,.018,.27,.012);
+    part(hand,box,dark,0,.54,-.26,.94,.81,.07);
+    for(let i=0;i<4;i++)part(hand,box,silver,-.3+i*.2,.57,-.31,.06,.64,.025,0,0,(i-1.5)*-.06);
+    const fingerJoints=[];
+    function finger(x,y,z,lengths,width,spread,isThumb=false){
+      const rootFinger=hand.add(new Node(mul(translation(x,y,z),rz(spread))));
+      const joints=[];let parent=rootFinger;
+      lengths.forEach((len,index)=>{
+        const pivot=parent.add(new Node(I()));joints.push(pivot);
+        part(pivot,cyl,graphite,0,.015,0,width*1.06,width*.91,width*1.06,0,0,Math.PI/2);
+        part(pivot,cyl,orange,-width*.48,.015,0,width*.73,.035,width*.73,0,0,Math.PI/2);
+        part(pivot,cyl,silver,width*.48,.015,0,width*.73,.025,width*.73,0,0,Math.PI/2);
+        part(pivot,box,index===2?white:silver,0,len*.52,0,width*.88,len*.86,width*.78);
+        part(pivot,box,dark,0,len*.52,width*.405,width*.56,len*.57,.032);
+        part(pivot,box,index===2?blue:graphite,0,len*.53,width*.43,width*.15,len*.39,.012);
+        if(index===2)part(pivot,ball,rubber,0,len*.83,-width*.12,width*.8,width*.39,width*.64);
+        parent=pivot.add(new Node(translation(0,len,0)));
+      });
+      fingerJoints.push({joints,thumb:isThumb,spread});
+    }
+    finger(-.43,1.04,0,[.55,.39,.3],.27,.085);
+    finger(-.13,1.08,0,[.64,.43,.31],.28,.025);
+    finger(.18,1.06,0,[.58,.4,.29],.27,-.045);
+    finger(.47,.99,0,[.45,.33,.25],.235,-.13);
+    finger(-.59,.37,.02,[.44,.39],.32,.92,true);
+    /* Three-dimensional orbit and a sparse neural constellation. */
+    const halo=part(world,ring,mat([.12,.26,.4],0,.8,0,.34),0,.6,-.78,3.25,1.6,3.25,Math.PI/2,.12,.1);
+    const points=[[-1.5,1.9,-.45],[-1.86,.9,-.64],[-1.58,-.12,-.7],[1.38,2.14,-.75],[1.85,1.23,-.83],[1.64,.21,-.76]];
+    const lines=[],lineNormals=[];
+    for(const [a,b] of [[0,1],[1,2],[3,4],[4,5]]){lines.push(...points[a],...points[b]);lineNormals.push(0,0,1,0,0,1);}
+    part(world,geometry(lines,lineNormals,gl.LINES),mat([.19,.4,.61],0,.8,0,.45));
+    points.forEach((v,i)=>part(world,ball,i%3===0?green:blue,...v,.052,.052,.052));
+    const eye=[3.6,1.9,8.6],view=lookAt(eye,[0,.33,0]);let vp;
+    function resize(){
+      const rect=stage.getBoundingClientRect();if(!rect.width || !rect.height)return;
+      const density=Math.min(window.devicePixelRatio||1,rect.width<480?1.5:1.8);
+      const width=Math.max(1,Math.round(rect.width*density)),height=Math.max(1,Math.round(rect.height*density));
+      if(canvas.width!==width || canvas.height!==height){canvas.width=width;canvas.height=height;}
+      gl.viewport(0,0,width,height);
+      const aspect=width/height;
+      vp=mul(perspective((aspect<.72?46:40)*Math.PI/180,aspect,.1,50),view);
+      invalidate();
+    }
+    function draw(node,parent){
+      const model=mul(parent,node.matrix);
+      if(node.mesh){
+        const mesh=node.mesh,m=node.material;
+        gl.bindBuffer(gl.ARRAY_BUFFER,mesh.p);gl.vertexAttribPointer(aPosition,3,gl.FLOAT,false,0,0);
+        gl.bindBuffer(gl.ARRAY_BUFFER,mesh.n);gl.vertexAttribPointer(aNormal,3,gl.FLOAT,false,0,0);
+        gl.uniformMatrix4fv(u.Model,false,model);gl.uniformMatrix3fv(u.Normal,false,normalMatrix(model));
+        gl.uniform3fv(u.Color,m.color);gl.uniform1f(u.Metal,m.metal);gl.uniform1f(u.Glow,m.glow);gl.uniform1f(u.Kind,m.kind);gl.uniform1f(u.Opacity,m.opacity);
+        gl.drawArrays(mesh.mode,0,mesh.count);
+      }
+      node.children.forEach(n=>draw(n,model));
+    }
+    render=now=>{
+      if(!vp || gl.isContextLost())return;
+      const t=state.clock;
+      const elapsed=now-state.shakeStart;
+      const phase=state.shaking && !media.matches ? clamp(elapsed/1.8,0,1):0;
+      const envelope=state.shaking && !media.matches ? Math.sin(phase*Math.PI):0;
+      const oscillation=Math.sin(phase*Math.PI*6)*envelope;
+      const bob=state.motion?Math.sin(t*.8)*.035:0;
+      arm.matrix=mul(translation(0,bob+oscillation*.065,0),mul(ry(state.yaw),mul(rx(state.pitch),rz(-.12+oscillation*.038))));
+      wrist.matrix=mul(translation(0,-.23,0),mul(ry(envelope*-.16),rz(oscillation*.055)));
+      hand.matrix=mul(translation(0,.27,0),rx(envelope*-.09));
+      fingerJoints.forEach((finger,j)=>finger.joints.forEach((joint,k)=>{
+        const idle=state.motion?Math.sin(t*.72+j*.4)*.018:0;
+        const open=(finger.thumb?[.12,.22][k]:[.07,.17,.11][k])+idle;
+        const curl=(finger.thumb?[.2,.25][k]:[.21,.66,.54][k])*envelope;
+        joint.matrix=rx(open+curl);
+      }));
+      halo.matrix=transform(0,.6,-.78,3.25,1.6,3.25,Math.PI/2,.12,Math.sin(t*.22)*.04);
+      pulseRing.material.color=state.accent;
+      gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+      gl.uniformMatrix4fv(u.VP,false,vp);gl.uniform3fv(u.Eye,eye);gl.uniform3fv(u.Accent,state.accent);
+      draw(world,I());
+    };
+    if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(resize);observer.observe(stage);}
+    else window.addEventListener('resize',resize);
+    stage.classList.add('hm-webgl');canvas.style.opacity='1';resize();invalidate();
+  }
+  try{init3D();}catch(error){render=null;fallback();}
+  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();if(raf)cancelAnimationFrame(raf);raf=0;render=null;fallback();});
+  canvas.addEventListener('webglcontextrestored',()=>{try{init3D();}catch(_){fallback();}});
+  if(typeof IntersectionObserver!=='undefined'){
+    const observer=new IntersectionObserver(entries=>{state.visible=entries[0].isIntersecting;if(state.visible){previous=0;invalidate();}else if(raf){cancelAnimationFrame(raf);raf=0;previous=0;}},{threshold:.01});observer.observe(stage);
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0;previous=0;}else invalidate();});
+  /* Optional iframe integration: only a public layout measurement is posted. */
+  let lastHeight=0;
+  function postHeight(){if(window.parent===window)return;const height=Math.ceil(root.getBoundingClientRect().height);if(height!==lastHeight){lastHeight=height;window.parent.postMessage({type:'hariharan-contact:height',height},'*');}}
+  if(typeof ResizeObserver!=='undefined')new ResizeObserver(postHeight).observe(root);
+  window.addEventListener('load',postHeight);window.addEventListener('resize',postHeight);postHeight();
+})();
+
+    /* Progressive enhancement for direct enquiry delivery. */
+(function () {
+  'use strict';
+  const form=document.getElementById('hm-enquiry-form');
+  if (!form) return;
+  const fields=document.getElementById('hm-enquiry-fields');
+  const name=document.getElementById('hm-enquiry-name');
+  const email=document.getElementById('hm-enquiry-email');
+  const message=document.getElementById('hm-enquiry-message');
+  const honey=document.getElementById('hm-enquiry-honey');
+  const send=document.getElementById('hm-enquiry-send');
+  const label=document.getElementById('hm-enquiry-send-label');
+  const status=document.getElementById('hm-enquiry-status');
+  const counter=document.getElementById('hm-enquiry-count');
+  const draft=document.getElementById('hm-enquiry-draft');
+  const inbox='hariharanmct06@gmail.com';
+  const endpoint='https://formsubmit.co/ajax/'+inbox;
+  let busy=false;
+  function setStatus(text,state){status.textContent=text;status.dataset.state=state;}
+  function setBusy(value){busy=value;fields.disabled=value;send.disabled=value;send.setAttribute('aria-busy',String(value));label.textContent=value?'Sending your enquiry…':'Send enquiry';}
+  function syncDraft(){
+    const subject='Portfolio enquiry'+(name.value.trim()?' from '+name.value.trim():'');
+    const body='Hi Hariharan,\n\n'+message.value.trim()+'\n\n'+(name.value.trim()?'Name: '+name.value.trim()+'\n':'')+'Reply email: '+email.value.trim();
+    draft.href='mailto:'+inbox+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    counter.textContent=message.value.length+' / 3000';
+  }
+  [name,email,message].forEach(field=>field.addEventListener('input',()=>{field.setCustomValidity('');syncDraft();}));
+  function localNotice(){
+    if(!/^https?:$/.test(window.location.protocol))setStatus('Direct sending is available on the live portfolio. You can use an email draft while viewing this local preview.','pending');
+  }
+  syncDraft();localNotice();
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(busy)return;
+    message.setCustomValidity(message.value.trim()?'':'Please write a message before sending.');
+    email.value=email.value.trim();
+    if(!form.reportValidity())return;
+    syncDraft();
+    if(!/^https?:$/.test(window.location.protocol)){
+      setStatus('Direct sending needs the live portfolio. Your message is still here—choose “Prefer an email draft?” below to send it from your email app.','error');return;
+    }
+    if(honey.value.trim()){
+      setStatus('The message could not be submitted. Please use the email draft below.','error');return;
+    }
+    if(window.navigator.onLine===false){
+      setStatus('You appear to be offline. Your message is still here. Please reconnect and try again.','error');return;
+    }
+    const source=new URL(window.location.href);
+    const payload={name:name.value.trim()||'Name not provided',email:email.value.trim(),message:message.value.trim(),_replyto:email.value.trim(),_subject:'New portfolio enquiry — Hariharan M',_template:'table',_captcha:'false',_honey:'',_url:source.origin+source.pathname};
+    const controller=typeof AbortController!=='undefined'?new AbortController():null;
+    let timeout=0;
+    try{
+      setBusy(true);setStatus('Sending your message…','pending');
+      if(controller)timeout=setTimeout(()=>controller.abort(),20000);
+      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},credentials:'omit',body:JSON.stringify(payload),...(controller?{signal:controller.signal}:{})});
+      const result=await response.json();
+      const accepted=response.ok && (result.success===true || result.success==='true');
+      const serverMessage=typeof result.message==='string'?result.message:'';
+      const needsActivation=/activat|confirm.{0,30}(?:email|form)|verif.{0,30}email/i.test(serverMessage);
+      if(needsActivation){
+        setStatus(accepted?'Your enquiry is queued for delivery. You can also use the email draft below.':'This inbox connection needs to be activated. Your message is still here—please use the email draft below for now.','pending');
+      }else if(accepted){
+        form.reset();syncDraft();setStatus('Your enquiry was submitted. Thanks for reaching out!','success');
+      }else{
+        setStatus('Your enquiry was not accepted. Your message is still here. Please try again or use the email draft below.','error');
+      }
+    }catch(error){
+      setStatus(error && error.name==='AbortError'?'The request timed out, so I could not confirm submission. Your message is still here; you can retry or use the email draft below.':'I could not confirm submission. Your message is still here. Check your connection, try again, or use the email draft below.','error');
+    }finally{
+      if(timeout)clearTimeout(timeout);setBusy(false);
+    }
+  });
+})();
+// Floating AI chatbot link pulse removal on click
     if (chatbotFab) {
         chatbotFab.addEventListener('click', () => {
             const pulse = chatbotFab.querySelector('.fab-pulse');
